@@ -5,6 +5,8 @@
 #include "wallet/wallet.h"
 #include "wallet/walletdb.h"
 
+#include "test/test_phore.h"
+
 #include <stdint.h>
 
 
@@ -12,7 +14,7 @@
 
 extern CWallet* pwalletMain;
 
-BOOST_AUTO_TEST_SUITE(accounting_tests)
+BOOST_FIXTURE_TEST_SUITE(accounting_tests, TestingSetup)
 
 static void
 GetResults(CWalletDB& walletdb, std::map<CAmount, CAccountingEntry>& results)

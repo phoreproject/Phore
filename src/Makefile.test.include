@@ -24,6 +24,7 @@ RAW_TEST_FILES = test/data/alertTests.raw
 GENERATED_TEST_FILES = $(JSON_TEST_FILES:.json=.json.h) $(RAW_TEST_FILES:.raw=.raw.h)
 
 BITCOIN_TEST_SUITE = \
+  test/test_phore.h \
   test/test_phore.cpp
 # test_phore binary #
 BITCOIN_TESTS =\

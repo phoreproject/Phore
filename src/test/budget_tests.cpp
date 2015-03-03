@@ -2,12 +2,14 @@
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+
+#include "test_phore.h"
 #include <boost/test/unit_test.hpp>
 #include <tinyformat.h>
 #include <utilmoneystr.h>
 #include "masternode-budget.h"
 
-BOOST_AUTO_TEST_SUITE(budget_tests)
+BOOST_FIXTURE_TEST_SUITE(budget_tests, TestingSetup)
 
 void CheckBudgetValue(int nHeight, std::string strNetwork, CAmount nExpectedValue)
 {
