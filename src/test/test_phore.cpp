@@ -24,14 +24,21 @@ CWallet* pwalletMain;
 extern bool fPrintToConsole;
 extern void noui_connect();
 
-TestingSetup::TestingSetup()
+BasicTestingSetup::BasicTestingSetup()
 {
         ECC_Start();
         SetupEnvironment();
         fPrintToDebugLog = false; // don't want to write to debug.log file
         fCheckBlockIndex = true;
         SelectParams(CBaseChainParams::UNITTEST);
-        noui_connect();
+}
+BasicTestingSetup::~BasicTestingSetup()
+{
+        ECC_Stop();
+}
+
+TestingSetup::TestingSetup()
+{
 #ifdef ENABLE_WALLET
         bitdb.MakeMock();
 #endif
@@ -74,7 +81,6 @@ TestingSetup::~TestingSetup()
         bitdb.Reset();
 #endif
         boost::filesystem::remove_all(pathTemp);
-        ECC_Stop();
 }
 
 void Shutdown(void* parg)

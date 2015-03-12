@@ -58,7 +58,6 @@ void dumpKeyInfo(uint256 privkey)
 }
 #endif
 
-
 BOOST_FIXTURE_TEST_SUITE(key_tests, TestingSetup)
 
 BOOST_AUTO_TEST_CASE(key_test1)
