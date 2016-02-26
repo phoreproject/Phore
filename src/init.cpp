@@ -1039,7 +1039,6 @@ bool AppInit2(const std::vector<std::string>& words)
         ShrinkDebugFile();
     LogPrintf("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n");
     LogPrintf("Phore version %s (%s)\n", FormatFullVersion(), CLIENT_DATE);
-    LogPrintf("Using OpenSSL version %s\n", SSLeay_version(SSLEAY_VERSION));
 #ifdef ENABLE_WALLET
     LogPrintf("Using BerkeleyDB version %s\n", DbEnv::version(0, 0, 0));
 #endif
