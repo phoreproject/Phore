@@ -133,7 +133,7 @@ void GetStrongRandBytes(unsigned char* out, int num)
     // Produce output
     hasher.Finalize(buf);
     memcpy(out, buf, num);
-    memory_cleanse((void*)&buf, sizeof(buf));
+    memory_cleanse(buf, 64);
 }
 
 uint64_t GetRand(uint64_t nMax)

@@ -1677,7 +1677,6 @@ bool AppInit2(const std::vector<std::string>& words)
             if (GetArg("-mnemonicpassphrase", "").size() > 256)
                 return InitError(_("Mnemonic passphrase is too long, must be at most 256 characters"));
             // generate a new master key
-            InitError(_("test 2"));;
             pwalletMain->GenerateNewHDChain(words);
             // ensure this wallet.dat can only be opened by clients supporting HD
             pwalletMain->SetMinVersion(FEATURE_HD);
