@@ -21,6 +21,8 @@
 CClientUIInterface uiInterface;
 CWallet* pwalletMain;
 
+FastRandomContext insecure_rand_ctx(true);
+
 extern bool fPrintToConsole;
 extern void noui_connect();
 

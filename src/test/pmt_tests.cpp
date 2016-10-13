@@ -7,8 +7,8 @@
 #include "streams.h"
 #include "uint256.h"
 #include "version.h"
-#include "random.h"
 #include "test/test_phore.h"
+#include "test_random.h"
 
 #include <vector>
 
