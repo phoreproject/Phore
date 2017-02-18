@@ -76,26 +76,12 @@ public:
         return ret;
     }
 
-    /** Generate a random (bits)-bit integer. */
-    uint64_t randbits(int bits) {
-        if (bits == 0) {
-            return 0;
-        } else if (bits > 32) {
-            return rand64() >> (64 - bits);
-        } else {
-            if (bitbuf_size < bits) FillBitBuffer();
-            uint64_t ret = bitbuf & (~(uint64_t)0 >> (64 - bits));
-            bitbuf >>= bits;
-            bitbuf_size -= bits;
-            return ret;
-        }
+    bool randbool() {
+        return rand32() & 1;
     }
 
-    /** Generate a random 32-bit integer. */
-    uint32_t rand32() { return randbits(32); }
-
-    /** Generate a random boolean. */
-    bool randbool() { return randbits(1); }
+    uint32_t Rz;
+    uint32_t Rw;
 };
 
 /* Number of random bytes returned by GetOSRand.
