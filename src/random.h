@@ -7,6 +7,7 @@
 #define BITCOIN_RANDOM_H
 
 #include "crypto/chacha20.h"
+#include "crypto/common.h"
 #include "uint256.h"
 
 #include <stdint.h>
@@ -80,8 +81,22 @@ public:
         return rand32() & 1;
     }
 
-    uint32_t Rz;
-    uint32_t Rw;
+    /** Generate a random integer in the range [0..range). */
+    uint64_t randrange(uint64_t range)
+    {
+        --range;
+        int bits = CountBits(range);
+        while (true) {
+            uint64_t ret = randbits(bits);
+            if (ret <= range) return ret;
+        }
+    }
+
+    /** Generate a random 32-bit integer. */
+    uint32_t rand32() { return randbits(32); }
+
+    /** Generate a random boolean. */
+    bool randbool() { return randbits(1); }
 };
 
 /* Number of random bytes returned by GetOSRand.
