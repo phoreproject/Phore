@@ -9,7 +9,6 @@
 #include "version.h"
 #include "test/test_phore.h"
 #include "test_random.h"
-
 #include <vector>
 
 #include <boost/test/unit_test.hpp>

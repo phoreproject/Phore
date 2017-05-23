@@ -3,7 +3,6 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "main.h"
-#include "test_random.h"
 #include "util.h"
 #include "test/test_phore.h"
 
