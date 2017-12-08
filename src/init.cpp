@@ -1417,7 +1417,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, const std
                 delete pSporkDB;
 
                 //Phore specific: zerocoin and spork DB's
-                zerocoinDB = new CZerocoinDB(0, false, false);
+                zerocoinDB = new CZerocoinDB(0, false, fReindex);
                 pSporkDB = new CSporkDB(0, false, false);
 
                 pblocktree = new CBlockTreeDB(nBlockTreeDBCache, false, fReindex);
