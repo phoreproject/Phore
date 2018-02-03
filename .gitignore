@@ -51,6 +51,8 @@ src/qt/forms/ui_*.h
 
 src/qt/test/moc*.cpp
 
+src/leveldb/build_config.mk
+
 .deps
 .dirstamp
 .libs
