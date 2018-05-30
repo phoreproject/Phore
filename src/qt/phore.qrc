@@ -66,6 +66,7 @@
         <file alias="staking_inactive">res/icons/staking_inactive.png</file>
         <file alias="hd_enabled">res/icons/hd_enabled.png</file>
         <file alias="hd_disabled">res/icons/hd_disabled.png</file>
+        <file alias="onion">res/icons/onion.png</file>
     </qresource>
     <qresource prefix="/css">
         <file alias="default">res/css/default.css</file>

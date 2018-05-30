@@ -87,6 +87,7 @@ private:
     QLabel* labelStakingIcon;
     QPushButton* labelEncryptionIcon;
     QLabel *labelWalletHDStatusIcon;
+    QLabel* labelTorIcon;
     QPushButton* labelConnectionsIcon;
     QLabel* labelBlocksIcon;
     QLabel* progressBarLabel;
@@ -202,6 +203,10 @@ public slots:
     /** Show incoming transaction notification for new transactions. */
     void incomingTransaction(const QString& date, int unit, const CAmount& amount, const QString& type, const QString& address);
 #endif // ENABLE_WALLET
+
+private:
+    /** Set the Tor-enabled icon as shown in the UI. */
+    void updateTorIcon();
 
 private slots:
 #ifdef ENABLE_WALLET
