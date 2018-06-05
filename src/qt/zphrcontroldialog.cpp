@@ -16,7 +16,7 @@ std::set<std::string> ZPhrControlDialog::setSelectedMints;
 std::set<CMintMeta> ZPhrControlDialog::setMints;
 
 ZPhrControlDialog::ZPhrControlDialog(QWidget *parent) :
-    QDialog(parent),
+    QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
     ui(new Ui::ZPhrControlDialog),
     model(0)
 {
