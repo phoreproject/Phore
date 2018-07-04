@@ -74,6 +74,7 @@ src/leveldb/build_config.mk
 *.dmg
 
 *.json.h
+!accumulatorcheckpoints.json.h
 *.raw.h
 
 #libtool object files
@@ -123,5 +124,6 @@ qa/pull-tester/test.*/*
 /nbproject/
 
 .idea
-CMakeLists.txt
 cmake-build-debug
+
+cache

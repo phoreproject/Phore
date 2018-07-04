@@ -4,6 +4,7 @@
 #ifndef PHORE_ACCUMULATORMAP_H
 #define PHORE_ACCUMULATORMAP_H
 
+#include "accumulatorcheckpoints.h"
 #include "libzerocoin/Accumulator.h"
 #include "libzerocoin/Coin.h"
 
@@ -12,11 +13,15 @@ class AccumulatorMap
 {
 private:
     std::map<libzerocoin::CoinDenomination, std::unique_ptr<libzerocoin::Accumulator> > mapAccumulators;
+    libzerocoin::ZerocoinParams* params;
 public:
-    AccumulatorMap();
+    AccumulatorMap(libzerocoin::ZerocoinParams* currentParams);
     bool Load(uint256 nCheckpoint);
+    void Load(const AccumulatorCheckpoints::Checkpoint& checkpoint);
     bool Accumulate(libzerocoin::PublicCoin pubCoin, bool fSkipValidation = false);
     CBigNum GetValue(libzerocoin::CoinDenomination denom);
+    libzerocoin::ZerocoinParams* GetZerocoinParams();
+    void SetZerocoinParams(libzerocoin::ZerocoinParams* params);
     uint256 GetCheckpoint();
     void Reset();
 };

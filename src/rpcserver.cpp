@@ -114,13 +114,14 @@ static inline int64_t roundint64(double d)
 
 CAmount AmountFromValue(const UniValue& value)
 {
-    double dAmount = value.get_real();
-    if (dAmount <= 0.0 || dAmount > 21000000.0)
+    if (!value.isNum() && !value.isStr())
+        throw JSONRPCError(RPC_TYPE_ERROR, "Amount is not a number or string");
+    CAmount amount;
+    if (!ParseFixedPoint(value.getValStr(), 8, &amount))
         throw JSONRPCError(RPC_TYPE_ERROR, "Invalid amount");
-    CAmount nAmount = roundint64(dAmount * COIN);
-    if (!MoneyRange(nAmount))
-        throw JSONRPCError(RPC_TYPE_ERROR, "Invalid amount");
-    return nAmount;
+    if (!MoneyRange(amount))
+        throw JSONRPCError(RPC_TYPE_ERROR, "Amount out of range");
+    return amount;
 }
 
 UniValue ValueFromAmount(const CAmount& amount)
@@ -340,6 +341,7 @@ static const CRPCCommand vRPCCommands[] =
 
         /* Utility functions */
         {"util", "createmultisig", &createmultisig, true, true, false},
+        {"util", "createwitnessaddress", &createwitnessaddress, true, true, false},
         {"util", "validateaddress", &validateaddress, true, false, false}, /* uses wallet if enabled */
         {"util", "verifymessage", &verifymessage, true, false, false},
         {"util", "estimatefee", &estimatefee, true, true, false},
@@ -353,6 +355,9 @@ static const CRPCCommand vRPCCommands[] =
         /* Phore features */
         {"phore", "masternode", &masternode, true, true, false},
         {"phore", "listmasternodes", &listmasternodes, true, true, false},
+        {"phore", "createmasternodebroadcast", &createmasternodebroadcast, true, true, false},
+        {"phore", "decodemasternodebroadcast", &decodemasternodebroadcast, true, true, false},
+        {"phore", "relaymasternodebroadcast", &relaymasternodebroadcast, true, true, false},
         {"phore", "getmasternodecount", &getmasternodecount, true, true, false},
         {"phore", "masternodeconnect", &masternodeconnect, true, true, false},
         {"phore", "masternodecurrent", &masternodecurrent, true, true, false},
@@ -378,11 +383,11 @@ static const CRPCCommand vRPCCommands[] =
         {"phore", "mnsync", &mnsync, true, true, false},
         {"phore", "spork", &spork, true, true, false},
         {"phore", "getpoolinfo", &getpoolinfo, true, true, false},
+        {"phore", "makekeypair", &makekeypair, true, true, false},
 #ifdef ENABLE_WALLET
-        {"phore", "obfuscation", &obfuscation, false, false, true}, /* not threadSafe because of SendMoney */
-
         /* Wallet */
         {"wallet", "addmultisigaddress", &addmultisigaddress, true, false, true},
+        {"wallet", "addwitnessaddress", &addwitnessaddress, true, false, true},
         {"wallet", "autocombinerewards", &autocombinerewards, false, false, true},
         {"wallet", "backupwallet", &backupwallet, true, false, true},
         {"wallet", "dumpprivkey", &dumpprivkey, true, false, true},
@@ -404,6 +409,7 @@ static const CRPCCommand vRPCCommands[] =
         {"wallet", "getunconfirmedbalance", &getunconfirmedbalance, false, false, true},
         {"wallet", "getwalletinfo", &getwalletinfo, false, false, true},
         {"wallet", "importprivkey", &importprivkey, true, false, true},
+        {"wallet", "importpubkey", &importpubkey, true, false, true},
         {"wallet", "importwallet", &importwallet, true, false, true},
         {"wallet", "importaddress", &importaddress, true, false, true},
         {"wallet", "keypoolrefill", &keypoolrefill, true, false, true},
@@ -442,7 +448,9 @@ static const CRPCCommand vRPCCommands[] =
         {"zerocoin", "importzerocoins", &importzerocoins, false, false, true},
         {"zerocoin", "exportzerocoins", &exportzerocoins, false, false, true},
         {"zerocoin", "reconsiderzerocoins", &reconsiderzerocoins, false, false, true},
-        {"zerocoin", "getspentzerocoinamount", &getspentzerocoinamount, false, false, false}
+        {"zerocoin", "getspentzerocoinamount", &getspentzerocoinamount, false, false, false},
+        {"zerocoin", "getzphrseed", &getzphrseed, false, false, true},
+        {"zerocoin", "setzphrseed", &setzphrseed, false, false, true}
 
 #endif // ENABLE_WALLET
 };

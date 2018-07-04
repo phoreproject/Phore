@@ -1,6 +1,6 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2014 The Bitcoin developers
-// Copyright (c) 2016-2017 The PIVX developers
+// Copyright (c) 2016-2018 The PIVX developers
 // Copyright (c) 2017 The Phore developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -40,24 +40,31 @@ class CTxMemPoolEntry
 {
 private:
     CTransaction tx;
-    CAmount nFee;         //! Cached to avoid expensive parent-transaction lookups
+    CAmount nFee;              //!< Cached to avoid expensive parent-transaction lookups
     size_t nTxSize;       //! ... and avoid recomputing tx size
-    size_t nModSize;      //! ... and modified size for priority
-    int64_t nTime;        //! Local time when entering the mempool
-    double dPriority;     //! Priority when entering the mempool
-    unsigned int nHeight; //! Chain height when entering the mempool
+    size_t nTxCost;            //!< ... and avoid recomputing tx cost (also used for GetTxSize())
+    size_t nModSize;           //!< ... and modified size for priority
+    int64_t nTime;             //!< Local time when entering the mempool
+    double dPriority;          //!< Priority when entering the mempool
+    unsigned int nHeight;      //!< Chain height when entering the mempool
+    int64_t sigOpCost;    //!< Total sigop cost
 
 public:
+    CTxMemPoolEntry(const CTransaction& _tx, const CAmount& _nFee,
+                    int64_t _nTime, double _dPriority, unsigned int _nHeight,
+                    int64_t nSigOpsCost);
     CTxMemPoolEntry(const CTransaction& _tx, const CAmount& _nFee, int64_t _nTime, double _dPriority, unsigned int _nHeight);
-    CTxMemPoolEntry();
     CTxMemPoolEntry(const CTxMemPoolEntry& other);
+    CTxMemPoolEntry();
 
     const CTransaction& GetTx() const { return this->tx; }
     double GetPriority(unsigned int currentHeight) const;
-    CAmount GetFee() const { return nFee; }
-    size_t GetTxSize() const { return nTxSize; }
+    const CAmount& GetFee() const { return nFee; }
+    size_t GetTxSize() const;
+    size_t GetTxCost() const { return nTxCost; }
     int64_t GetTime() const { return nTime; }
     unsigned int GetHeight() const { return nHeight; }
+    int64_t GetSigOpCost() const { return sigOpCost; }
 };
 
 class CMinerPolicyEstimator;
@@ -128,6 +135,7 @@ public:
     void removeForBlock(const std::vector<CTransaction>& vtx, unsigned int nBlockHeight, std::list<CTransaction>& conflicts);
     void clear();
     void queryHashes(std::vector<uint256>& vtxid);
+    void getTransactions(std::set<uint256>& setTxid);
     void pruneSpent(const uint256& hash, CCoins& coins);
     unsigned int GetTransactionsUpdated() const;
     void AddTransactionsUpdated(unsigned int n);

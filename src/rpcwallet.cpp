@@ -1,7 +1,8 @@
 // Copyright (c) 2010 Satoshi Nakamoto
-// Copyright (c) 2009-2014 The Bitcoin developers
+// Copyright (c) 2009-2016 The Bitcoin developers
 // Copyright (c) 2014-2015 The Dash developers
 // Copyright (c) 2015-2017 The PIVX developers
+// Copyright (c) 2018 The Phore developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -21,8 +22,10 @@
 #include <stdint.h>
 
 #include "libzerocoin/Coin.h"
+#include "primitives/deterministicmint.h"
 #include "spork.h"
 #include <boost/assign/list_of.hpp>
+#include <boost/thread/thread.hpp>
 
 #include <univalue.h>
 
@@ -38,9 +41,9 @@ std::string HelpRequiringPassphrase()
     return pwalletMain && pwalletMain->IsCrypted() ? "\nRequires wallet passphrase to be set with walletpassphrase call." : "";
 }
 
-void EnsureWalletIsUnlocked()
+void EnsureWalletIsUnlocked(bool fAllowAnonOnly)
 {
-    if (pwalletMain->IsLocked() || pwalletMain->fWalletUnlockAnonymizeOnly)
+    if (pwalletMain->IsLocked() || (!fAllowAnonOnly && pwalletMain->fWalletUnlockAnonymizeOnly))
         throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
 }
 
@@ -79,14 +82,15 @@ string AccountFromValue(const UniValue& value)
 
 UniValue getnewaddress(const UniValue& params, bool fHelp)
 {
-    if (fHelp || params.size() > 1)
+    if (fHelp || params.size() > 2)
         throw runtime_error(
-            "getnewaddress ( \"account\" )\n"
+            "getnewaddress ( \"account\" \"address_type\" )\n"
             "\nReturns a new Phore address for receiving payments.\n"
             "If 'account' is specified (recommended), it is added to the address book \n"
             "so payments received with the address will be credited to 'account'.\n"
             "\nArguments:\n"
             "1. \"account\"        (string, optional) The account name for the address to be linked to. if not provided, the default account \"\" is used. It can also be set to the empty string \"\" to represent the default account. The account does not need to exist, it will be created if there is no account by the given name.\n"
+            "2. \"address_type\"   (string, optional) The address type to use. Options are \"legacy\", \"p2sh-segwit\", and \"bech32\". Default is set by -addresstype.\n"
             "\nResult:\n"
             "\"phoreaddress\"    (string) The new phore address\n"
             "\nExamples:\n" +
@@ -99,6 +103,14 @@ UniValue getnewaddress(const UniValue& params, bool fHelp)
     if (params.size() > 0)
         strAccount = AccountFromValue(params[0]);
 
+    OutputType output_type = g_address_type;
+    if (!params[1].isNull()) {
+        output_type = ParseOutputType(params[1].get_str(), g_address_type);
+        if (output_type == OUTPUT_TYPE_NONE) {
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, strprintf("Unknown address type '%s'", params[1].get_str()));
+        }
+    }
+
     if (!pwalletMain->IsLocked())
         pwalletMain->TopUpKeyPool();
 
@@ -106,15 +118,17 @@ UniValue getnewaddress(const UniValue& params, bool fHelp)
     CPubKey newKey;
     if (!pwalletMain->GetKeyFromPool(newKey))
         throw JSONRPCError(RPC_WALLET_KEYPOOL_RAN_OUT, "Error: Keypool ran out, please call keypoolrefill first");
-    CKeyID keyID = newKey.GetID();
+ 
+    pwalletMain->LearnRelatedScripts(newKey, output_type);
+    CTxDestination dest = GetDestinationForKey(newKey, output_type);
 
-    pwalletMain->SetAddressBook(keyID, strAccount, "receive");
+    pwalletMain->SetAddressBook(dest, strAccount, "receive");
 
-    return CBitcoinAddress(keyID).ToString();
+    return EncodeDestination(dest);
 }
 
 
-CBitcoinAddress GetAccountAddress(string strAccount, bool bForceNew = false)
+CTxDestination GetAccountDestination(string strAccount, bool bForceNew = false)
 {
     CWalletDB walletdb(pwalletMain->strWalletFile);
 
@@ -145,7 +159,7 @@ CBitcoinAddress GetAccountAddress(string strAccount, bool bForceNew = false)
         walletdb.WriteAccount(strAccount, account);
     }
 
-    return CBitcoinAddress(account.vchPubKey.GetID());
+    return CTxDestination(account.vchPubKey.GetID());
 }
 
 UniValue getaccountaddress(const UniValue& params, bool fHelp)
@@ -168,7 +182,7 @@ UniValue getaccountaddress(const UniValue& params, bool fHelp)
 
     UniValue ret(UniValue::VSTR);
 
-    ret = GetAccountAddress(strAccount).ToString();
+    ret = EncodeDestination(GetAccountDestination(strAccount));
     return ret;
 }
 
@@ -177,9 +191,11 @@ UniValue getrawchangeaddress(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() > 1)
         throw runtime_error(
-            "getrawchangeaddress\n"
+            "getrawchangeaddress ( \"address_type\" )\n"
             "\nReturns a new Phore address, for receiving change.\n"
             "This is for use with raw transactions, NOT normal use.\n"
+            "\nArguments:\n"
+            "1. \"address_type\"           (string, optional) The address type to use. Options are \"legacy\", \"p2sh\", and \"bech32\". Default is set by -changetype.\n"
             "\nResult:\n"
             "\"address\"    (string) The address\n"
             "\nExamples:\n" +
@@ -189,6 +205,14 @@ UniValue getrawchangeaddress(const UniValue& params, bool fHelp)
 
     if (!pwalletMain->IsLocked())
         pwalletMain->TopUpKeyPool();
+ 
+    OutputType output_type = g_change_type;
+    if (!params[0].isNull()) {
+        output_type = ParseOutputType(params[0].get_str(), g_change_type);
+        if (output_type == OUTPUT_TYPE_NONE) {
+            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, strprintf("Unknown address type '%s'", params[0].get_str()));
+        }
+    }
 
     CReserveKey reservekey(pwalletMain);
     CPubKey vchPubKey;
@@ -197,9 +221,10 @@ UniValue getrawchangeaddress(const UniValue& params, bool fHelp)
 
     reservekey.KeepKey();
 
-    CKeyID keyID = vchPubKey.GetID();
+    pwalletMain->LearnRelatedScripts(vchPubKey, output_type);
+    CTxDestination dest = GetDestinationForKey(vchPubKey, output_type);
 
-    return CBitcoinAddress(keyID).ToString();
+    return EncodeDestination(dest);
 }
 
 
@@ -217,24 +242,24 @@ UniValue setaccount(const UniValue& params, bool fHelp)
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    CBitcoinAddress address(params[0].get_str());
-    if (!address.IsValid())
+    if (!IsValidDestinationString(params[0].get_str()))
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Phore address");
 
+    CTxDestination address = DecodeDestination(params[0].get_str());
 
     string strAccount;
     if (params.size() > 1)
         strAccount = AccountFromValue(params[1]);
 
     // Only add the account if the address is yours.
-    if (IsMine(*pwalletMain, address.Get())) {
+    if (IsMine(*pwalletMain, address)) {
         // Detect when changing the account of an address that is the 'unused current key' of another account:
-        if (pwalletMain->mapAddressBook.count(address.Get())) {
-            string strOldAccount = pwalletMain->mapAddressBook[address.Get()].name;
-            if (address == GetAccountAddress(strOldAccount))
-                GetAccountAddress(strOldAccount, true);
+        if (pwalletMain->mapAddressBook.count(address)) {
+            string strOldAccount = pwalletMain->mapAddressBook[address].name;
+            if (address == GetAccountDestination(strOldAccount))
+                GetAccountDestination(strOldAccount, true);
         }
-        pwalletMain->SetAddressBook(address.Get(), strAccount, "receive");
+        pwalletMain->SetAddressBook(address, strAccount, "receive");
     } else
         throw JSONRPCError(RPC_MISC_ERROR, "setaccount can only be used with own address");
 
@@ -257,12 +282,13 @@ UniValue getaccount(const UniValue& params, bool fHelp)
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    CBitcoinAddress address(params[0].get_str());
-    if (!address.IsValid())
+    if (!IsValidDestinationString(params[0].get_str()))
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Phore address");
 
+    CTxDestination address = DecodeDestination(params[0].get_str());
+
     string strAccount;
-    map<CTxDestination, CAddressBookData>::iterator mi = pwalletMain->mapAddressBook.find(address.Get());
+    map<CTxDestination, CAddressBookData>::iterator mi = pwalletMain->mapAddressBook.find(address);
     if (mi != pwalletMain->mapAddressBook.end() && !(*mi).second.name.empty())
         strAccount = (*mi).second.name;
     return strAccount;
@@ -291,11 +317,11 @@ UniValue getaddressesbyaccount(const UniValue& params, bool fHelp)
 
     // Find all addresses that have the given account
     UniValue ret(UniValue::VARR);
-    BOOST_FOREACH (const PAIRTYPE(CBitcoinAddress, CAddressBookData) & item, pwalletMain->mapAddressBook) {
-        const CBitcoinAddress& address = item.first;
+    BOOST_FOREACH (const PAIRTYPE(CTxDestination, CAddressBookData) & item, pwalletMain->mapAddressBook) {
+        const CTxDestination& address = item.first;
         const string& strName = item.second.name;
         if (strName == strAccount)
-            ret.push_back(address.ToString());
+            ret.push_back(EncodeDestination(address));
     }
     return ret;
 }
@@ -328,7 +354,7 @@ void SendMoney(const CTxDestination& address, CAmount nValue, CWalletTx& wtxNew,
         LogPrintf("SendMoney() : %s\n", strError);
         throw JSONRPCError(RPC_WALLET_ERROR, strError);
     }
-    if (!pwalletMain->CommitTransaction(wtxNew, reservekey, (!fUseIX ? "tx" : "ix")))
+    if (!pwalletMain->CommitTransaction(wtxNew, reservekey, (!fUseIX ? NetMsgType::TX : NetMsgType::IX)))
         throw JSONRPCError(RPC_WALLET_ERROR, "Error: The transaction was rejected! This might happen if some of the coins in your wallet were already spent, such as if you used a copy of wallet.dat and coins were spent in the copy but not marked as spent here.");
 }
 
@@ -354,9 +380,10 @@ UniValue sendtoaddress(const UniValue& params, bool fHelp)
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    CBitcoinAddress address(params[0].get_str());
-    if (!address.IsValid())
+    if (!IsValidDestinationString(params[0].get_str()))
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Phore address");
+    
+    CTxDestination address = DecodeDestination(params[0].get_str());
 
     // Amount
     CAmount nAmount = AmountFromValue(params[1]);
@@ -370,7 +397,7 @@ UniValue sendtoaddress(const UniValue& params, bool fHelp)
 
     EnsureWalletIsUnlocked();
 
-    SendMoney(address.Get(), nAmount, wtx);
+    SendMoney(address, nAmount, wtx);
 
     return wtx.GetHash().GetHex();
 }
@@ -397,9 +424,10 @@ UniValue sendtoaddressix(const UniValue& params, bool fHelp)
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    CBitcoinAddress address(params[0].get_str());
-    if (!address.IsValid())
+    if (!IsValidDestinationString(params[0].get_str()))
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Phore address");
+
+    CTxDestination address = DecodeDestination(params[0].get_str());
 
     // Amount
     CAmount nAmount = AmountFromValue(params[1]);
@@ -413,7 +441,7 @@ UniValue sendtoaddressix(const UniValue& params, bool fHelp)
 
     EnsureWalletIsUnlocked();
 
-    SendMoney(address.Get(), nAmount, wtx, true);
+    SendMoney(address, nAmount, wtx, true);
 
     return wtx.GetHash().GetHex();
 }
@@ -449,12 +477,11 @@ UniValue listaddressgroupings(const UniValue& params, bool fHelp)
         UniValue jsonGrouping(UniValue::VARR);
         BOOST_FOREACH (CTxDestination address, grouping) {
             UniValue addressInfo(UniValue::VARR);
-            addressInfo.push_back(CBitcoinAddress(address).ToString());
+            addressInfo.push_back(EncodeDestination(address));
             addressInfo.push_back(ValueFromAmount(balances[address]));
             {
-                LOCK(pwalletMain->cs_wallet);
-                if (pwalletMain->mapAddressBook.find(CBitcoinAddress(address).Get()) != pwalletMain->mapAddressBook.end())
-                    addressInfo.push_back(pwalletMain->mapAddressBook.find(CBitcoinAddress(address).Get())->second.name);
+                if (pwalletMain->mapAddressBook.find(address) != pwalletMain->mapAddressBook.end())
+                    addressInfo.push_back(pwalletMain->mapAddressBook.find(address)->second.name);
             }
             jsonGrouping.push_back(addressInfo);
         }
@@ -489,16 +516,17 @@ UniValue signmessage(const UniValue& params, bool fHelp)
     string strAddress = params[0].get_str();
     string strMessage = params[1].get_str();
 
-    CBitcoinAddress addr(strAddress);
-    if (!addr.IsValid())
+    if (!IsValidDestinationString(strAddress))
         throw JSONRPCError(RPC_TYPE_ERROR, "Invalid address");
+    
+    CTxDestination addr = DecodeDestination(strAddress);
 
-    CKeyID keyID;
-    if (!addr.GetKeyID(keyID))
+    CKeyID *keyID = boost::get<CKeyID>(&addr);
+    if (!keyID)
         throw JSONRPCError(RPC_TYPE_ERROR, "Address does not refer to key");
 
     CKey key;
-    if (!pwalletMain->GetKey(keyID, key))
+    if (!pwalletMain->GetKey(*keyID, key))
         throw JSONRPCError(RPC_WALLET_ERROR, "Private key not available");
 
     CHashWriter ss(SER_GETHASH, 0);
@@ -533,10 +561,11 @@ UniValue getreceivedbyaddress(const UniValue& params, bool fHelp)
     LOCK2(cs_main, pwalletMain->cs_wallet);
     
     // phore address
-    CBitcoinAddress address = CBitcoinAddress(params[0].get_str());
-    if (!address.IsValid())
+    if (!IsValidDestinationString(params[0].get_str()))
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Phore address");
-    CScript scriptPubKey = GetScriptForDestination(address.Get());
+
+    CTxDestination address = DecodeDestination(params[0].get_str());
+    CScript scriptPubKey = GetScriptForDestination(address);
     if (!IsMine(*pwalletMain, scriptPubKey))
         return (double)0.0;
 
@@ -816,9 +845,10 @@ UniValue sendfrom(const UniValue& params, bool fHelp)
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
     string strAccount = AccountFromValue(params[0]);
-    CBitcoinAddress address(params[1].get_str());
-    if (!address.IsValid())
+    if (!IsValidDestinationString(params[1].get_str()))
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Phore address");
+
+    CTxDestination address = DecodeDestination(params[1].get_str());
     CAmount nAmount = AmountFromValue(params[2]);
     int nMinDepth = 1;
     if (params.size() > 3)
@@ -838,7 +868,7 @@ UniValue sendfrom(const UniValue& params, bool fHelp)
     if (nAmount > nBalance)
         throw JSONRPCError(RPC_WALLET_INSUFFICIENT_FUNDS, "Account has insufficient funds");
 
-    SendMoney(address.Get(), nAmount, wtx);
+    SendMoney(address, nAmount, wtx);
 
     return wtx.GetHash().GetHex();
 }
@@ -882,21 +912,22 @@ UniValue sendmany(const UniValue& params, bool fHelp)
     if (params.size() > 3 && !params[3].isNull() && !params[3].get_str().empty())
         wtx.mapValue["comment"] = params[3].get_str();
 
-    set<CBitcoinAddress> setAddress;
+    set<CTxDestination> setAddress;
     vector<pair<CScript, CAmount> > vecSend;
 
     CAmount totalAmount = 0;
     vector<string> keys = sendTo.getKeys();
     BOOST_FOREACH(const string& name_, keys) {
-        CBitcoinAddress address(name_);
-        if (!address.IsValid())
+        if (!IsValidDestinationString(name_))
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, string("Invalid Phore address: ")+name_);
+        
+        CTxDestination address = DecodeDestination(name_);
 
         if (setAddress.count(address))
             throw JSONRPCError(RPC_INVALID_PARAMETER, string("Invalid parameter, duplicated address: ")+name_);
         setAddress.insert(address);
 
-        CScript scriptPubKey = GetScriptForDestination(address.Get());
+        CScript scriptPubKey = GetScriptForDestination(address);
         CAmount nAmount = AmountFromValue(sendTo[name_]);
         totalAmount += nAmount;
 
@@ -961,13 +992,129 @@ UniValue addmultisigaddress(const UniValue& params, bool fHelp)
 
     // Construct using pay-to-script-hash:
     CScript inner = _createmultisig_redeemScript(params);
-    CScriptID innerID(inner);
     pwalletMain->AddCScript(inner);
 
-    pwalletMain->SetAddressBook(innerID, strAccount, "send");
-    return CBitcoinAddress(innerID).ToString();
+    CTxDestination dest = pwalletMain->AddAndGetDestinationForScript(inner, g_address_type);
+
+    pwalletMain->SetAddressBook(dest, strAccount, "send");
+    return EncodeDestination(dest);
 }
 
+class Witnessifier : public boost::static_visitor<bool>
+{
+public:
+    CTxDestination result;
+    bool already_witness;
+
+    explicit Witnessifier() : already_witness(false) {}
+
+    bool operator()(const CKeyID &keyID) {
+        CPubKey pubkey;
+        if (pwalletMain) {
+            CScript basescript = GetScriptForDestination(keyID);
+            isminetype typ;
+            typ = IsMine(*pwalletMain, basescript, SIGVERSION_WITNESS_V0);
+            if (typ != ISMINE_SPENDABLE)
+                return false;
+            CScript witscript = GetScriptForWitness(basescript);
+            return ExtractDestination(witscript, result);
+        }
+        return false;
+    }
+
+    bool operator()(const CScriptID &scriptID) {
+        CScript subscript;
+        if (pwalletMain && pwalletMain->GetCScript(scriptID, subscript)) {
+            int witnessversion;
+            std::vector<unsigned char> witprog;
+            if (subscript.IsWitnessProgram(witnessversion, witprog)) {
+                ExtractDestination(subscript, result);
+                already_witness = true;
+                return true;
+            }
+            isminetype typ;
+            typ = IsMine(*pwalletMain, subscript, SIGVERSION_WITNESS_V0);
+            if (typ != ISMINE_SPENDABLE)
+                return false;
+            CScript witscript = GetScriptForWitness(subscript);
+            return ExtractDestination(witscript, result);
+        }
+        return false;
+    }
+
+    bool operator()(const WitnessV0KeyHash& id) {
+        already_witness = true;
+        result = id;
+        return true;
+    }
+
+    bool operator()(const WitnessV0ScriptHash& id) {
+        already_witness = true;
+        result = id;
+        return true;
+    }
+
+
+    template<typename T>
+    bool operator()(const T& dest) { return false; }
+};
+
+UniValue addwitnessaddress(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() < 1 || params.size() > 2)
+    {
+        string msg = "addwitnessaddress \"address\" ( p2sh )\n"
+            "\nAdd a witness address for a script (with pubkey or redeemscript known).\n"
+            "It returns the witness script.\n"
+
+            "\nArguments:\n"
+            "1. \"address\"       (string, required) An address known to the wallet\n"
+            "2. p2sh            (bool, optional, default=true) Embed inside P2SH\n"
+
+            "\nResult:\n"
+            "\"witnessaddress\",  (string) The value of the new address (P2SH or BIP173).\n"
+            "}\n"
+        ;
+        throw runtime_error(msg);
+    }
+
+    if (!IsSporkActive(SPORK_17_SEGWIT_ACTIVATION) && !GetBoolArg("-walletprematurewitness", false)) {
+        throw JSONRPCError(RPC_WALLET_ERROR, "Segregated witness not enabled on network");
+    }
+
+    CTxDestination dest = DecodeDestination(params[0].get_str());
+    if (!IsValidDestination(dest)) {
+        throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Bitcoin address");
+    }
+
+    bool p2sh = true;
+    if (!params[1].isNull()) {
+        p2sh = params[1].get_bool();
+    }
+
+    Witnessifier w;
+    bool ret = boost::apply_visitor(w, dest);
+    if (!ret) {
+        throw JSONRPCError(RPC_WALLET_ERROR, "Public key or redeemscript not known to wallet, or the key is uncompressed");
+    }
+
+    CScript witprogram = GetScriptForDestination(w.result);
+
+    if (p2sh) {
+        w.result = CScriptID(witprogram);
+    }
+
+    if (w.already_witness) {
+        if (!(dest == w.result)) {
+            throw JSONRPCError(RPC_WALLET_ERROR, "Cannot convert between witness address types");
+        }
+    } else {
+        pwalletMain->AddCScript(witprogram); // Implicit for single-key now, but necessary for multisig and for compatibility with older software
+        pwalletMain->SetAddressBook(w.result, "", "receive");
+    }
+
+    return EncodeDestination(w.result);
+}
 
 struct tallyitem {
     CAmount nAmount;
@@ -1002,7 +1149,7 @@ UniValue ListReceived(const UniValue& params, bool fByAccounts)
             filter = filter | ISMINE_WATCH_ONLY;
 
     // Tally
-    map<CBitcoinAddress, tallyitem> mapTally;
+    map<CTxDestination, tallyitem> mapTally;
     for (map<uint256, CWalletTx>::iterator it = pwalletMain->mapWallet.begin(); it != pwalletMain->mapWallet.end(); ++it) {
         const CWalletTx& wtx = (*it).second;
 
@@ -1036,10 +1183,10 @@ UniValue ListReceived(const UniValue& params, bool fByAccounts)
     // Reply
     UniValue ret(UniValue::VARR);
     map<string, tallyitem> mapAccountTally;
-    BOOST_FOREACH (const PAIRTYPE(CBitcoinAddress, CAddressBookData) & item, pwalletMain->mapAddressBook) {
-        const CBitcoinAddress& address = item.first;
+    BOOST_FOREACH (const PAIRTYPE(CTxDestination, CAddressBookData) & item, pwalletMain->mapAddressBook) {
+        const CTxDestination& address = item.first;
         const string& strAccount = item.second.name;
-        map<CBitcoinAddress, tallyitem>::iterator it = mapTally.find(address);
+        map<CTxDestination, tallyitem>::iterator it = mapTally.find(address);
         if (it == mapTally.end() && !fIncludeEmpty)
             continue;
 
@@ -1064,7 +1211,7 @@ UniValue ListReceived(const UniValue& params, bool fByAccounts)
             UniValue obj(UniValue::VOBJ);
             if (fIsWatchonly)
                 obj.push_back(Pair("involvesWatchonly", true));
-            obj.push_back(Pair("address", address.ToString()));
+            obj.push_back(Pair("address", EncodeDestination(address)));
             obj.push_back(Pair("account", strAccount));
             obj.push_back(Pair("amount", ValueFromAmount(nAmount)));
             obj.push_back(Pair("confirmations", (nConf == std::numeric_limits<int>::max() ? 0 : nConf)));
@@ -1164,9 +1311,8 @@ UniValue listreceivedbyaccount(const UniValue& params, bool fHelp)
 
 static void MaybePushAddress(UniValue & entry, const CTxDestination &dest)
 {
-    CBitcoinAddress addr;
-    if (addr.Set(dest))
-        entry.push_back(Pair("address", addr.ToString()));
+    if (dest.which() != 0)
+        entry.push_back(Pair("address", EncodeDestination(dest)));
 }
 
 void ListTransactions(const CWalletTx& wtx, const string& strAccount, int nMinDepth, bool fLong, UniValue& ret, const isminefilter& filter)
@@ -1584,7 +1730,7 @@ UniValue gettransaction(const UniValue& params, bool fHelp)
     ListTransactions(wtx, "*", 0, false, details, filter);
     entry.push_back(Pair("details", details));
 
-    string strHex = EncodeHexTx(static_cast<CTransaction>(wtx));
+    string strHex = EncodeHexTx(static_cast<CTransaction>(wtx), PROTOCOL_VERSION | RPCSerializationFlags());
     entry.push_back(Pair("hex", strHex));
 
     return entry;
@@ -2067,9 +2213,9 @@ UniValue setstakesplitthreshold(const UniValue& params, bool fHelp)
             "\nExamples:\n" +
             HelpExampleCli("setstakesplitthreshold", "5000") + HelpExampleRpc("setstakesplitthreshold", "5000"));
 
+    EnsureWalletIsUnlocked();
+
     uint64_t nStakeSplitThreshold = params[0].get_int();
-    if (pwalletMain->IsLocked())
-        throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Unlock wallet to use this feature");
     if (nStakeSplitThreshold > 999999)
         throw runtime_error("Value out of range, max allowed is 999999");
 
@@ -2175,7 +2321,7 @@ UniValue printAddresses()
     BOOST_FOREACH (const COutput& out, vCoins) {
         CTxDestination utxoAddress;
         ExtractDestination(out.tx->vout[out.i].scriptPubKey, utxoAddress);
-        std::string strAdd = CBitcoinAddress(utxoAddress).ToString();
+        std::string strAdd = EncodeDestination(utxoAddress);
 
         if (mapAddresses.find(strAdd) == mapAddresses.end()) //if strAdd is not already part of the map
             mapAddresses[strAdd] = (double)out.tx->vout[out.i].nValue / (double)COIN;
@@ -2238,7 +2384,7 @@ UniValue multisend(const UniValue& params, bool fHelp)
             if (pwalletMain->vMultiSend.size() < 1)
                 throw JSONRPCError(RPC_INVALID_REQUEST, "Unable to activate MultiSend, check MultiSend vector");
 
-            if (CBitcoinAddress(pwalletMain->vMultiSend[0].first).IsValid()) {
+            if (IsValidDestinationString(pwalletMain->vMultiSend[0].first)) {
                 pwalletMain->fMultiSendStake = true;
                 if (!walletdb.WriteMSettings(true, pwalletMain->fMultiSendMasternodeReward, pwalletMain->nLastMultiSendHeight)) {
                     UniValue obj(UniValue::VOBJ);
@@ -2256,7 +2402,7 @@ UniValue multisend(const UniValue& params, bool fHelp)
             if (pwalletMain->vMultiSend.size() < 1)
                 throw JSONRPCError(RPC_INVALID_REQUEST, "Unable to activate MultiSend, check MultiSend vector");
 
-            if (CBitcoinAddress(pwalletMain->vMultiSend[0].first).IsValid()) {
+            if (IsValidDestinationString(pwalletMain->vMultiSend[0].first)) {
                 pwalletMain->fMultiSendMasternodeReward = true;
 
                 if (!walletdb.WriteMSettings(pwalletMain->fMultiSendStake, true, pwalletMain->nLastMultiSendHeight)) {
@@ -2299,7 +2445,7 @@ UniValue multisend(const UniValue& params, bool fHelp)
     }
     if (params.size() == 2 && params[0].get_str() == "disable") {
         std::string disAddress = params[1].get_str();
-        if (!CBitcoinAddress(disAddress).IsValid())
+        if (!IsValidDestinationString(disAddress))
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "address you want to disable is not valid");
         else {
             pwalletMain->vDisabledAddresses.push_back(disAddress);
@@ -2340,8 +2486,7 @@ UniValue multisend(const UniValue& params, bool fHelp)
 
     //if the user is entering a new MultiSend item
     string strAddress = params[0].get_str();
-    CBitcoinAddress address(strAddress);
-    if (!address.IsValid())
+    if (!IsValidDestinationString(strAddress))
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid PHR address");
     if (boost::lexical_cast<int>(params[1].get_str()) < 0)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, expected valid percentage");
@@ -2410,11 +2555,11 @@ UniValue listmintedzerocoins(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
 
     CWalletDB walletdb(pwalletMain->strWalletFile);
-    list<CZerocoinMint> listPubCoin = walletdb.ListMintedCoins(true, false, true);
+    set<CMintMeta> setMints = pwalletMain->zphrTracker->ListMints(true, true, true);
 
     UniValue jsonList(UniValue::VARR);
-    for (const CZerocoinMint& pubCoinItem : listPubCoin) {
-        jsonList.push_back(pubCoinItem.GetValue().GetHex());
+    for (const CMintMeta& meta : setMints) {
+        jsonList.push_back(meta.hashPubcoin.GetHex());
     }
 
     return jsonList;
@@ -2430,29 +2575,26 @@ UniValue listzerocoinamounts(const UniValue& params, bool fHelp)
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    if (pwalletMain->IsLocked())
-        throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
+    EnsureWalletIsUnlocked();
 
     CWalletDB walletdb(pwalletMain->strWalletFile);
-    list<CZerocoinMint> listPubCoin = walletdb.ListMintedCoins(true, true, true);
+    set<CMintMeta> setMints = pwalletMain->zphrTracker->ListMints(true, true, true);
 
     std::map<libzerocoin::CoinDenomination, CAmount> spread;
     for (const auto& denom : libzerocoin::zerocoinDenomList)
         spread.insert(std::pair<libzerocoin::CoinDenomination, CAmount>(denom, 0));
-    for (auto& mint : listPubCoin) spread.at(mint.GetDenomination())++;
+    for (auto& meta : setMints) spread.at(meta.denom)++;
 
 
     UniValue jsonList(UniValue::VARR);
-    UniValue val(UniValue::VOBJ);
+    UniValue ret(UniValue::VARR);
     for (const auto& m : libzerocoin::zerocoinDenomList) {
-        stringstream s1;
-        s1 << "Denomination Value " << libzerocoin::ZerocoinDenominationToInt(m);
-        stringstream s2;
-        s2 << spread.at(m) << " coins";
-        val.push_back(Pair(s1.str(),s2.str()));
+        UniValue val(UniValue::VOBJ);
+        val.push_back(Pair("denomination", libzerocoin::ZerocoinDenominationToInt(m)));
+        val.push_back(Pair("mints", (int64_t)spread.at(m)));
+        ret.push_back(val);
     }
-    jsonList.push_back(val);
-    return jsonList;
+    return ret;
 }
 
 UniValue listspentzerocoins(const UniValue& params, bool fHelp)
@@ -2465,8 +2607,7 @@ UniValue listspentzerocoins(const UniValue& params, bool fHelp)
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    if (pwalletMain->IsLocked())
-        throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
+    EnsureWalletIsUnlocked(true);
 
     CWalletDB walletdb(pwalletMain->strWalletFile);
     list<CBigNum> listPubCoin = walletdb.ListSpentCoinsSerial();
@@ -2494,26 +2635,26 @@ UniValue mintzerocoin(const UniValue& params, bool fHelp)
     if(GetAdjustedTime() > GetSporkValue(SPORK_16_ZEROCOIN_MAINTENANCE_MODE))
         throw JSONRPCError(RPC_WALLET_ERROR, "zPHR is currently disabled due to maintenance.");
 
-    if (pwalletMain->IsLocked())
-        throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
+    EnsureWalletIsUnlocked(true);
 
     CAmount nAmount = params[0].get_int() * COIN;
 
     CWalletTx wtx;
-    vector<CZerocoinMint> vMints;
-    string strError = pwalletMain->MintZerocoin(nAmount, wtx, vMints);
+    vector<CDeterministicMint> vDMints;
+    string strError = pwalletMain->MintZerocoin(nAmount, wtx, vDMints);
 
     if (strError != "")
         throw JSONRPCError(RPC_WALLET_ERROR, strError);
 
     UniValue arrMints(UniValue::VARR);
-    for (CZerocoinMint mint : vMints) {
+    for (CDeterministicMint dMint : vDMints) {
         UniValue m(UniValue::VOBJ);
         m.push_back(Pair("txid", wtx.GetHash().ToString()));
-        m.push_back(Pair("value", ValueFromAmount(libzerocoin::ZerocoinDenominationToAmount(mint.GetDenomination()))));
-        m.push_back(Pair("pubcoin", mint.GetValue().GetHex()));
-        m.push_back(Pair("randomness", mint.GetRandomness().GetHex()));
-        m.push_back(Pair("serial", mint.GetSerialNumber().GetHex()));
+        m.push_back(Pair("value", ValueFromAmount(libzerocoin::ZerocoinDenominationToAmount(dMint.GetDenomination()))));
+        m.push_back(Pair("pubcoinhash", dMint.GetPubcoinHash().GetHex()));
+        m.push_back(Pair("serialhash", dMint.GetSerialHash().GetHex()));
+        m.push_back(Pair("seedhash", dMint.GetSeedHash().GetHex()));
+        m.push_back(Pair("count", (int64_t)dMint.GetCount()));
         m.push_back(Pair("time", GetTimeMillis() - nTime));
         arrMints.push_back(m);
     }
@@ -2543,21 +2684,23 @@ UniValue spendzerocoin(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_WALLET_ERROR, "zPHR is currently disabled due to maintenance.");
 
     int64_t nTimeStart = GetTimeMillis();
-    if (pwalletMain->IsLocked())
-        throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
+
+    EnsureWalletIsUnlocked();
 
     CAmount nAmount = AmountFromValue(params[0]);   // Spending amount
     bool fMintChange = params[1].get_bool();        // Mint change to zPHR
     bool fMinimizeChange = params[2].get_bool();    // Minimize change
     int nSecurityLevel = params[3].get_int();       // Security level
 
-    CBitcoinAddress address = CBitcoinAddress(); // Optional sending address. Dummy initialization here.
+    CTxDestination address = CNoDestination(); // Optional sending address. Dummy initialization here.
     if (params.size() == 5) {
         // Destination address was supplied as params[4]. Optional parameters MUST be at the end
         // to avoid type confusion from the JSON interpreter
-        address = CBitcoinAddress(params[4].get_str());
-        if(!address.IsValid())
+        if(!IsValidDestinationString(params[4].get_str())) {
             throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Phore address");
+        } else {
+            address = DecodeDestination(params[4].get_str());
+        }
     }
 
     CWalletTx wtx;
@@ -2598,7 +2741,7 @@ UniValue spendzerocoin(const UniValue& params, bool fHelp)
         if(txout.scriptPubKey.IsZerocoinMint())
             out.push_back(Pair("address", "zerocoinmint"));
         else if(ExtractDestination(txout.scriptPubKey, dest))
-            out.push_back(Pair("address", CBitcoinAddress(dest).ToString()));
+            out.push_back(Pair("address", EncodeDestination(dest)));
         vout.push_back(out);
     }
 
@@ -2618,42 +2761,35 @@ UniValue resetmintzerocoin(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() > 1)
         throw runtime_error(
-            "resetmintzerocoin <extended_search>\n"
+            "resetmintzerocoin\n"
             "Scan the blockchain for all of the zerocoins that are held in the wallet.dat. Update any meta-data that is incorrect.\n"
             "Archive any mints that are not able to be found."
-
-            "\nArguments:\n"
-            "1. \"extended_search\"      (bool, optional) Rescan each block of the blockchain looking for your mints. WARNING - may take 30+ minutes!\n"
 
             + HelpRequiringPassphrase());
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    bool fExtendedSearch = false;
-    if (params.size() == 1)
-        fExtendedSearch = params[0].get_bool();
-
-    CWalletDB walletdb(pwalletMain->strWalletFile);
-    list<CZerocoinMint> listMints = walletdb.ListMintedCoins(false, false, true);
-    vector<CZerocoinMint> vMintsToFind{ std::make_move_iterator(std::begin(listMints)), std::make_move_iterator(std::end(listMints)) };
-    vector<CZerocoinMint> vMintsMissing;
-    vector<CZerocoinMint> vMintsToUpdate;
+    CzPHRTracker* zphrTracker = pwalletMain->zphrTracker.get();
+    set<CMintMeta> setMints = zphrTracker->ListMints(false, false, true);
+    vector<CMintMeta> vMintsToFind(setMints.begin(), setMints.end());
+    vector<CMintMeta> vMintsMissing;
+    vector<CMintMeta> vMintsToUpdate;
 
     // search all of our available data for these mints
-    FindMints(vMintsToFind, vMintsToUpdate, vMintsMissing, fExtendedSearch);
+    FindMints(vMintsToFind, vMintsToUpdate, vMintsMissing);
 
     // update the meta data of mints that were marked for updating
     UniValue arrUpdated(UniValue::VARR);
-    for (CZerocoinMint mint : vMintsToUpdate) {
-        walletdb.WriteZerocoinMint(mint);
-        arrUpdated.push_back(mint.GetValue().GetHex());
+    for (CMintMeta meta : vMintsToUpdate) {
+        zphrTracker->UpdateState(meta);
+        arrUpdated.push_back(meta.hashPubcoin.GetHex());
     }
 
     // delete any mints that were unable to be located on the blockchain
     UniValue arrDeleted(UniValue::VARR);
-    for (CZerocoinMint mint : vMintsMissing) {
-        arrDeleted.push_back(mint.GetValue().GetHex());
-        walletdb.ArchiveMintOrphan(mint);
+    for (CMintMeta meta : vMintsMissing) {
+        zphrTracker->Archive(meta);
+        arrDeleted.push_back(meta.hashPubcoin.GetHex()); 
     }
 
     UniValue obj(UniValue::VOBJ);
@@ -2673,7 +2809,8 @@ UniValue resetspentzerocoin(const UniValue& params, bool fHelp)
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
     CWalletDB walletdb(pwalletMain->strWalletFile);
-    list<CZerocoinMint> listMints = walletdb.ListMintedCoins(false, false, false);
+    CzPHRTracker* zphrTracker = pwalletMain->zphrTracker.get();
+    set<CMintMeta> setMints = zphrTracker->ListMints(false, false, false);
     list<CZerocoinSpend> listSpends = walletdb.ListSpentCoins();
     list<CZerocoinSpend> listUnconfirmedSpends;
 
@@ -2693,10 +2830,9 @@ UniValue resetspentzerocoin(const UniValue& params, bool fHelp)
     UniValue objRet(UniValue::VOBJ);
     UniValue arrRestored(UniValue::VARR);
     for (CZerocoinSpend spend : listUnconfirmedSpends) {
-        for (CZerocoinMint mint : listMints) {
-            if (mint.GetSerialNumber() == spend.GetSerial()) {
-                mint.SetUsed(false);
-                walletdb.WriteZerocoinMint(mint);
+        for (auto& meta : setMints) {
+            if (meta.hashSerial == GetSerialHash(spend.GetSerial())) {
+                zphrTracker->SetPubcoinNotUsed(meta.hashPubcoin);
                 walletdb.EraseZerocoinSpendSerialEntry(spend.GetSerial());
                 RemoveSerialFromDB(spend.GetSerial());
                 UniValue obj(UniValue::VOBJ);
@@ -2722,19 +2858,34 @@ UniValue getarchivedzerocoin(const UniValue& params, bool fHelp)
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
+    EnsureWalletIsUnlocked();
+
     CWalletDB walletdb(pwalletMain->strWalletFile);
     list<CZerocoinMint> listMints = walletdb.ListArchivedZerocoins();
+    list<CDeterministicMint> listDMints = walletdb.ListArchivedDeterministicMints();
 
     UniValue arrRet(UniValue::VARR);
     for (const CZerocoinMint mint : listMints) {
         UniValue objMint(UniValue::VOBJ);
         objMint.push_back(Pair("txid", mint.GetTxHash().GetHex()));
-        objMint.push_back(Pair("denomination", FormatMoney(mint.GetDenominationAsAmount())));
+        objMint.push_back(Pair("denomination", ValueFromAmount(mint.GetDenominationAsAmount())));
         objMint.push_back(Pair("serial", mint.GetSerialNumber().GetHex()));
         objMint.push_back(Pair("randomness", mint.GetRandomness().GetHex()));
         objMint.push_back(Pair("pubcoin", mint.GetValue().GetHex()));
         arrRet.push_back(objMint);
     }
+
+    for (const CDeterministicMint dMint : listDMints) {
+        UniValue objDMint(UniValue::VOBJ);
+        objDMint.push_back(Pair("txid", dMint.GetTxHash().GetHex()));
+        objDMint.push_back(Pair("denomination", ValueFromAmount(libzerocoin::ZerocoinDenominationToAmount(dMint.GetDenomination()))));
+        objDMint.push_back(Pair("serialhash", dMint.GetSerialHash().GetHex()));
+        objDMint.push_back(Pair("pubcoinhash", dMint.GetPubcoinHash().GetHex()));
+        objDMint.push_back(Pair("seedhash", dMint.GetSeedHash().GetHex()));
+        objDMint.push_back(Pair("count", (int64_t)dMint.GetCount()));
+        arrRet.push_back(objDMint);
+    }
+
 
     return arrRet;
 }
@@ -2769,8 +2920,7 @@ UniValue exportzerocoins(const UniValue& params, bool fHelp)
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    if (pwalletMain->IsLocked())
-        throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
+    EnsureWalletIsUnlocked();
 
     CWalletDB walletdb(pwalletMain->strWalletFile);
 
@@ -2778,11 +2928,17 @@ UniValue exportzerocoins(const UniValue& params, bool fHelp)
     libzerocoin::CoinDenomination denomination = libzerocoin::ZQ_ERROR;
     if (params.size() == 2)
         denomination = libzerocoin::IntToZerocoinDenomination(params[1].get_int());
-    list<CZerocoinMint> listMints = walletdb.ListMintedCoins(!fIncludeSpent, false, false);
+
+    CzPHRTracker* zphrTracker = pwalletMain->zphrTracker.get();
+    set<CMintMeta> setMints = zphrTracker->ListMints(!fIncludeSpent, false, false);
 
     UniValue jsonList(UniValue::VARR);
-    for (const CZerocoinMint mint : listMints) {
-        if (denomination != libzerocoin::ZQ_ERROR && denomination != mint.GetDenomination())
+    for (const CMintMeta& meta : setMints) {
+        if (denomination != libzerocoin::ZQ_ERROR && denomination != meta.denom)
+            continue;
+
+        CZerocoinMint mint;
+        if (!pwalletMain->GetMint(meta.hashSerial, mint))
             continue;
 
         UniValue objMint(UniValue::VOBJ);
@@ -2793,6 +2949,10 @@ UniValue exportzerocoins(const UniValue& params, bool fHelp)
         objMint.push_back(Pair("t", mint.GetTxHash().GetHex()));
         objMint.push_back(Pair("h", mint.GetHeight()));
         objMint.push_back(Pair("u", mint.IsUsed()));
+        objMint.push_back(Pair("v", mint.GetVersion()));
+        if (mint.GetVersion() >= 2) {
+            objMint.push_back(Pair("k", HexStr(mint.GetPrivKey())));
+        }
         jsonList.push_back(objMint);
     }
 
@@ -2822,8 +2982,7 @@ UniValue importzerocoins(const UniValue& params, bool fHelp)
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    if(pwalletMain->IsLocked())
-        throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED, "Error: Please enter the wallet passphrase with walletpassphrase first.");
+    EnsureWalletIsUnlocked();
 
     RPCTypeCheck(params, list_of(UniValue::VARR)(UniValue::VOBJ));
     UniValue arrMints = params[0].get_array();
@@ -2843,9 +3002,14 @@ UniValue importzerocoins(const UniValue& params, bool fHelp)
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, d must be positive");
 
         libzerocoin::CoinDenomination denom = libzerocoin::IntToZerocoinDenomination(d);
-        CBigNum bnValue = CBigNum(find_value(o, "p").get_str());
-        CBigNum bnSerial = CBigNum(find_value(o, "s").get_str());
-        CBigNum bnRandom = CBigNum(find_value(o, "r").get_str());
+        
+        CBigNum bnValue = 0;
+        bnValue.SetHex(find_value(o, "p").get_str());
+        CBigNum bnSerial = 0;
+        bnSerial.SetHex(find_value(o, "s").get_str());
+        CBigNum bnRandom = 0;
+        bnRandom.SetHex(find_value(o, "r").get_str());
+
         uint256 txid(find_value(o, "t").get_str());
 
         int nHeight = find_value(o, "h").get_int();
@@ -2853,17 +3017,35 @@ UniValue importzerocoins(const UniValue& params, bool fHelp)
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid parameter, h must be positive");
 
         bool fUsed = find_value(o, "u").get_bool();
-        CZerocoinMint mint(denom, bnValue, bnRandom, bnSerial, fUsed);
+        //Assume coin is version 1 unless it has the version actually set
+        uint8_t nVersion = 1;
+        const UniValue& vVersion = find_value(o, "v");
+        if (vVersion.isNum())
+            nVersion = static_cast<uint8_t>(vVersion.get_int());
+
+        //Set the privkey if applicable
+        CPrivKey privkey;
+        if (nVersion >= libzerocoin::PrivateCoin::PUBKEY_VERSION) {
+            std::string strPrivkey = find_value(o, "k").get_str();
+            CKey key;
+            uint256 nPrivKey(strPrivkey);
+            key.Set(nPrivKey.begin(), nPrivKey.end(), true);
+            if (!key.IsValid())
+                return JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "privkey is not valid");
+            privkey = key.GetPrivKey();
+        }
+
+        CZerocoinMint mint(denom, bnValue, bnRandom, bnSerial, fUsed, nVersion, &privkey);
         mint.SetTxHash(txid);
         mint.SetHeight(nHeight);
-        walletdb.WriteZerocoinMint(mint);
+        pwalletMain->zphrTracker->Add(mint, true);
         count++;
         nValue += libzerocoin::ZerocoinDenominationToAmount(denom);
     }
 
     UniValue ret(UniValue::VOBJ);
     ret.push_back(Pair("added", count));
-    ret.push_back(Pair("value", FormatMoney(nValue)));
+    ret.push_back(Pair("value", ValueFromAmount(nValue)));
     return ret;
 }
 
@@ -2890,12 +3072,11 @@ UniValue reconsiderzerocoins(const UniValue& params, bool fHelp)
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
-    if(pwalletMain->IsLocked())
-        throw JSONRPCError(RPC_WALLET_UNLOCK_NEEDED,
-                           "Error: Please enter the wallet passphrase with walletpassphrase first.");
+    EnsureWalletIsUnlocked();
 
     list<CZerocoinMint> listMints;
-    pwalletMain->ReconsiderZerocoins(listMints);
+    list<CDeterministicMint> listDMints;
+    pwalletMain->ReconsiderZerocoins(listMints, listDMints);
 
     UniValue arrRet(UniValue::VARR);
     for (const CZerocoinMint mint : listMints) {
@@ -2907,5 +3088,245 @@ UniValue reconsiderzerocoins(const UniValue& params, bool fHelp)
         arrRet.push_back(objMint);
     }
 
+    for (const CDeterministicMint dMint : listDMints) {
+         UniValue objMint(UniValue::VOBJ);
+        objMint.push_back(Pair("txid", dMint.GetTxHash().GetHex()));
+        objMint.push_back(Pair("denomination", FormatMoney(libzerocoin::ZerocoinDenominationToAmount(dMint.GetDenomination()))));
+        objMint.push_back(Pair("pubcoinhash", dMint.GetPubcoinHash().GetHex()));
+        objMint.push_back(Pair("height", dMint.GetHeight()));
+        arrRet.push_back(objMint);
+    } 
+
     return arrRet;
+}
+
+// ppcoin: make a public-private key pair
+UniValue makekeypair(const UniValue& params, bool fHelp)
+{
+    if (fHelp || params.size() > 1)
+        throw runtime_error(
+            "makekeypair [prefix]\n"
+            "Make a public/private key pair.\n"
+            "[prefix] is optional preferred prefix for the public key.\n");
+
+    string strPrefix = "";
+    if (params.size() > 0)
+        strPrefix = params[0].get_str();
+ 
+    CKey key;
+    key.MakeNewKey(false);
+
+    UniValue result(UniValue::VOBJ);
+    result.push_back(Pair("PrivateKey", CBitcoinSecret(key).ToString()));
+    result.push_back(Pair("PublicKey", HexStr(key.GetPubKey().Raw())));
+    return result;
+}
+
+UniValue setzphrseed(const UniValue& params, bool fHelp)
+{
+    if(fHelp || params.size() != 1)
+        throw runtime_error(
+            "setzphrseed \"seed\"\n"
+            "\nSet the wallet's deterministic zphr seed to a specific value.\n" +
+            HelpRequiringPassphrase() + "\n"
+
+            "\nArguments:\n"
+            "1. \"seed\"        (string, required) The deterministic zphr seed.\n"
+
+            "\nResult\n"
+            "\"success\" : b,  (boolean) Whether the seed was successfully set.\n"
+
+            "\nExamples\n" +
+            HelpExampleCli("setzphrseed", "63f793e7895dd30d99187b35fbfb314a5f91af0add9e0a4e5877036d1e392dd5") +
+            HelpExampleRpc("setzphrseed", "63f793e7895dd30d99187b35fbfb314a5f91af0add9e0a4e5877036d1e392dd5"));
+
+    EnsureWalletIsUnlocked();
+
+    uint256 seed;
+    seed.SetHex(params[0].get_str());
+
+    CzPHRWallet* zwallet = pwalletMain->getZWallet();
+    bool fSuccess = zwallet->SetMasterSeed(seed, true);
+    if (fSuccess)
+        zwallet->SyncWithChain();
+
+    UniValue ret(UniValue::VOBJ);
+    ret.push_back(Pair("success", fSuccess));
+
+    return ret;
+}
+
+UniValue getzphrseed(const UniValue& params, bool fHelp)
+{
+    if(fHelp || !params.empty())
+        throw runtime_error(
+            "getzphrseed\n"
+            "\nCheck archived zPHR list to see if any mints were added to the blockchain.\n" +
+            HelpRequiringPassphrase() + "\n"
+
+            "\nResult\n"
+            "\"seed\" : s,  (string) The deterministic zPHR seed.\n"
+
+            "\nExamples\n" +
+            HelpExampleCli("getzphrseed", "") + HelpExampleRpc("getzphrseed", ""));
+
+    EnsureWalletIsUnlocked();
+
+    CzPHRWallet* zwallet = pwalletMain->getZWallet();
+    uint256 seed = zwallet->GetMasterSeed();
+
+    UniValue ret(UniValue::VOBJ);
+    ret.push_back(Pair("seed", seed.GetHex()));
+
+    return ret;
+}
+
+UniValue generatemintlist(const UniValue& params, bool fHelp)
+{
+    if(fHelp || params.size() != 2)
+        throw runtime_error(
+            "generatemintlist\n"
+            "\nShow mints that are derived from the deterministic zPHR seed.\n" +
+            HelpRequiringPassphrase() + "\n"
+
+            "\nArguments\n"
+            "1. \"count\"  : n,  (numeric) Which sequential zPHR to start with.\n"
+            "2. \"range\"  : n,  (numeric) How many zPHR to generate.\n"
+
+            "\nResult:\n"
+            "[\n"
+            "  {\n"
+            "    \"count\": n,          (numeric) Deterministic Count.\n"
+            "    \"value\": \"xxx\",    (string) Hex encoded pubcoin value.\n"
+            "    \"randomness\": \"xxx\",   (string) Hex encoded randomness.\n"
+            "    \"serial\": \"xxx\"        (string) Hex encoded Serial.\n"
+            "  }\n"
+            "  ,...\n"
+            "]\n"
+
+            "\nExamples\n" +
+            HelpExampleCli("generatemintlist", "1, 100") + HelpExampleRpc("generatemintlist", "1, 100"));
+
+    EnsureWalletIsUnlocked();
+
+    int nCount = params[0].get_int();
+    int nRange = params[1].get_int();
+    CzPHRWallet* zwallet = pwalletMain->zwalletMain;
+
+    UniValue arrRet(UniValue::VARR);
+    for (int i = nCount; i < nCount + nRange; i++) {
+        libzerocoin::CoinDenomination denom = libzerocoin::CoinDenomination::ZQ_ONE;
+        libzerocoin::PrivateCoin coin(Params().Zerocoin_Params(), denom, false);
+        CDeterministicMint dMint;
+        zwallet->GenerateMint(i, denom, coin, dMint);
+        UniValue obj(UniValue::VOBJ);
+        obj.push_back(Pair("count", i));
+        obj.push_back(Pair("value", coin.getPublicCoin().getValue().GetHex()));
+        obj.push_back(Pair("randomness", coin.getRandomness().GetHex()));
+        obj.push_back(Pair("serial", coin.getSerialNumber().GetHex()));
+        arrRet.push_back(obj);
+    }
+
+    return arrRet;
+}
+
+UniValue dzphrstate(const UniValue& params, bool fHelp) {
+    if (fHelp || params.size() != 0)
+        throw runtime_error(
+                "dzphrstate\n"
+                        "\nThe current state of the mintpool of the deterministic zPHR wallet.\n" +
+                HelpRequiringPassphrase() + "\n"
+
+                        "\nExamples\n" +
+                HelpExampleCli("mintpoolstatus", "") + HelpExampleRpc("mintpoolstatus", ""));
+
+    CzPHRWallet* zwallet = pwalletMain->zwalletMain;
+    UniValue obj(UniValue::VOBJ);
+    int nCount, nCountLastUsed;
+    zwallet->GetState(nCount, nCountLastUsed);
+    obj.push_back(Pair("dzphr_count", nCount));
+    obj.push_back(Pair("mintpool_count", nCountLastUsed));
+
+    return obj;
+}
+
+
+void static SearchThread(CzPHRWallet* zwallet, int nCountStart, int nCountEnd)
+{
+    LogPrintf("%s: start=%d end=%d\n", __func__, nCountStart, nCountEnd);
+    CWalletDB walletDB(pwalletMain->strWalletFile);
+    try {
+        uint256 seedMaster = zwallet->GetMasterSeed();
+        uint256 hashSeed = Hash(seedMaster.begin(), seedMaster.end());
+        for(int i = nCountStart; i < nCountEnd; i++) {
+            boost::this_thread::interruption_point();
+            CDataStream ss(SER_GETHASH, 0);
+            ss << seedMaster << i;
+            uint512 zerocoinSeed = Hash512(ss.begin(), ss.end());
+
+            CBigNum bnValue;
+            CBigNum bnSerial;
+            CBigNum bnRandomness;
+            CKey key;
+            zwallet->SeedToZPHR(zerocoinSeed, bnValue, bnSerial, bnRandomness, key);
+
+            uint256 hashPubcoin = GetPubCoinHash(bnValue);
+            zwallet->AddToMintPool(make_pair(hashPubcoin, i), true);
+            walletDB.WriteMintPoolPair(hashSeed, hashPubcoin, i);
+        }
+    } catch (std::exception& e) {
+        LogPrintf("SearchThread() exception");
+    } catch (...) {
+        LogPrintf("SearchThread() exception");
+    }
+}
+
+UniValue searchdzphr(const UniValue& params, bool fHelp)
+{
+    if(fHelp || params.size() != 3)
+        throw runtime_error(
+            "searchdzphr\n"
+            "\nMake an extended search for deterministically generated zPHR that have not yet been recognized by the wallet.\n" +
+            HelpRequiringPassphrase() + "\n"
+
+            "\nArguments\n"
+            "1. \"count\"       (numeric) Which sequential zPHR to start with.\n"
+            "2. \"range\"       (numeric) How many zPHR to generate.\n"
+            "3. \"threads\"     (numeric) How many threads should this operation consume.\n"
+
+            "\nExamples\n" +
+            HelpExampleCli("searchdzphr", "1, 100, 2") + HelpExampleRpc("searchdzphr", "1, 100, 2"));
+
+    EnsureWalletIsUnlocked();
+
+    int nCount = params[0].get_int();
+    if (nCount < 0)
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "Count cannot be less than 0");
+
+    int nRange = params[1].get_int();
+    if (nRange < 1)
+        throw JSONRPCError(RPC_INVALID_PARAMETER, "Range has to be at least 1");
+
+    int nThreads = params[2].get_int();
+
+    CzPHRWallet* zwallet = pwalletMain->zwalletMain;
+
+    boost::thread_group* dzphrThreads = new boost::thread_group();
+    int nRangePerThread = nRange / nThreads;
+
+    int nPrevThreadEnd = nCount - 1;
+    for (int i = 0; i < nThreads; i++) {
+        int nStart = nPrevThreadEnd + 1;;
+        int nEnd = nStart + nRangePerThread;
+        nPrevThreadEnd = nEnd;
+        dzphrThreads->create_thread(boost::bind(&SearchThread, zwallet, nStart, nEnd));
+    }
+
+    dzphrThreads->join_all();
+
+    zwallet->RemoveMintsFromPool(pwalletMain->zphrTracker->GetSerialHashes());
+    zwallet->SyncWithChain(false);
+
+    //todo: better response
+    return "done";
 }
