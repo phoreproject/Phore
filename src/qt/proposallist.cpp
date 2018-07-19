@@ -397,7 +397,7 @@ void ProposalList::vote_click_handler(const std::string voteString)
 	if (strVote == "no") nVote = VOTE_NO;
 			
 			
-    BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+    for (const auto& mne : masternodeConfig.getEntries()) {
             std::string errorMessage;
             std::vector<unsigned char> vchMasterNodeSignature;
             std::string strMasterNodeSignMessage;
