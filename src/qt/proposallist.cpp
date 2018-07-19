@@ -391,7 +391,7 @@ void ProposalList::vote_click_handler(const std::string voteString)
     int success = 0;
     int failed = 0;
 	
-	std::string strVote = 0;		
+	std::string strVote = voteString;		
 	int nVote = VOTE_ABSTAIN;
 	if (strVote == "yes") nVote = VOTE_YES;
 	if (strVote == "no") nVote = VOTE_NO;
