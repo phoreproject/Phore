@@ -8,7 +8,6 @@
 #include <QStyle>
 #include <QLineEdit>
 #include <QMessageBox>
-#include <boost/lexical_cast.hpp>
 
 
 MultiSendDialog::MultiSendDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
@@ -93,7 +92,7 @@ void MultiSendDialog::on_viewButton_clicked()
         }
         strMultiSendPrint += pMultiSend.first.c_str();
         strMultiSendPrint += " - ";
-        strMultiSendPrint += boost::lexical_cast<string>(pMultiSend.second);
+        strMultiSendPrint += std::to_string(pMultiSend.second);
         strMultiSendPrint += "% \n";
     }
     ui->message->setProperty("status", "ok");
@@ -142,7 +141,7 @@ void MultiSendDialog::on_addButton_clicked()
         pMultiSend = pwalletMain->vMultiSend[i];
         strMultiSendPrint += pMultiSend.first.c_str();
         strMultiSendPrint += " - ";
-        strMultiSendPrint += boost::lexical_cast<string>(pMultiSend.second);
+        strMultiSendPrint += std::to_string(pMultiSend.second);
         strMultiSendPrint += "% \n";
     }
 
