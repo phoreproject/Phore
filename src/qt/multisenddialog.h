@@ -16,7 +16,7 @@ class MultiSendDialog : public QDialog
     void updateCheckBoxes();
 
 public:
-    explicit MultiSendDialog(QWidget* parent = 0);
+    explicit MultiSendDialog(QWidget* parent = nullptr);
     ~MultiSendDialog();
     void setModel(WalletModel* model);
     void setAddress(const QString& address);
@@ -34,4 +34,4 @@ private:
     WalletModel* model;
 };
 
-#endif // MULTISENDDIALOG_H
+#endif // PIVX_QT_MULTISENDDIALOG_H

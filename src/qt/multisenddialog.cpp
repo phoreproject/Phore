@@ -11,14 +11,13 @@
 
 MultiSendDialog::MultiSendDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                                     ui(new Ui::MultiSendDialog),
-                                                    model(0)
+                                                    model(nullptr)
 {
     ui->setupUi(this);
 
     ui->multiSendPercentEdit->setAttribute(Qt::WA_MacShowFocusRect, 0);
     ui->multiSendAddressEdit->setAttribute(Qt::WA_MacShowFocusRect, 0);
     ui->labelAddressLabelEdit->setAttribute(Qt::WA_MacShowFocusRect, 0);
-    
 
     updateCheckBoxes();
 }
@@ -58,7 +57,7 @@ void MultiSendDialog::on_addressBookButton_clicked()
         if (dlg.exec())
             setAddress(dlg.getReturnValue(), ui->multiSendAddressEdit);
 
-        //Update the label text box with the label in the addressbook
+        // Update the label text box with the label in the addressbook
         QString associatedLabel = model->getAddressTableModel()->labelForAddress(dlg.getReturnValue());
         if (!associatedLabel.isEmpty())
             ui->labelAddressLabelEdit->setText(associatedLabel);
