@@ -1,14 +1,13 @@
 #include "multisenddialog.h"
+#include "ui_multisenddialog.h"
+
 #include "addressbookpage.h"
 #include "addresstablemodel.h"
 #include "base58.h"
 #include "init.h"
-#include "ui_multisenddialog.h"
 #include "walletmodel.h"
-#include <QStyle>
-#include <QLineEdit>
-#include <QMessageBox>
 
+#include <QStyle>
 
 MultiSendDialog::MultiSendDialog(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                                     ui(new Ui::MultiSendDialog),
