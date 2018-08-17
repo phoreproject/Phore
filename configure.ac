@@ -1224,4 +1224,6 @@ echo "  CXX           = $CXX"
 echo "  CXXFLAGS      = $CXXFLAGS"
 echo "  LDFLAGS       = $LDFLAGS"
 echo "  ARFLAGS       = $ARFLAGS"
+echo "  PIC_FLAGS     = $PIC_FLAGS"
+echo "  QT_PIE_FLAGS  = $QT_PIE_FLAGS"
 echo
