@@ -1,8 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Copyright (c) 2016 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+export LC_ALL=C
 set -e
 
 INPUTFILE="Xcode_7.3.1.dmg"
@@ -31,4 +32,3 @@ echo "Building ${SDKNAME}.tar.gz ..."
 MTIME="$(istat "${HFSFILENAME}" "${SDKDIRINODE}" | perl -nle 'm/Content Modified:\s+(.*?)\s\(/ && print $1')"
 find "${SDKNAME}" | sort | tar --no-recursion --mtime="${MTIME}" --mode='u+rw,go+r-w,a+X' --owner=0 --group=0 -c -T - | gzip -9n > "${SDKNAME}.tar.gz"
 echo 'All done!'
-
