@@ -544,9 +544,10 @@ UniValue signmessage(const UniValue& params, bool fHelp)
 UniValue getreceivedbyaddress(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 2)
-        throw runtime_error(
+        throw std::runtime_error(
             "getreceivedbyaddress \"phoreaddress\" ( minconf )\n"
             "\nReturns the total amount received by the given phoreaddress in transactions with at least minconf confirmations.\n"
+
             "\nArguments:\n"
             "1. \"phoreaddress\"  (string, required) The phore address for transactions.\n"
             "2. minconf             (numeric, optional, default=1) Only include transactions confirmed at least this many times.\n"
@@ -568,7 +569,7 @@ UniValue getreceivedbyaddress(const UniValue& params, bool fHelp)
     CTxDestination address = DecodeDestination(params[0].get_str());
     CScript scriptPubKey = GetScriptForDestination(address);
     if (!IsMine(*pwalletMain, scriptPubKey))
-        return (double)0.0;
+        throw JSONRPCError(RPC_WALLET_ERROR, "Address not found in wallet");
 
     // Minimum confirmations
     int nMinDepth = 1;
@@ -577,7 +578,7 @@ UniValue getreceivedbyaddress(const UniValue& params, bool fHelp)
 
     // Tally
     CAmount nAmount = 0;
-    for (map<uint256, CWalletTx>::iterator it = pwalletMain->mapWallet.begin(); it != pwalletMain->mapWallet.end(); ++it) {
+    for (std::map<uint256, CWalletTx>::iterator it = pwalletMain->mapWallet.begin(); it != pwalletMain->mapWallet.end(); ++it) {
         const CWalletTx& wtx = (*it).second;
         if (wtx.IsCoinBase() || !IsFinalTx(wtx))
             continue;
