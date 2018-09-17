@@ -524,7 +524,7 @@ UniValue gettxout(const UniValue& params, bool fHelp)
 
 UniValue verifychain(const UniValue& params, bool fHelp)
 {
-    if (fHelp || params.size() > 2)
+    if (fHelp || params.size() > 1)
         throw runtime_error(
             "verifychain ( numblocks )\n"
             "\nVerifies blockchain database.\n"
@@ -540,7 +540,7 @@ UniValue verifychain(const UniValue& params, bool fHelp)
     int nCheckLevel = 4;
     int nCheckDepth = GetArg("-checkblocks", 288);
     if (params.size() > 0)
-        nCheckDepth = params[1].get_int();
+        nCheckDepth = params[0].get_int();
 
 
     fVerifyingBlocks = true;
