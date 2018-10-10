@@ -210,6 +210,7 @@ UniValue listmasternodes(const UniValue& params, bool fHelp)
             "    \"rank\": n,           (numeric) Masternode Rank (or 0 if not enabled)\n"
             "    \"txhash\": \"hash\",    (string) Collateral transaction hash\n"
             "    \"outidx\": n,         (numeric) Collateral transaction output index\n"
+            "    \"pubkey\": \"key\",   (string) Masternode public key used for message broadcasting\n"
             "    \"status\": s,         (string) Status (ENABLED/EXPIRED/REMOVE/etc)\n"
             "    \"addr\": \"addr\",      (string) Masternode phore address\n"
             "    \"version\": v,        (numeric) Masternode protocol version\n"
@@ -255,6 +256,7 @@ UniValue listmasternodes(const UniValue& params, bool fHelp)
             obj.push_back(Pair("network", strNetwork));
             obj.push_back(Pair("txhash", strTxHash));
             obj.push_back(Pair("outidx", (uint64_t)oIdx));
+            obj.push_back(Pair("pubkey", HexStr(mn->pubKeyMasternode)));
             obj.push_back(Pair("status", strStatus));
             obj.push_back(Pair("addr", EncodeDestination(mn->pubKeyCollateralAddress.GetID())));
             obj.push_back(Pair("version", mn->protocolVersion));
