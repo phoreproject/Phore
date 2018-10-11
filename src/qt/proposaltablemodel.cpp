@@ -2,6 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+<cmath>
+
 #include "proposaltablemodel.h"
 
 #include "guiconstants.h"
@@ -46,7 +48,7 @@ ProposalTableModel::ProposalTableModel( QObject *parent):
         QAbstractTableModel(parent)
 
 {
-    columns << tr("Proposal") << tr("Amount") << tr("Start Date") << tr("End Date") << tr("Yes") << tr("No") << tr("Abstain") << tr("Percentage");
+    columns << tr("Proposal") << tr("Amount") << tr("Start Block") << tr("End Block") << tr("Yes") << tr("No") << tr("Abstain") << tr("Votes Needed");
     
     networkManager = new QNetworkAccessManager(this);
 
@@ -111,10 +113,10 @@ void ProposalTableModel::refreshProposals() {
 		UniValue bObj(UniValue::VOBJ);
 		budgetToST(pbudgetProposal, bObj);		
 		
-        int percentage = 0;
+        int neededYesVotes = 0;
 		
-        if(mnCount > 0) percentage = round(pbudgetProposal->GetYeas() * 100 / mnCount);
-
+        if(mnCount > 0) neededYesVotes = ceil(mnCount / 10 - (pbudgetProposal->GetYeas() - pbudgetProposal->GetNays()));
+        if(neededYesVotes < 0) neededYesVotes = 0
 		
         proposalRecords.append(new ProposalRecord(
                         QString::fromStdString(pbudgetProposal->GetHash().ToString()),
@@ -126,7 +128,7 @@ void ProposalTableModel::refreshProposals() {
                         (long long)pbudgetProposal->GetNays(),
                         (long long)pbudgetProposal->GetAbstains(),
                         (long long)pbudgetProposal->GetAmount(),
-                        (long long)percentage));
+                        (long long)neededYesVotes));
     }
     endResetModel();
 }
@@ -170,8 +172,8 @@ QVariant ProposalTableModel::data(const QModelIndex &index, int role) const
             return (long long)(rec->start_epoch);
         case EndDate:
             return (long long)(rec->end_epoch);
-        case Percentage:
-            return QString("%1\%").arg(rec->percentage);
+        case neededYesVotes:
+            return QString("%1\%").arg(rec->neededYesVotes);
         case Amount:
             return BitcoinUnits::format(BitcoinUnits::PHR, rec->amount);
         }
@@ -193,15 +195,15 @@ QVariant ProposalTableModel::data(const QModelIndex &index, int role) const
             return (long long)(rec->abstainVotes);
         case Amount:
             return qint64(rec->amount);
-        case Percentage:
+        case NeededYesVotes:
             return (long long)(rec->percentage);
         }
         break;
     case Qt::TextAlignmentRole:
         return column_alignments[index.column()];
     case Qt::ForegroundRole:
-        if(index.column() == Percentage) {
-            if(rec->percentage < 10) {
+        if(index.column() == NeededYesVotes) {
+            if(rec->neededYesVotes < 10) {
                 return COLOR_NEGATIVE;
             } else {
                 return QColor(23, 168, 26);
@@ -224,8 +226,8 @@ QVariant ProposalTableModel::data(const QModelIndex &index, int role) const
         return (long long)(rec->noVotes);
     case AbstainVotesRole:
         return (long long)(rec->abstainVotes);
-    case PercentageRole:
-        return (long long)(rec->percentage);
+    case NeededYesVotesRole:
+        return (long long)(rec->neededYesVotes);
     case ProposalUrlRole:
         return rec->url;
     case ProposalHashRole:
@@ -264,8 +266,8 @@ QVariant ProposalTableModel::headerData(int section, Qt::Orientation orientation
                 return tr("Obtained abstain votes.");
             case Amount:
                 return tr("Proposed amount.");
-            case Percentage:
-                return tr("Current vote percentage.");
+            case NeededYesVotes:
+                return tr("Current vote neededYesVotes.");
             }
         }
     }
