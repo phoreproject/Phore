@@ -16,7 +16,7 @@ script: |
   mkdir -p ${WRAP_DIR}
   export PATH=`pwd`:$PATH
   FAKETIME_PROGS="dmg genisoimage"
-
+  
   # Create global faketime wrappers
   for prog in ${FAKETIME_PROGS}; do
     echo '#!/bin/bash' > ${WRAP_DIR}/${prog}
@@ -26,12 +26,12 @@ script: |
     echo "\$REAL \$@" >> $WRAP_DIR/${prog}
     chmod +x ${WRAP_DIR}/${prog}
   done
-
+  
   UNSIGNED=phore-osx-unsigned.tar.gz
   SIGNED=phore-osx-signed.dmg
-
+  
   tar -xf ${UNSIGNED}
   OSX_VOLNAME="$(cat osx_volname)"
   ./detached-sig-apply.sh ${UNSIGNED} signature/osx
-  ${WRAP_DIR}/genisoimage -no-cache-inodes -D -l -probe -V "Phore-Qt" -no-pad -r -dir-mode 0755 -apple -o uncompressed.dmg signed-app
+  ${WRAP_DIR}/genisoimage -no-cache-inodes -D -l -probe -V "${OSX_VOLNAME}" -no-pad -r -dir-mode 0755 -apple -o uncompressed.dmg signed-app
   ${WRAP_DIR}/dmg dmg uncompressed.dmg ${OUTDIR}/${SIGNED}

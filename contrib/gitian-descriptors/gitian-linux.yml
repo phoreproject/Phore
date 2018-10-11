@@ -27,7 +27,6 @@ packages:
 - "bsdmainutils"
 - "ca-certificates"
 - "python"
-reference_datetime: "2015-06-01 00:00:00"
 remotes:
 - "url": "https://github.com/phoreproject/phore.git"
   "dir": "phore"
@@ -157,6 +156,17 @@ script: |
 
     CONFIG_SITE=${BASEPREFIX}/${i}/share/config.site ./configure --prefix=/ --disable-ccache --disable-maintainer-mode --disable-dependency-tracking ${CONFIGFLAGS} CFLAGS="${HOST_CFLAGS}" CXXFLAGS="${HOST_CXXFLAGS}" LDFLAGS="${HOST_LDFLAGS}"
     make ${MAKEOPTS}
+    make ${MAKEOPTS} -C src check-security
+
+    #TODO: This is a quick hack that disables symbol checking for arm.
+    #      Instead, we should investigate why these are popping up.
+    #      For aarch64, we'll need to bump up the min GLIBC version, as the abi
+    #      support wasn't introduced until 2.17.
+    case $i in
+       aarch64-*) : ;;
+       arm-*) : ;;
+       *) make ${MAKEOPTS} -C src check-symbols ;;
+    esac
 
     make install DESTDIR=${INSTALLPATH}
     cd installed
@@ -164,12 +174,12 @@ script: |
     find . -name "lib*.a" -delete
     rm -rf ${DISTNAME}/lib/pkgconfig
     find ${DISTNAME}/bin -type f -executable -exec ../contrib/devtools/split-debug.sh {} {} {}.dbg \;
-    # find ${DISTNAME}/lib -type f -exec ../contrib/devtools/split-debug.sh {} {} {}.dbg \;
+    find ${DISTNAME}/lib -type f -exec ../contrib/devtools/split-debug.sh {} {} {}.dbg \;
     find ${DISTNAME} -not -name "*.dbg" | sort | tar --no-recursion --mode='u+rw,go+r-w,a+X' --owner=0 --group=0 -c -T - | gzip -9n > ${OUTDIR}/${DISTNAME}-${i}.tar.gz
     find ${DISTNAME} -name "*.dbg" | sort | tar --no-recursion --mode='u+rw,go+r-w,a+X' --owner=0 --group=0 -c -T - | gzip -9n > ${OUTDIR}/${DISTNAME}-${i}-debug.tar.gz
     cd ../../
     rm -rf distsrc-${i}
   done
   mkdir -p $OUTDIR/src
-  mkdir -p $OUTDIR/src
   mv $SOURCEDIST $OUTDIR/src
+
