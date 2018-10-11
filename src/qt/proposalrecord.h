@@ -17,7 +17,7 @@ class ProposalRecord
 {
 public:
     ProposalRecord():
-            hash(""), start_epoch(0), end_epoch(0), url(""), name(""), yesVotes(0), noVotes(0), abstainVotes(0), amount(0), percentage(0)
+            hash(""), start_epoch(0), end_epoch(0), url(""), name(""), yesVotes(0), noVotes(0), abstainVotes(0), amount(0), neededYesVotes(0)
     {
     }
 
@@ -26,7 +26,7 @@ public:
                 const CAmount& yesVotes, const CAmount& noVotes, const CAmount& abstainVotes,
                 const CAmount& amount, const CAmount& percentage):
             hash(hash), start_epoch(start_epoch), end_epoch(end_epoch), url(url), name(name), yesVotes(yesVotes), noVotes(noVotes),
-            abstainVotes(abstainVotes), amount(amount), percentage(percentage)
+            abstainVotes(abstainVotes), amount(amount), neededYesVotes(neededYesVotes)
     {
     }
 
@@ -39,7 +39,7 @@ public:
     CAmount noVotes;
     CAmount abstainVotes;
     CAmount amount;
-    CAmount percentage;
+    CAmount neededYesVotes;
 };
 
 #endif // BITCOIN_QT_PROPOSALRECORD_H
