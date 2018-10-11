@@ -56,7 +56,7 @@ public:
         YES_VOTES_COLUMN_WIDTH = 100,
         NO_VOTES_COLUMN_WIDTH = 100,
         ABSTAIN_COLUMN_WIDTH = 10,
-        PERCENTAGE_COLUMN_WIDTH = 110,
+        NEEDEDYESVOTES_COLUMN_WIDTH = 110,
         MINIMUM_COLUMN_WIDTH = 23
     };
 
@@ -75,7 +75,7 @@ private:
     QLineEdit *noVotesWidget;
     QLineEdit *abstainVotesWidget;
     QLineEdit *amountWidget;
-    QLineEdit *percentageWidget;
+    QLineEdit *neededYesVotesWidget;
     QLabel *secondsLabel;
 
     QMenu *contextMenu;
@@ -116,7 +116,7 @@ public Q_SLOTS:
     void changedYesVotes(const QString &minYesVotes);
     void changedNoVotes(const QString &minNoVotes);
     void changedAbstainVotes(const QString &minAbstainVotes);
-    void changedPercentage(const QString &minPercentage);
+    void changedNeededYesVotes(const QString &minNeededYesVotes);
     void changedAmount(const QString &minAmount);
 
 };
