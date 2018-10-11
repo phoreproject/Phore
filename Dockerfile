@@ -11,14 +11,12 @@ ENV RANDOM_PASS `pwgen -Bs1 12`
 ENV RPC_PASSWORD ${RPC_PASSWORD:-$RANDOM_PASS}
 
 # Build the project
-# TODO: Add proper release information
-#RUN wget https://github.com/odinblockchain/odin-core/releases/download/v1.2.0.0/odin-1.1.0-x86_64-linux-gnu.tar.gz -O odin-1.1.0.tar.gz
-#RUN tar -xvf odin-1.1.0.tar.gz
-#RUN mkdir -p /root/.odin/
-#RUN echo "rpcuser=$RPC_USER\nrpcpassword=$RPC_PASSWORD" > /root/.odin/odin.conf
+RUN wget https://github.com/odinblockchain/Odin/releases/download/v1.4.2/odin-1.4.2-x86_64-linux-gnu.tar.gz -O odin-1.4.2.tar.gz
+RUN tar -xvf odin-1.4.2.tar.gz
+RUN mkdir -p /root/.odin/
+RUN echo "rpcuser=$RPC_USER\nrpcpassword=$RPC_PASSWORD" > /root/.odin/odin.conf
 
-#EXPOSE 8332 8333 18332 18333
+EXPOSE 22100 22101
 
-#WORKDIR /odin-1.1.0/bin
-#CMD ["/odin-1.1.0/bin/odind"]
-
+WORKDIR /odin-1.4.2/bin
+CMD ["/odin-1.4.2/bin/odind"]
