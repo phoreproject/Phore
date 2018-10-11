@@ -5,6 +5,7 @@
 https://github.com/odinblockchain/wiki/wiki
 
 
+
 ## Community
 ### Discord
 https://discord.me/odinblockchain
@@ -17,6 +18,7 @@ https://odinblockchain.org
 
 ### BCT Thread
 https://bitcointalk.org/index.php?topic=4798428
+
 
 
 ## Technical information
