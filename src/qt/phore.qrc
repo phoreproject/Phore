@@ -71,8 +71,8 @@
     <qresource prefix="/images">
         <file alias="about">res/images/about.png</file>
         <file alias="phore_logo_horizontal">res/images/phore_logo_horizontal.png</file>
-        <file alias="downArrow">res/images/downArrow.png</file>
-        <file alias="upArrow">res/images/upArrow.png</file>
+        <file alias="downArrow">res/images/downArrow.svg</file>
+        <file alias="upArrow">res/images/upArrow.svg</file>
         <file alias="downArrow_small">res/images/downArrow_small_dark.png</file>
         <file alias="downArrow_small_white">res/images/downArrow_small.png</file>
         <file alias="upArrow_small">res/images/upArrow_small_dark.png</file>
@@ -82,7 +82,7 @@
         <file alias="qtreeview_selected">res/images/qtreeview_selected.png</file>
         <file alias="walletFrame_bg">res/images/walletFrame_bg.png</file>
         <file alias="walletFrame">res/images/walletFrame.png</file>
-        <file alias="splash">res/images/splash.png</file>
+        <file alias="splash">res/images/splash.svg</file>
         <file alias="splash_testnet">res/images/splash_testnet.png</file>
     </qresource>
     <qresource prefix="/movies">
