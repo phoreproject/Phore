@@ -249,7 +249,6 @@ RES_ICONS = \
   qt/res/icons/receive.png \
   qt/res/icons/receive_off.png \
   qt/res/icons/receive_dark.png \
-  qt/res/icons/downArrow.png \
   qt/res/icons/privacy.png \
   qt/res/icons/privacy_off.png \
   qt/res/icons/remove.png \
@@ -354,6 +353,7 @@ RES_IMAGES = \
   qt/res/images/splash.png \
   qt/res/images/splash_testnet.png \
   qt/res/images/phore_logo_horizontal.png \
+  qt/res/images/downArrow.png \
   qt/res/images/downArrow_dark.png \
   qt/res/images/downArrow_small_dark.png \
   qt/res/images/downArrow_small.png \
