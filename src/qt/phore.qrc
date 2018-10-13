@@ -122,12 +122,4 @@
         <file alias="spinner-033">res/movies/spinner-001.svg</file>
         <file alias="spinner-034">res/movies/spinner-002.svg</file>
     </qresource>
-    <qresource prefix="/fonts">
-        <file alias="Hind-Bold">res/fonts/Hind-Bold.ttf</file>
-        <file alias="Hind-Light">res/fonts/Hind-Light.ttf</file>
-        <file alias="Hind-Medium">res/fonts/Hind-Medium.ttf</file>
-        <file alias="Hind-Regular">res/fonts/Hind-Regular.ttf</file>
-        <file alias="Hind-SemiBold">res/fonts/Hind-SemiBold.ttf</file>
-        <file alias="Montserrat-Bold">res/fonts/Montserrat-Bold.ttf</file>
-    </qresource>
 </RCC>
