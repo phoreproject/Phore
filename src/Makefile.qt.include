@@ -261,13 +261,13 @@ RES_ICONS = \
   qt/res/icons/staking_inactive.svg \
   qt/res/icons/synced.svg \
   qt/res/icons/trade.png \
-  qt/res/icons/transaction0.png \
-  qt/res/icons/transaction2.png \
-  qt/res/icons/transaction_conflicted.png \
+  qt/res/icons/transaction0.svg \
+  qt/res/icons/transaction2.svg \
+  qt/res/icons/transaction_conflicted.svg \
   qt/res/icons/tx_inout.svg \
   qt/res/icons/tx_input.svg \
   qt/res/icons/tx_output.svg \
-  qt/res/icons/tx_mined.svg \
+  qt/res/icons/tx_masternode.svg \
   qt/res/icons/unit_phore.svg \
   qt/res/icons/unit_mphore.svg \
   qt/res/icons/unit_uphore.svg \
