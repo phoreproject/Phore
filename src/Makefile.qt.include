@@ -226,7 +226,7 @@ RES_ICONS = \
   qt/res/icons/debugwindow.png \
   qt/res/icons/proposal.svg \
   qt/res/icons/proposal_off.svg \
-  qt/res/icons/edit.svg \
+  qt/res/icons/edit.png \
   qt/res/icons/editcopy.svg \
   qt/res/icons/editpaste.svg \
   qt/res/icons/explorer.png \
