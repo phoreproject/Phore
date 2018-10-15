@@ -27,7 +27,6 @@
         <file alias="receiving_addresses_off">res/icons/receive_off.svg</file>
         <file alias="proposal">res/icons/proposal.svg</file>
         <file alias="proposal_off">res/icons/proposal_off.svg</file>
-        <file alias="receiving_addresses_dark">res/icons/receive_dark.png</file>
         <file alias="privacy">res/icons/privacy.svg</file>
         <file alias="privacy_off">res/icons/privacy_off.svg</file>
         <file alias="editpaste">res/icons/editpaste.svg</file>
