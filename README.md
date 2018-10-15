@@ -1,5 +1,5 @@
 # ODIN Core
-[![Build Status](https://travis-ci.org/odinblockchain/Odin.svg?branch=travis)](https://travis-ci.org/odinblockchain/Odin)
+[![Build Status](https://travis-ci.org/odinblockchain/Odin.svg?branch=master)](https://travis-ci.org/odinblockchain/Odin)
 
 ## Official Wiki knowledgebase
 https://github.com/odinblockchain/wiki/wiki
