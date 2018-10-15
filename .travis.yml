@@ -21,8 +21,6 @@ env:
     - SDK_URL=https://bitcoincore.org/depends-sources/sdks
     - WINEDEBUG=fixme-all
   matrix:
-# ARM
-    - HOST=arm-linux-gnueabihf PACKAGES="g++-arm-linux-gnueabihf" CHECK_DOC=1 CHECK_LOGPRINT=1 GOAL="install" BITCOIN_CONFIG="--enable-glibc-back-compat --enable-reduce-exports"
 # Win32
     - HOST=i686-w64-mingw32 DPKG_ADD_ARCH="i386" DEP_OPTS="NO_QT=1" PACKAGES="python3 nsis g++-mingw-w64-i686 wine1.6 bc" RUN_TESTS=true GOAL="install" BITCOIN_CONFIG="--enable-reduce-exports"
 # 32-bit + dash
@@ -68,6 +66,11 @@ script:
 after_script:
     - echo $TRAVIS_COMMIT_RANGE
     - echo $TRAVIS_COMMIT_LOG
-notifications:
-  slack:
-    secure: w22XjHoG/3xplxWzddS9Ma7i99Q/hq4FA3Q56xS+RtO2vlFgDT+eDzCppstdx96mn2/4e+/V1aiQ4E6GVEvJMeldqSUhPv9OBnKR0KJVAOwu4haNXt+0ZeQFt8lIndKB5cMVyOJkoq6peGoHNXslClM0lGuBn7g7VC2QPQYNWrJNrrGL7IiVb6fNOIKHWcC4URkzSvXAhO/WIqSSlmKxAAx0B2oEsM8LhdAbcjbp7Sm7zH87TIVGBZ7iTVuMc6B9+SfClbE8bBuRtvjTX57Q4UUZzn0zDtKdPdCte0oXdaQF4RdVim9mDodBGIpDo+avW4WL7EE+AK33fs94pwH5bu0LEandR/aeEvVpbSpQ2XsEKSe+6woizgl5i4GXFVZduJF62y/o1f+S/zC3qW9lIEEpiZc4PpX7pDy30X3p6S5nMrW7T/zNh+SjLhS1VP6XKdQtpD3WRCY4GKZYammZhk5RbOy3jTXAahIXuttWdhl/Q3Rb5VqfFJWlrG/qQXt73qOk2/DgJnABxXE6gnWO4MpHAq+kdomNR+nod4HeXI3DOk1wRuQRVoW1rSjiqQd6Db+TP56RKYgt4M4csOD0DG9G+W0AOtZkuKHTeoEtmQfkKFPZLYAQumv41cDN2UE9gKIECmvJSevj4sMCDTWtozKWqay/W4n2+cmhbzmGflY=
+after_success:
+    - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+    - chmod +x send.sh
+    - ./send.sh success $WEBHOOK_URL
+after_failure:
+    - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+    - chmod +x send.sh
+    - ./send.sh failure $WEBHOOK_URL
