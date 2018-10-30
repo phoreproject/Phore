@@ -182,7 +182,10 @@ public:
     ~CInit()
     {
         // Securely erase the memory used by the PRNG
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+#else
         RAND_cleanup();
+#endif
         // Shutdown OpenSSL library multithreading support
         CRYPTO_set_locking_callback(NULL);
         for (int i = 0; i < CRYPTO_num_locks(); i++)
