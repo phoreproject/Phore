@@ -10,7 +10,6 @@
 #include "init.h"
 #include "main.h"
 #include "noui.h"
-#include "scheduler.h"
 #include "rpc/server.h"
 #include "ui_interface.h"
 #include "util.h"
@@ -42,7 +41,7 @@
 
 static bool fDaemon;
 
-void WaitForShutdown(boost::thread_group* threadGroup)
+void WaitForShutdown()
 {
     bool fShutdown = ShutdownRequested();
     // Tell the main threads to shutdown.
@@ -50,10 +49,7 @@ void WaitForShutdown(boost::thread_group* threadGroup)
         MilliSleep(200);
         fShutdown = ShutdownRequested();
     }
-    if (threadGroup) {
-        Interrupt(*threadGroup);
-        threadGroup->join_all();
-    }
+    Interrupt();
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -62,9 +58,6 @@ void WaitForShutdown(boost::thread_group* threadGroup)
 //
 bool AppInit(int argc, char* argv[])
 {
-    boost::thread_group threadGroup;
-    CScheduler scheduler;
-
     bool fRet = false;
 
     //
@@ -140,9 +133,9 @@ bool AppInit(int argc, char* argv[])
         }
 #endif
         SoftSetBoolArg("-server", true);
-        
+
         std::vector<std::string> words;
-        fRet = AppInit2(threadGroup, scheduler, words);
+        fRet = AppInit2(words);
     } catch (std::exception& e) {
         PrintExceptionContinue(&e, "AppInit()");
     } catch (...) {
@@ -150,12 +143,9 @@ bool AppInit(int argc, char* argv[])
     }
 
     if (!fRet) {
-        Interrupt(threadGroup);
-        // threadGroup.join_all(); was left out intentionally here, because we didn't re-test all of
-        // the startup-failure cases to make sure they don't result in a hang due to some
-        // thread-blocking-waiting-for-another-thread-during-startup case
+        Interrupt();
     } else {
-        WaitForShutdown(&threadGroup);
+        WaitForShutdown();
     }
     Shutdown();
 
