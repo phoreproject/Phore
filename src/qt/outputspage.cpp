@@ -34,9 +34,6 @@ OutPutsPage::OutPutsPage(QWidget* parent) : QDialog(parent),
 {
     ui->setupUi(this);
 
-#ifdef Q_OS_MAC // Icons on push buttons are very uncommon on Mac
-    ui->copyAddress->setIcon(QIcon());
-#endif
 	key = OutPutsPage::getmasternodeoutputs();
 	ui->outPutsWidget->append(key);
 
