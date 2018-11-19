@@ -29,6 +29,8 @@
 #include <QSortFilterProxyModel>
 #include <boost/tokenizer.hpp>
 #include <fstream>
+#include <iostream>
+#include <string>
 
 ConfigureMasternodePage::ConfigureMasternodePage(Mode mode, QWidget* parent) : QDialog(parent),
                                                                    ui(new Ui::ConfigureMasternodePage),
@@ -130,4 +132,35 @@ void ConfigureMasternodePage::updateAlias(std::string Alias, std::string IP, std
 	masternodeConfig.writeToMasternodeConf();
 			
 
+}
+
+void ConfigureMasternodePage::on_AutoFillPrivKey_clicked()
+{
+    CKey secret;
+    secret.MakeNewKey(false);
+
+	ui->privKeyEdit->setText(QString::fromStdString(CBitcoinSecret(secret).ToString()));
+}
+
+
+void ConfigureMasternodePage::on_AutoFillOutputs_clicked()
+{
+    // Find possible candidates
+    vector<COutput> possibleCoins = activeMasternode.SelectCoinsMasternode();
+	int test = 0;
+    BOOST_FOREACH (COutput& out, possibleCoins) {
+        std::string TXHash = out.tx->GetHash().ToString();
+        std::string OutputID = std::to_string(out.i);
+		BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
+			
+			if(TXHash == mne.getOutputIndex() && OutputID == mne.getTxHash()) {
+				test = 1;
+			}
+		}
+		if(test = 0) {
+			ui->outputEdit->setText(QString::fromStdString(out.tx->GetHash().ToString()));
+			ui->outputIdEdit->setText(QString::fromStdString(std::to_string(out.i)));		
+			break;
+		}				
+    }	
 }

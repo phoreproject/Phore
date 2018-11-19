@@ -68,6 +68,8 @@ public:
 
 public slots:
     void accept();
+    void on_AutoFillPrivKey_clicked();
+    void on_AutoFillOutputs_clicked();
 
 private:
     void saveCurrentRow();
