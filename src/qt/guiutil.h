@@ -50,7 +50,7 @@ void setupTXIDWidget(QValidatedLineEdit* widget, QWidget* parent);
 void setupTXIDIndexWidget(QValidatedLineEdit* widget, QWidget* parent);
 void setupAmountWidget(QLineEdit* widget, QWidget* parent);
 
-// Parse "phore:" URI into recipient object, return true on successful parsing
+// Parse "curium:" URI into recipient object, return true on successful parsing
 bool parseBitcoinURI(const QUrl& uri, SendCoinsRecipient* out);
 bool parseBitcoinURI(QString uri, SendCoinsRecipient* out);
 QString formatBitcoinURI(const SendCoinsRecipient& info);
