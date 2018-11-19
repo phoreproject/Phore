@@ -14,7 +14,7 @@
    <item>
        <widget class="QValidatedLineEdit" name="payTo">
         <property name="toolTip">
-         <string>The Phore address to send the payment to</string>
+         <string>The Curium address to send the payment to</string>
         </property>
         <property name="inputMask">
          <string/>
