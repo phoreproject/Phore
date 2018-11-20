@@ -18,6 +18,7 @@
 #include <QString>
 #include <QTreeWidgetItem>
 #include <univalue.h>
+#include "wallet.h"
 
 class WalletModel;
 class MasternodeList;

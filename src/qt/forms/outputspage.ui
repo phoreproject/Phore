@@ -49,7 +49,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../.qrc"/>
+  <include location="../phore.qrc"/>
  </resources>
  <connections/>
 </ui>

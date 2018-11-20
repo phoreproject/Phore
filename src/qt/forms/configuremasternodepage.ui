@@ -137,7 +137,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../curium.qrc"/>
+  <include location="../phore.qrc"/>
  </resources>
  <connections>
   <connection>

@@ -363,6 +363,12 @@ void MasternodeList::deleteAlias()
     BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
 		count = count + 1;
 		if(strAlias == mne.getAlias()) {
+			vector<COutPoint> confLockedCoins;
+			uint256 mnTxHash;
+			mnTxHash.SetHex(mne.getTxHash());
+			COutPoint outpoint = COutPoint(mnTxHash, mne.getOutputIndex());
+			confLockedCoins.push_back(outpoint);
+			pwalletMain->UnlockCoin(outpoint);
 			masternodeConfig.deleteAlias(count);
 			// write to masternode.conf
 			masternodeConfig.writeToMasternodeConf();

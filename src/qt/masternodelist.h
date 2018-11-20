@@ -5,6 +5,7 @@
 #include "platformstyle.h"
 #include "sync.h"
 #include "util.h"
+#include "wallet.h"
 
 #include <QMenu>
 #include <QTimer>
@@ -44,7 +45,6 @@ public:
     void setWalletModel(WalletModel* walletModel);
     void StartAlias(std::string strAlias);
     void StartAll(std::string strCommand = "start-all");
-	void deleteAlias(std::string Alias);
 
 private:
     QMenu* contextMenu;
