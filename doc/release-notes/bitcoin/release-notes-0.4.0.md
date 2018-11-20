@@ -4,7 +4,7 @@ http://sourceforge.net/projects/bitcoin/files/Bitcoin/bitcoin-0.4.0/
 The main feature in this release is wallet private key encryption;
 you can set a passphrase that must be entered before sending coins.
 See below for more information; if you decide to encrypt your wallet,
-WRITE DOWN YOUR PASSPHRASE AND PUT IT IN A SECURE LOCATION. If you
+WRITE DOWN YOUR PASSCRUASE AND PUT IT IN A SECURE LOCATION. If you
 forget or lose your wallet passphrase, you lose your bitcoins.
 Previous versions of bitcoin are unable to read encrypted wallets,
 and will crash on startup if the wallet is encrypted.

@@ -9,8 +9,8 @@
 #include <vector>
 
 /**
- * CBaseChainParams defines the base parameters (shared between phore-cli and phored)
- * of a given instance of the Phore system.
+ * CBaseChainParams defines the base parameters (shared between curium-cli and curiumd)
+ * of a given instance of the Curium system.
  */
 class CBaseChainParams
 {

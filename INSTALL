@@ -1,4 +1,4 @@
-Building Phore
+Building Curium
 
 Use the autogen script to prepare the build environment.
 
@@ -8,6 +8,6 @@ Use the autogen script to prepare the build environment.
 
 Always verify the signatures and checksums.
 
-See doc/build-*.md for instructions on building phored,
+See doc/build-*.md for instructions on building curiumd,
 the intended-for-services, no-graphical-interface, reference
-implementation of Phore.
+implementation of Curium.

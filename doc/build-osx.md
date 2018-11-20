@@ -1,6 +1,6 @@
 Mac OS X Build Instructions and Notes
 ====================================
-This guide will show you how to build phored (headless client) for OSX.
+This guide will show you how to build curiumd (headless client) for OSX.
 
 Notes
 -----
@@ -42,14 +42,14 @@ Instructions: Homebrew
         
         Note: On High Sierra (or when libzmq cannot be found), libzmq should be replaced with zeromq
 
-### Building `phored`
+### Building `curiumd`
 
 1. Clone the github tree to get the source code and go into the directory.
 
-        git clone https://github.com/phoreproject/Phore.git
-        cd Phore
+        git clone https://github.com/curiumproject/Curium.git
+        cd Curium
 
-2.  Build phored:
+2.  Build curiumd:
         
         chmod +x share/genbuild.sh autogen.sh 
         ./autogen.sh
@@ -62,7 +62,7 @@ Instructions: Homebrew
 
         make check
 
-4.  (Optional) You can also install phored to your path:
+4.  (Optional) You can also install curiumd to your path:
 
         make install
 
@@ -74,7 +74,7 @@ Download Qt Creator from http://www.qt.io/download/. Download the "community edi
 1. Make sure you installed everything through homebrew mentioned above
 2. Do a proper ./configure --with-gui=qt5 --enable-debug
 3. In Qt Creator do "New Project" -> Import Project -> Import Existing Project
-4. Enter "phore-qt" as project name, enter src/qt as location
+4. Enter "curium-qt" as project name, enter src/qt as location
 5. Leave the file selection as it is
 6. Confirm the "summary page"
 7. In the "Projects" tab select "Manage Kits..."
@@ -84,11 +84,11 @@ Download Qt Creator from http://www.qt.io/download/. Download the "community edi
 
 Creating a release build
 ------------------------
-You can ignore this section if you are building `phored` for your own use.
+You can ignore this section if you are building `curiumd` for your own use.
 
-phored/phore-cli binaries are not included in the phore-Qt.app bundle.
+curiumd/curium-cli binaries are not included in the curium-Qt.app bundle.
 
-If you are building `phored` or `phore-qt` for others, your build machine should be set up
+If you are building `curiumd` or `curium-qt` for others, your build machine should be set up
 as follows for maximum compatibility:
 
 All dependencies should be compiled with these flags:
@@ -97,33 +97,33 @@ All dependencies should be compiled with these flags:
  -arch x86_64
  -isysroot $(xcode-select --print-path)/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk
 
-Once dependencies are compiled, see release-process.md for how the Phore-Qt.app
+Once dependencies are compiled, see release-process.md for how the Curium-Qt.app
 bundle is packaged and signed to create the .dmg disk image that is distributed.
 
 Running
 -------
 
-It's now available at `./phored`, provided that you are still in the `src`
+It's now available at `./curiumd`, provided that you are still in the `src`
 directory. We have to first create the RPC configuration file, though.
 
-Run `./phored` to get the filename where it should be put, or just try these
+Run `./curiumd` to get the filename where it should be put, or just try these
 commands:
 
-    echo -e "rpcuser=phorerpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/Phore/phore.conf"
-    chmod 600 "/Users/${USER}/Library/Application Support/Phore/phore.conf"
+    echo -e "rpcuser=curiumrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/Curium/curium.conf"
+    chmod 600 "/Users/${USER}/Library/Application Support/Curium/curium.conf"
 
 The next time you run it, it will start downloading the blockchain, but it won't
 output anything while it's doing this. This process may take several hours;
 you can monitor its process by looking at the debug.log file, like this:
 
-    tail -f $HOME/Library/Application\ Support/Phore/debug.log
+    tail -f $HOME/Library/Application\ Support/Curium/debug.log
 
 Other commands:
 -------
 
-    ./phored -daemon # to start the phore daemon.
-    ./phore-cli --help  # for a list of command-line options.
-    ./phore-cli help    # When the daemon is running, to get a list of RPC commands
+    ./curiumd -daemon # to start the curium daemon.
+    ./curium-cli --help  # for a list of command-line options.
+    ./curium-cli help    # When the daemon is running, to get a list of RPC commands
     
 Troubleshooting:<a name="trouble"></a>
 ---------
@@ -141,7 +141,7 @@ Troubleshooting:<a name="trouble"></a>
         make
         sudo make install
 
-        Then configure Phore with this build of BerkeleyDB,
+        Then configure Curium with this build of BerkeleyDB,
         ./configure --with-gui=qt5  LDFLAGS="-L/usr/local/BerkeleyDB.4.8/lib/" CPPFLAGS="-I/usr/local/BerkeleyDB.4.8/include/"
                 
         
@@ -162,7 +162,7 @@ Otherwise, open Terminal and type in the command to install homebrew:
 
 ```/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"```
 
-The use homebrew to install a number of unix programs and libraries needed to build the Phore wallet:
+The use homebrew to install a number of unix programs and libraries needed to build the Curium wallet:
 
 ```brew install autoconf automake berkeley-db@4 boost@1.57 git libevent libtool miniupnpc openssl pkg-config protobuf qt zeromq```
 
@@ -176,8 +176,8 @@ Next, switch into your Downloads folder:
 
 The next step is to download the current version of the wallet from Github and go into that directory:
 
-```git clone https://github.com/phoreproject/phore.git```
-```cd Phore```
+```git clone https://github.com/curiumproject/curium.git```
+```cd Curium```
 
 Now set some configuration flags:
 
@@ -189,15 +189,15 @@ Then we begin the build process:
 ```./configure```
 ```make```
 
-You have the choice to build the GUI Phore wallet as a Mac OSX app, described in “How to build the Phore-Qt App”. If, for whatever reason, you prefer to use the command line tools, continue with “Command line tools”.
+You have the choice to build the GUI Curium wallet as a Mac OSX app, described in “How to build the Curium-Qt App”. If, for whatever reason, you prefer to use the command line tools, continue with “Command line tools”.
 
-### How to build the Phore-Qt App:
+### How to build the Curium-Qt App:
 
 After make is finished, you can create an App bundle inside a disk image with:
 
 ```make deploy```
 
-Once this is done, you’ll find Phore-Qt.dmg inside your Phore folder. Open and install the wallet like any typical Mac app.
+Once this is done, you’ll find Curium-Qt.dmg inside your Curium folder. Open and install the wallet like any typical Mac app.
 
 ### Command line tools
 
@@ -207,8 +207,8 @@ Once the build is complete, switch into the src/qt subdirectory:
 
 And there you have your wallet – you can start it by running:
 
-```./phore-qt```
+```./curium-qt```
 
 You can move the wallet app to another more permanent location. If you have not moved it and want to start your wallet in the future, open Terminal and run this command:
 
-~/Downloads/Phore/src/qt/phore-qt
+~/Downloads/Curium/src/qt/curium-qt

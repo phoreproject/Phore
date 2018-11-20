@@ -126,7 +126,7 @@ public:
 };
 
 /**
- * Phore RPC command dispatcher.
+ * Curium RPC command dispatcher.
  */
 class CRPCTable
 {
@@ -261,8 +261,8 @@ extern UniValue importzerocoins(const UniValue& params, bool fHelp);
 extern UniValue exportzerocoins(const UniValue& params, bool fHelp);
 extern UniValue reconsiderzerocoins(const UniValue& params, bool fHelp);
 extern UniValue getspentzerocoinamount(const UniValue& params, bool fHelp);
-extern UniValue setzphrseed(const UniValue& params, bool fHelp);
-extern UniValue getzphrseed(const UniValue& params, bool fHelp);
+extern UniValue setzcruseed(const UniValue& params, bool fHelp);
+extern UniValue getzcruseed(const UniValue& params, bool fHelp);
 extern UniValue makekeypair(const UniValue& params, bool fHelp);
 
 extern UniValue getrawtransaction(const UniValue& params, bool fHelp); // in rcprawtransaction.cpp

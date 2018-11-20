@@ -7,12 +7,12 @@ reset-files.bash
 *.tar.gz
 
 *.exe
-src/phore
-src/phored
-src/phore-cli
-src/phore-tx
-src/test/test_phore
-src/qt/test/test_phore-qt
+src/curium
+src/curiumd
+src/curium-cli
+src/curium-tx
+src/test/test_curium
+src/qt/test/test_curium-qt
 
 # autoreconf
 Makefile.in
@@ -38,8 +38,8 @@ confdefs.h
 conftest.cpp
 conftest.err
 libtool
-src/config/phore-config.h
-src/config/phore-config.h.in
+src/config/curium-config.h
+src/config/curium-config.h.in
 src/config/stamp-h1
 share/setup.nsi
 share/qt/Info.plist
@@ -64,7 +64,7 @@ src/leveldb/build_config.mk
 *.pyc
 *.o
 *.o-*
-.phore
+.curium
 *.a
 *.pb.cc
 *.pb.h
@@ -84,12 +84,12 @@ src/leveldb/build_config.mk
 # Compilation and Qt preprocessor part
 *.qm
 Makefile
-phore-qt
-phore-Qt.app
+curium-qt
+curium-Qt.app
 
 # Unit-tests
 Makefile.test
-phore-qt_test
+curium-qt_test
 src/test/buildenv.py
 
 # Resources cpp
@@ -105,7 +105,7 @@ build
 #lcov
 *.gcno
 /*.info
-test_phore.coverage/
+test_curium.coverage/
 total.coverage/
 coverage_percent.txt
 

@@ -14,13 +14,12 @@
    <item>
        <widget class="QValidatedLineEdit" name="payTo">
         <property name="toolTip">
-         <string>The Phore address to send the payment to</string>
+         <string>The Curium address to send the payment to</string>
         </property>
         <property name="inputMask">
          <string/>
         </property>
-        <property name="placeholderText">
-         <string>Enter a Phore address (e.g. PCYiHgGJJ6xGHqivmdZrYjRnhaYf6AJ2Mp)</string>
+         <string>Enter a Curium address (e.g. RCYiHgGJJ6xGHqivmdZrYjRnhaYf6AJ2Mp)</string>
         </property>
        </widget>
       </item>
@@ -35,7 +34,7 @@
         <string>&amp;Copy</string>
        </property>
        <property name="icon">
-        <iconset resource="../phore.qrc">
+        <iconset resource="../curium.qrc">
          <normaloff>:/icons/editcopy</normaloff>:/icons/editcopy</iconset>
        </property>
        <property name="autoDefault">
@@ -60,7 +59,7 @@
   </layout>
  </widget>
  <resources>
-  <include location="../phore.qrc"/>
+  <include location="../curium.qrc"/>
  </resources>
  <connections/>
 </ui>

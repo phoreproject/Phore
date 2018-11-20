@@ -61,7 +61,7 @@ SendCoinsDialog::SendCoinsDialog(QWidget* parent) : QDialog(parent),
     connect(ui->splitBlockCheckBox, SIGNAL(stateChanged(int)), this, SLOT(splitBlockChecked(int)));
     connect(ui->splitBlockLineEdit, SIGNAL(textChanged(const QString&)), this, SLOT(splitBlockLineEditChanged(const QString&)));
 
-    // Phore specific
+    // Curium specific
     QSettings settings;
     if (!settings.contains("bUseObfuScation"))
         settings.setValue("bUseObfuScation", false);
@@ -70,15 +70,15 @@ SendCoinsDialog::SendCoinsDialog(QWidget* parent) : QDialog(parent),
 
     bool useSwiftTX = settings.value("bUseSwiftTX").toBool();
     if (fLiteMode) {
-        // ui->checkSwiftTX->setVisible(false);
+        ui->checkSwiftTX->setVisible(false);
         CoinControlDialog::coinControl->useObfuScation = false;
         CoinControlDialog::coinControl->useSwiftTX = false;
     } else {
-        // ui->checkSwiftTX->setChecked(useSwiftTX);
+        ui->checkSwiftTX->setChecked(useSwiftTX);
         CoinControlDialog::coinControl->useSwiftTX = useSwiftTX;
     }
 
-    // connect(ui->checkSwiftTX, SIGNAL(stateChanged(int)), this, SLOT(updateSwiftTX()));
+    connect(ui->checkSwiftTX, SIGNAL(stateChanged(int)), this, SLOT(updateSwiftTX()));
 
     // Coin Control: clipboard actions
     QAction* clipboardQuantityAction = new QAction(tr("Copy quantity"), this);
@@ -136,7 +136,7 @@ SendCoinsDialog::SendCoinsDialog(QWidget* parent) : QDialog(parent),
     ui->customFee->setValue(settings.value("nTransactionFee").toLongLong());
     ui->checkBoxMinimumFee->setChecked(settings.value("fPayOnlyMinFee").toBool());
     ui->checkBoxFreeTx->setChecked(settings.value("fSendFreeTransactions").toBool());
-    ui->checkzPHR->hide();
+    ui->checkzCRU->hide();
     minimizeFeeSection(settings.value("fFeeSectionMinimized").toBool());
 }
 
@@ -268,13 +268,13 @@ void SendCoinsDialog::on_sendButton_clicked()
     QString strFee = "";
     recipients[0].inputType = ALL_COINS;
 
-    // if (ui->checkSwiftTX->isChecked()) {
-    //     recipients[0].useSwiftTX = true;
-    //     strFunds += " ";
-    //     strFunds += tr("using SwiftX");
-    // } else {
-    //     recipients[0].useSwiftTX = false;
-    // }
+    if (ui->checkSwiftTX->isChecked()) {
+        recipients[0].useSwiftTX = true;
+        strFunds += " ";
+        strFunds += tr("using SwiftX");
+    } else {
+        recipients[0].useSwiftTX = false;
+    }
 
 
     // Format confirmation message
@@ -582,8 +582,8 @@ void SendCoinsDialog::updateDisplayUnit()
 void SendCoinsDialog::updateSwiftTX()
 {
     QSettings settings;
-    settings.setValue("bUseSwiftTX", 0);
-    // CoinControlDialog::coinControl->useSwiftTX = ui->checkSwiftTX->isChecked();
+    settings.setValue("bUseSwiftTX", ui->checkSwiftTX->isChecked());
+    CoinControlDialog::coinControl->useSwiftTX = ui->checkSwiftTX->isChecked();
     coinControlUpdateLabels();
 }
 
@@ -883,14 +883,14 @@ void SendCoinsDialog::coinControlChangeEdited(const QString& text)
             ui->labelCoinControlChangeLabel->setText("");
         } else if (!IsValidDestinationString(text.toStdString())) // Invalid address
         {
-            ui->labelCoinControlChangeLabel->setText(tr("Warning: Invalid Phore address"));
+            ui->labelCoinControlChangeLabel->setText(tr("Warning: Invalid Curium address"));
         } else // Valid address
         {
             CTxDestination addr = DecodeDestination(text.toStdString());
             CKeyID* keyid = boost::get<CKeyID>(&addr);
 
             if (!keyid) {
-                ui->labelCoinControlChangeLabel->setText(tr("Warning: Invalid Phore address"));
+                ui->labelCoinControlChangeLabel->setText(tr("Warning: Invalid Curium address"));
                 return;
             }
             

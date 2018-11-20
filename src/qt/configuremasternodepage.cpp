@@ -4,7 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/phore-config.h"
+#include "config/curium-config.h"
 #endif
 
 #include "configuremasternodepage.h"
@@ -132,6 +132,7 @@ void ConfigureMasternodePage::updateAlias(std::string Alias, std::string IP, std
     COutPoint outpoint = COutPoint(mnTxHash, std::stoi(OutputIndex));
     confLockedCoins.push_back(outpoint);
     pwalletMain->UnlockCoin(outpoint);
+
 	masternodeConfig.deleteAlias(count);
 	masternodeConfig.add(Alias, IP, PrivKey, TxHash, OutputIndex);
 	// write to masternode.conf
@@ -169,4 +170,6 @@ void ConfigureMasternodePage::on_AutoFillOutputs_clicked()
 			break;
 		}				
     }	
+
 }
+

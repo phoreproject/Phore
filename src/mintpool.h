@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef PHORE_MINTPOOL_H
-#define PHORE_MINTPOOL_H
+#ifndef CURIUM_MINTPOOL_H
+#define CURIUM_MINTPOOL_H
 
 #include <map>
 #include <list>
@@ -50,5 +50,5 @@ public:
 };
 
 
-#endif //PHORE_MINTPOOL_H
+#endif //CURIUM_MINTPOOL_H
 

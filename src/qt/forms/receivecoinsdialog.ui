@@ -140,7 +140,7 @@
                 </font>
                </property>
                <property name="toolTip">
-                <string>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Phore network.</string>
+                <string>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Curium network.</string>
                </property>
                <property name="text">
                 <string>&amp;Message:</string>
@@ -166,7 +166,7 @@
              <item row="6" column="2">
               <widget class="QLineEdit" name="reqMessage">
                <property name="toolTip">
-                <string>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Phore network.</string>
+                <string>An optional message to attach to the payment request, which will be displayed when the request is opened.&lt;br&gt;Note: The message will not be sent with the payment over the Curium network.</string>
                </property>
                <property name="placeholderText">
                 <string>An optional message to attach to the payment request.</string>
@@ -487,7 +487,7 @@
                 <string>Show</string>
                </property>
                <property name="icon">
-                <iconset resource="../phore.qrc">
+                <iconset resource="../curium.qrc">
                  <normaloff>:/icons/edit</normaloff>:/icons/edit</iconset>
                </property>
                <property name="autoDefault">
@@ -507,7 +507,7 @@
                 <string>Remove</string>
                </property>
                <property name="icon">
-                <iconset resource="../phore.qrc">
+                <iconset resource="../curium.qrc">
                  <normaloff>:/icons/remove</normaloff>:/icons/remove</iconset>
                </property>
                <property name="autoDefault">
@@ -560,7 +560,7 @@
   <tabstop>removeRequestButton</tabstop>
  </tabstops>
  <resources>
-  <include location="../phore.qrc"/>
+  <include location="../curium.qrc"/>
  </resources>
  <connections/>
 </ui>

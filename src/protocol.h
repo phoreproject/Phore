@@ -45,7 +45,7 @@ extern const char *VERACK;
  */
 extern const char *ADDR;
 /**
- * The alert message broadcasts various alerts to users of the Phore, but has
+ * The alert message broadcasts various alerts to users of the Curium, but has
  * no real effect on the network.
  * This is deprecated in Bitcoin Core.
  */

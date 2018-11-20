@@ -101,7 +101,7 @@ UniValue getgenerate(const UniValue& params, bool fHelp)
         throw runtime_error(
             "getgenerate\n"
             "\nReturn if the server is set to generate coins or not. The default is false.\n"
-            "It is set with the command line argument -gen (or phore.conf setting gen)\n"
+            "It is set with the command line argument -gen (or curium.conf setting gen)\n"
             "It can also be set with the setgenerate call.\n"
             "\nResult\n"
             "true|false      (boolean) If the server is set to generate coins or not\n"
@@ -277,8 +277,8 @@ UniValue prioritisetransaction(const UniValue& params, bool fHelp)
             "1. \"txid\"       (string, required) The transaction id.\n"
             "2. priority delta (numeric, required) The priority to add or subtract.\n"
             "                  The transaction selection algorithm considers the tx as it would have a higher priority.\n"
-            "                  (priority of a transaction is calculated: coinage * value_in_uphr / txsize) \n"
-            "3. fee delta      (numeric, required) The fee value (in uphr) to add (or subtract, if negative).\n"
+            "                  (priority of a transaction is calculated: coinage * value_in_ucru / txsize) \n"
+            "3. fee delta      (numeric, required) The fee value (in ucru) to add (or subtract, if negative).\n"
             "                  The fee is not actually paid, only the algorithm for selecting transactions into a block\n"
             "                  considers the transaction as it would have paid a higher (or lower) fee.\n"
             "\nResult\n"
@@ -359,7 +359,7 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
             "  \"coinbaseaux\" : {                  (json object) data that should be included in the coinbase's scriptSig content\n"
             "      \"flags\" : \"flags\"            (string) \n"
             "  },\n"
-            "  \"coinbasevalue\" : n,               (numeric) maximum allowable input to coinbase transaction, including the generation award and transaction fees (in uphr)\n"
+            "  \"coinbasevalue\" : n,               (numeric) maximum allowable input to coinbase transaction, including the generation award and transaction fees (in ucru)\n"
             "  \"coinbasetxn\" : { ... },           (json object) information for coinbase transaction\n"
             "  \"target\" : \"xxxx\",               (string) The hash target\n"
             "  \"mintime\" : xxx,                   (numeric) The minimum timestamp appropriate for next block time in seconds since epoch (Jan 1 1970 GMT)\n"
@@ -436,10 +436,10 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Invalid mode");
 
     if (vNodes.empty() && Params().NetworkID() != CBaseChainParams::REGTEST)
-        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "Phore is not connected!");
+        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "Curium is not connected!");
 
     if (IsInitialBlockDownload() && Params().NetworkID() != CBaseChainParams::REGTEST)
-        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Phore is downloading blocks...");
+        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Curium is downloading blocks...");
 
     static unsigned int nTransactionsUpdatedLast;
 

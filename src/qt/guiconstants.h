@@ -11,9 +11,9 @@
 static const int MODEL_UPDATE_DELAY = 1000;
 
 /* AskPassphraseDialog -- Maximum passphrase length */
-static const int MAX_PASSPHRASE_SIZE = 1024;
+static const int MAX_PASSCRUASE_SIZE = 1024;
 
-/* Phore GUI -- Size of icons in status bar */
+/* Curium GUI -- Size of icons in status bar */
 static const int STATUSBAR_ICONSIZE = 32;
 
 static const bool DEFAULT_SPLASHSCREEN = true;
@@ -50,9 +50,9 @@ static const int MAX_URI_LENGTH = 255;
 /* Number of frames in spinner animation */
 #define SPINNER_FRAMES 35
 
-#define QAPP_ORG_NAME "Phore"
-#define QAPP_ORG_DOMAIN "phore.org"
-#define QAPP_APP_NAME_DEFAULT "Phore-Qt"
-#define QAPP_APP_NAME_TESTNET "Phore-Qt-testnet"
+#define QAPP_ORG_NAME "Curium"
+#define QAPP_ORG_DOMAIN "curium.org"
+#define QAPP_APP_NAME_DEFAULT "Curium-Qt"
+#define QAPP_APP_NAME_TESTNET "Curium-Qt-testnet"
 
 #endif // BITCOIN_QT_GUICONSTANTS_H

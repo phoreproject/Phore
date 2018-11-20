@@ -1,5 +1,5 @@
 ---
-name: "phore-dmg-signer"
+name: "curium-dmg-signer"
 suites:
 - "trusty"
 architectures:
@@ -7,10 +7,10 @@ architectures:
 packages:
 - "faketime"
 remotes:
-- "url": "https://github.com/phoreproject/phore-detached-sigs.git"
+- "url": "https://github.com/curiumproject/curium-detached-sigs.git"
   "dir": "signature"
 files:
-- "phore-osx-unsigned.tar.gz"
+- "curium-osx-unsigned.tar.gz"
 script: |
   WRAP_DIR=$HOME/wrapped
   mkdir -p ${WRAP_DIR}
@@ -27,11 +27,11 @@ script: |
     chmod +x ${WRAP_DIR}/${prog}
   done
 
-  UNSIGNED=phore-osx-unsigned.tar.gz
-  SIGNED=phore-osx-signed.dmg
+  UNSIGNED=curium-osx-unsigned.tar.gz
+  SIGNED=curium-osx-signed.dmg
 
   tar -xf ${UNSIGNED}
   OSX_VOLNAME="$(cat osx_volname)"
   ./detached-sig-apply.sh ${UNSIGNED} signature/osx
-  ${WRAP_DIR}/genisoimage -no-cache-inodes -D -l -probe -V "Phore-Qt" -no-pad -r -dir-mode 0755 -apple -o uncompressed.dmg signed-app
+  ${WRAP_DIR}/genisoimage -no-cache-inodes -D -l -probe -V "Curium-Qt" -no-pad -r -dir-mode 0755 -apple -o uncompressed.dmg signed-app
   ${WRAP_DIR}/dmg dmg uncompressed.dmg ${OUTDIR}/${SIGNED}

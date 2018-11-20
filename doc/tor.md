@@ -1,7 +1,7 @@
-TOR SUPPORT IN Phore
+TOR SUPPORT IN Curium
 =======================
 
-It is possible to run Phore as a Tor hidden service, and connect to such services.
+It is possible to run Curium as a Tor hidden service, and connect to such services.
 
 The following directions assume you have a Tor proxy running on port 9050. Many
 distributions default to having a SOCKS proxy listening on port 9050, but others
@@ -10,10 +10,10 @@ port. See [Tor Project FAQ:TBBSocksPort](https://www.torproject.org/docs/faq.htm
 for how to properly configure Tor.
 
 
-Run Phore behind a Tor proxy
+Run Curium behind a Tor proxy
 ----------------------------------
 
-The first step is running Phore behind a Tor proxy. This will already make all
+The first step is running Curium behind a Tor proxy. This will already make all
 outgoing connections be anonymized, but more is possible.
 ```
 -proxy=ip:port  Set the proxy server. If SOCKS5 is selected (default), this proxy
@@ -38,15 +38,15 @@ outgoing connections be anonymized, but more is possible.
 An example how to start the client if the Tor proxy is running on local host on
 port 9050 and only allows .onion nodes to connect:
 ```
-./phored -onion=127.0.0.1:9050 -onlynet=tor -listen=0 -addnode=dnetzj6l4cvo2fxy.onion:989
+./curiumd -onion=127.0.0.1:9050 -onlynet=tor -listen=0 -addnode=dnetzj6l4cvo2fxy.onion:989
 ```
 
 In a typical situation, this suffices to run behind a Tor proxy:
 ```
-./phored -proxy=127.0.0.1:9050
+./curiumd -proxy=127.0.0.1:9050
 ```
 
-Run a Phore hidden server
+Run a Curium hidden server
 -------------------------------
 
 If you configure your Tor system accordingly, it is possible to make your node also
@@ -59,7 +59,7 @@ SOCKSPolicy accept 127.0.0.1/8
 Log notice file /var/log/tor/notices.log
 ControlPort 9051
 HiddenServiceDir /var/lib/tor/dnet/
-HiddenServicePort 989 127.0.0.1:11771
+HiddenServicePort 989 127.0.0.1:18745
 HiddenServiceStatistics 0
 ORPort 9001
 LongLivedPorts 989
@@ -69,12 +69,12 @@ NumEntryGuards 8
 ```
 
 The directory can be different of course, but (both) port numbers should be equal to
-your phored's P2P listen port (11771 by default).
+your curiumd's P2P listen port (18745 by default).
 ```
--externalip=X   You can tell phore about its publicly reachable address using
+-externalip=X   You can tell curium about its publicly reachable address using
                 this option, and this can be a .onion address. Given the above
                 configuration, you can find your onion address in
-                /var/lib/tor/phore-service/hostname. Onion addresses are given
+                /var/lib/tor/curium-service/hostname. Onion addresses are given
                 preference for your node to advertize itself with, for connections
                 coming from unroutable addresses (such as 127.0.0.1, where the
                 Tor proxy typically runs).
@@ -92,25 +92,25 @@ your phored's P2P listen port (11771 by default).
 
 In a typical situation, where you're only reachable via Tor, this should suffice:
 ```
-./phored -proxy=127.0.0.1:9050 -externalip=dnetzj6l4cvo2fxy.onion:989 -listen
+./curiumd -proxy=127.0.0.1:9050 -externalip=dnetzj6l4cvo2fxy.onion:989 -listen
 ```
 
 (obviously, replace the Onion address with your own). If you don't care too much
 about hiding your node, and want to be reachable on IPv4 as well, additionally
 specify:
 ```
-./phored ... -discover
+./curiumd ... -discover
 ```
 
-and open port 11771 on your firewall (or use -upnp).
+and open port 18745 on your firewall (or use -upnp).
 
 If you only want to use Tor to reach onion addresses, but not use it as a proxy
 for normal IPv4/IPv6 communication, use:
 ```
-./phored -onion=127.0.0.1:9050 -externalip=dnetzj6l4cvo2fxy.onion:989 -discover
+./curiumd -onion=127.0.0.1:9050 -externalip=dnetzj6l4cvo2fxy.onion:989 -discover
 ```
 
-List of known Phore Tor relays
+List of known Curium Tor relays
 ------------------------------------
 ```
 y5kcscnhpygvvnjn.onion:989

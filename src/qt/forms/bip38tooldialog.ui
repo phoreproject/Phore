@@ -30,7 +30,7 @@
        <item>
         <widget class="QLabel" name="infoLabel_ENC">
          <property name="text">
-          <string>Enter a Phore Address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</string>
+          <string>Enter a Curium Address that you would like to encrypt using BIP 38. Enter a passphrase in the middle box. Press encrypt to compute the encrypted private key.</string>
          </property>
          <property name="textFormat">
           <enum>Qt::PlainText</enum>
@@ -61,7 +61,7 @@
          <item>
           <widget class="QValidatedLineEdit" name="addressIn_ENC">
            <property name="toolTip">
-            <string>The Phore address to sign the message with</string>
+            <string>The Curium address to sign the message with</string>
            </property>
           </widget>
          </item>
@@ -77,7 +77,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../phore.qrc">
+            <iconset resource="../curium.qrc">
              <normaloff>:/icons/address-book</normaloff>:/icons/address-book</iconset>
            </property>
            <property name="shortcut">
@@ -94,7 +94,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../phore.qrc">
+            <iconset resource="../curium.qrc">
              <normaloff>:/icons/editpaste</normaloff>:/icons/editpaste</iconset>
            </property>
            <property name="shortcut">
@@ -173,7 +173,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../phore.qrc">
+            <iconset resource="../curium.qrc">
              <normaloff>:/icons/editcopy</normaloff>:/icons/editcopy</iconset>
            </property>
           </widget>
@@ -185,7 +185,7 @@
          <item>
           <widget class="QPushButton" name="encryptKeyButton_ENC">
            <property name="toolTip">
-            <string>Encrypt the private key for this Phore address</string>
+            <string>Encrypt the private key for this Curium address</string>
            </property>
            <property name="text">
             <string>Encrypt &amp;Key</string>
@@ -306,7 +306,7 @@
             <string/>
            </property>
            <property name="icon">
-            <iconset resource="../phore.qrc">
+            <iconset resource="../curium.qrc">
              <normaloff>:/icons/editpaste</normaloff>:/icons/editpaste</iconset>
            </property>
            <property name="shortcut">
@@ -464,7 +464,7 @@
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../phore.qrc"/>
+  <include location="../curium.qrc"/>
  </resources>
  <connections/>
 </ui>

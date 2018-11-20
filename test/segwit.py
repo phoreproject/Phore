@@ -183,7 +183,7 @@ class SegWitTest(BitcoinTestFramework):
         self.skip_mine(self.nodes[2], wit_ids[NODE_2][WIT_V1][0], True) #block 425
         self.skip_mine(self.nodes[2], p2sh_ids[NODE_2][WIT_V0][0], True) #block 426
         self.skip_mine(self.nodes[2], p2sh_ids[NODE_2][WIT_V1][0], True) #block 427
-        # Phore: since witness won't be enabled until the fork, we don't care
+        # Curium: since witness won't be enabled until the fork, we don't care
 
         # TODO: An old node would see these txs without witnesses and be able to mine them
 

@@ -1,21 +1,21 @@
 
 Debian
 ====================
-This directory contains files used to package phored/phore-qt
-for Debian-based Linux systems. If you compile phored/phore-qt yourself, there are some useful files here.
+This directory contains files used to package curiumd/curium-qt
+for Debian-based Linux systems. If you compile curiumd/curium-qt yourself, there are some useful files here.
 
-## phore: URI support ##
+## curium: URI support ##
 
 
-phore-qt.desktop  (Gnome / Open Desktop)
+curium-qt.desktop  (Gnome / Open Desktop)
 To install:
 
-	sudo desktop-file-install phore-qt.desktop
+	sudo desktop-file-install curium-qt.desktop
 	sudo update-desktop-database
 
 If you build yourself, you will either need to modify the paths in
-the .desktop file or copy or symlink your phoreqt binary to `/usr/bin`
-and the `../../share/pixmaps/phore128.png` to `/usr/share/pixmaps`
+the .desktop file or copy or symlink your curiumqt binary to `/usr/bin`
+and the `../../share/pixmaps/curium128.png` to `/usr/share/pixmaps`
 
-phore-qt.protocol (KDE)
+curium-qt.protocol (KDE)
 

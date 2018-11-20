@@ -347,7 +347,7 @@ void AddressTableModel::updateEntry(const QString& address,
     const QString& purpose,
     int status)
 {
-    // Update address book model from Phore core
+    // Update address book model from Curium core
     priv->updateEntry(address, label, isMine, purpose, status);
 }
 

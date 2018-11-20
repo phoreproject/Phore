@@ -326,7 +326,7 @@ bool CBlockTreeDB::LoadBlockIndexGuts()
 
                 //populate accumulator checksum map in memory
                 if(pindexNew->nAccumulatorCheckpoint != 0 && pindexNew->nAccumulatorCheckpoint != nPreviousCheckpoint) {
-                    //Don't load any checkpoints that exist before v2 zphr. The accumulator is invalid for v1 and not used.
+                    //Don't load any checkpoints that exist before v2 zcru. The accumulator is invalid for v1 and not used.
                     if (pindexNew->nHeight > Params().Zerocoin_LastOldParams())
                         LoadAccumulatorValuesFromDB(pindexNew->nAccumulatorCheckpoint);
 

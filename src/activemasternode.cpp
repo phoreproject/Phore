@@ -12,7 +12,7 @@
 #include "spork.h"
 
 //
-// Bootup the Masternode, look for a 10000 PHR input and register on the network
+// Bootup the Masternode, look for a 10000 CRU input and register on the network
 //
 void CActiveMasternode::ManageStatus()
 {

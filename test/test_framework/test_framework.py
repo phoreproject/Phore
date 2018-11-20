@@ -104,11 +104,11 @@ class BitcoinTestFramework(object):
 
         parser = optparse.OptionParser(usage="%prog [options]")
         parser.add_option("--nocleanup", dest="nocleanup", default=False, action="store_true",
-                          help="Leave phoreds and test.* datadir on exit or error")
+                          help="Leave curiumds and test.* datadir on exit or error")
         parser.add_option("--noshutdown", dest="noshutdown", default=False, action="store_true",
-                          help="Don't stop phoreds after the test execution")
+                          help="Don't stop curiumds after the test execution")
         parser.add_option("--srcdir", dest="srcdir", default=os.path.normpath(os.path.dirname(os.path.realpath(__file__))+"/../../../src"),
-                          help="Source directory containing phored/bitcoin-cli (default: %default)")
+                          help="Source directory containing curiumd/bitcoin-cli (default: %default)")
         parser.add_option("--tmpdir", dest="tmpdir", default=tempfile.mkdtemp(prefix="test"),
                           help="Root directory for datadirs")
         parser.add_option("--tracerpc", dest="trace_rpc", default=False, action="store_true",
@@ -161,7 +161,7 @@ class BitcoinTestFramework(object):
             print("Stopping nodes")
             stop_nodes(self.nodes)
         else:
-            print("Note: phoreds were not stopped and may still be running")
+            print("Note: curiumds were not stopped and may still be running")
 
         if not self.options.nocleanup and not self.options.noshutdown and success:
             print("Cleaning up")
@@ -179,7 +179,7 @@ class BitcoinTestFramework(object):
             sys.exit(1)
 
 
-# Test framework for doing p2p comparison testing, which sets up some phored
+# Test framework for doing p2p comparison testing, which sets up some curiumd
 # binaries:
 # 1 binary: test binary
 # 2 binaries: 1 test binary, 1 ref binary
@@ -194,11 +194,11 @@ class ComparisonTestFramework(BitcoinTestFramework):
 
     def add_options(self, parser):
         parser.add_option("--testbinary", dest="testbinary",
-                          default=os.getenv("PHORED", "phored"),
-                          help="phored binary to test")
+                          default=os.getenv("CURIUMD", "curiumd"),
+                          help="curiumd binary to test")
         parser.add_option("--refbinary", dest="refbinary",
-                          default=os.getenv("PHORED", "phored"),
-                          help="phored binary to use for reference nodes (if any)")
+                          default=os.getenv("CURIUMD", "curiumd"),
+                          help="curiumd binary to use for reference nodes (if any)")
 
     def setup_network(self):
         self.nodes = start_nodes(

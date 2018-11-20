@@ -1,0 +1,26 @@
+# /etc/conf.d/curiumd: config file for /etc/init.d/curiumd
+
+# Config file location
+#BITCOIND_CONFIGFILE="/etc/curium/curium.conf"
+
+# What directory to write pidfile to?  (created and owned by $BITCOIND_USER)
+#BITCOIND_PIDDIR="/var/run/curiumd"
+
+# What filename to give the pidfile
+#BITCOIND_PIDFILE="${BITCOIND_PIDDIR}/curiumd.pid"
+
+# Where to write curiumd data (be mindful that the blockchain is large)
+#BITCOIND_DATADIR="/var/lib/curiumd"
+
+# User and group to own curiumd process
+#BITCOIND_USER="curium"
+#BITCOIND_GROUP="curium"
+
+# Path to curiumd executable
+#BITCOIND_BIN="/usr/bin/curiumd"
+
+# Nice value to run curiumd under
+#BITCOIND_NICE=0
+
+# Additional options (avoid -conf and -datadir, use flags above)
+BITCOIND_OPTS=""

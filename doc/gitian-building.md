@@ -1,9 +1,9 @@
 Gitian building
 ================
 
-*Setup instructions for a Gitian build of Phore Core using a VM or physical system.*
+*Setup instructions for a Gitian build of Curium Core using a VM or physical system.*
 
-Gitian is the deterministic build process that is used to build the Phore
+Gitian is the deterministic build process that is used to build the Curium
 Core executables. It provides a way to be reasonably sure that the
 executables are really built from the git source. It also makes sure that
 the same, tested dependencies are used and statically built into the executable.
@@ -22,7 +22,7 @@ Table of Contents
 
 - [Preparing the Gitian builder host](#preparing-the-gitian-builder-host)
 - [Getting and building the inputs](#getting-and-building-the-inputs)
-- [Building Phore Core](#building-phore-core)
+- [Building Curium Core](#building-curium-core)
 - [Building an alternative repository](#building-an-alternative-repository)
 - [Signing externally](#signing-externally)
 - [Uploading signatures](#uploading-signatures)
@@ -53,20 +53,20 @@ Please refer to the following documents to set up the operating systems and Giti
 Getting and building the inputs
 --------------------------------
 
-At this point you have two options, you can either use the automated script (found in [https://github.com/phoreproject/phore/blob/master/contrib/gitian-build.sh](https://github.com/phoreproject/phore/blob/master/contrib/gitian-build.sh), only works in Debian/Ubuntu) or you could manually do everything by following this guide.
+At this point you have two options, you can either use the automated script (found in [https://github.com/curiumproject/curium/blob/master/contrib/gitian-build.sh](https://github.com/curiumproject/curium/blob/master/contrib/gitian-build.sh), only works in Debian/Ubuntu) or you could manually do everything by following this guide.
 If you are using the automated script, then run it with the `--setup` command. Afterwards, run it with the `--build` command (example: `contrib/gitian-build.sh -b signer 0.15.0`). Otherwise ignore this.
 
-Follow the instructions in [https://github.com/phoreproject/phore/blob/master/doc/release-process.md](https://github.com/phoreproject/phore/blob/master/doc/release-process.md#fetch-and-create-inputs-first-time-or-when-dependency-versions-change)
-in the phore repository under 'Fetch and create inputs' to install sources which require
+Follow the instructions in [https://github.com/curiumproject/curium/blob/master/doc/release-process.md](https://github.com/curiumproject/curium/blob/master/doc/release-process.md#fetch-and-create-inputs-first-time-or-when-dependency-versions-change)
+in the curium repository under 'Fetch and create inputs' to install sources which require
 manual intervention. Also optionally follow the next step: 'Seed the Gitian sources cache
 and offline git repositories' which will fetch the remaining files required for building
 offline.
 
-Building Phore Core
+Building Curium Core
 ----------------
 
-To build Phore Core (for Linux, OS X and Windows) just follow the steps under 'perform
-Gitian builds' in [https://github.com/phoreproject/phore/blob/master/doc/release-process.md](https://github.com/phoreproject/phore/blob/master/doc/release-process.md#setup-and-perform-gitian-builds) in the phore repository.
+To build Curium Core (for Linux, OS X and Windows) just follow the steps under 'perform
+Gitian builds' in [https://github.com/curiumproject/curium/blob/master/doc/release-process.md](https://github.com/curiumproject/curium/blob/master/doc/release-process.md#setup-and-perform-gitian-builds) in the curium repository.
 
 This may take some time as it will build all the dependencies needed for each descriptor.
 These dependencies will be cached after a successful build to avoid rebuilding them when possible.
@@ -80,12 +80,12 @@ tail -f var/build.log
 
 Output from `gbuild` will look something like
 
-    Initialized empty Git repository in /home/gitianuser/gitian-builder/inputs/phore/.git/
+    Initialized empty Git repository in /home/gitianuser/gitian-builder/inputs/curium/.git/
     remote: Counting objects: 57959, done.
     remote: Total 57959 (delta 0), reused 0 (delta 0), pack-reused 57958
     Receiving objects: 100% (57959/57959), 53.76 MiB | 484.00 KiB/s, done.
     Resolving deltas: 100% (41590/41590), done.
-    From https://github.com/phoreproject/phore
+    From https://github.com/curiumproject/curium
     ... (new tags, new branch etc)
     --- Building for trusty amd64 ---
     Stopping target if it is up
@@ -113,16 +113,16 @@ For example:
 ```bash
 URL=https://github.com/laanwj/bitcoin.git
 COMMIT=2014_03_windows_unicode_path
-./bin/gbuild --commit phore=${COMMIT} --url phore=${URL} ../phore/contrib/gitian-descriptors/gitian-linux.yml
-./bin/gbuild --commit phore=${COMMIT} --url phore=${URL} ../phore/contrib/gitian-descriptors/gitian-win.yml
-./bin/gbuild --commit phore=${COMMIT} --url phore=${URL} ../phore/contrib/gitian-descriptors/gitian-osx.yml
+./bin/gbuild --commit curium=${COMMIT} --url curium=${URL} ../curium/contrib/gitian-descriptors/gitian-linux.yml
+./bin/gbuild --commit curium=${COMMIT} --url curium=${URL} ../curium/contrib/gitian-descriptors/gitian-win.yml
+./bin/gbuild --commit curium=${COMMIT} --url curium=${URL} ../curium/contrib/gitian-descriptors/gitian-osx.yml
 ```
 
 Building fully offline
 -----------------------
 
 For building fully offline including attaching signatures to unsigned builds, the detached-sigs repository
-and the phore git repository with the desired tag must both be available locally, and then gbuild must be
+and the curium git repository with the desired tag must both be available locally, and then gbuild must be
 told where to find them. It also requires an apt-cacher-ng which is fully-populated but set to offline mode, or
 manually disabling gitian-builder's use of apt-get to update the VM build environment.
 
@@ -141,7 +141,7 @@ cd /path/to/gitian-builder
 LXC_ARCH=amd64 LXC_SUITE=trusty on-target -u root apt-get update
 LXC_ARCH=amd64 LXC_SUITE=trusty on-target -u root \
   -e DEBIAN_FRONTEND=noninteractive apt-get --no-install-recommends -y install \
-  $( sed -ne '/^packages:/,/[^-] .*/ {/^- .*/{s/"//g;s/- //;p}}' ../phore/contrib/gitian-descriptors/*|sort|uniq )
+  $( sed -ne '/^packages:/,/[^-] .*/ {/^- .*/{s/"//g;s/- //;p}}' ../curium/contrib/gitian-descriptors/*|sort|uniq )
 LXC_ARCH=amd64 LXC_SUITE=trusty on-target -u root apt-get -q -y purge grub
 LXC_ARCH=amd64 LXC_SUITE=trusty on-target -u root -e DEBIAN_FRONTEND=noninteractive apt-get -y dist-upgrade
 ```
@@ -161,12 +161,12 @@ Then when building, override the remote URLs that gbuild would otherwise pull fr
 ```bash
 
 cd /some/root/path/
-git clone https://github.com/phoreproject/phore-detached-sigs.git
+git clone https://github.com/curiumproject/curium-detached-sigs.git
 
-BTCPATH=/some/root/path/phore
-SIGPATH=/some/root/path/phore-detached-sigs
+BTCPATH=/some/root/path/curium
+SIGPATH=/some/root/path/curium-detached-sigs
 
-./bin/gbuild --url phore=${BTCPATH},signature=${SIGPATH} ../phore/contrib/gitian-descriptors/gitian-win-signer.yml
+./bin/gbuild --url curium=${BTCPATH},signature=${SIGPATH} ../curium/contrib/gitian-descriptors/gitian-win-signer.yml
 ```
 
 Signing externally
@@ -181,9 +181,9 @@ When you execute `gsign` you will get an error from GPG, which can be ignored. C
 in `gitian.sigs` to your signing machine and do
 
 ```bash
-    gpg --detach-sign ${VERSION}-linux/${SIGNER}/phore-linux-build.assert
-    gpg --detach-sign ${VERSION}-win/${SIGNER}/phore-win-build.assert
-    gpg --detach-sign ${VERSION}-osx-unsigned/${SIGNER}/phore-osx-build.assert
+    gpg --detach-sign ${VERSION}-linux/${SIGNER}/curium-linux-build.assert
+    gpg --detach-sign ${VERSION}-win/${SIGNER}/curium-win-build.assert
+    gpg --detach-sign ${VERSION}-osx-unsigned/${SIGNER}/curium-osx-build.assert
 ```
 
 This will create the `.sig` files that can be committed together with the `.assert` files to assert your
@@ -193,5 +193,5 @@ Uploading signatures
 ---------------------
 
 After building and signing you can push your signatures (both the `.assert` and `.assert.sig` files) to the
-[phoreproject/gitian.sigs](https://github.com/phoreproject/gitian.sigs/) repository, or if that's not possible create a pull
+[curiumproject/gitian.sigs](https://github.com/curiumproject/gitian.sigs/) repository, or if that's not possible create a pull
 request. You can also mail the files to Wladimir (laanwj@gmail.com) and he will commit them.

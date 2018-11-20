@@ -17,14 +17,14 @@ BOOST_AUTO_TEST_CASE(subsidy_limit_test)
 {
     CAmount nSum = 0;
     for (int nHeight = 0; nHeight < 1; nHeight += 1) {
-        /* premine in block 1 (17,500,000 PHR) */
+        /* premine in block 1 (17,500,000 CRU) */
         CAmount nSubsidy = GetBlockValue(nHeight);
         BOOST_CHECK(nSubsidy <= 17500000 * COIN);
         nSum += nSubsidy;
     }
 
     for (int nHeight = 1; nHeight < 201; nHeight += 1) {
-        /* PoW premine (500,000 PHR) */
+        /* PoW premine (500,000 CRU) */
         CAmount nSubsidy = GetBlockValue(nHeight);
         BOOST_CHECK(nSubsidy <= 2500 * COIN);
         nSum += nSubsidy;

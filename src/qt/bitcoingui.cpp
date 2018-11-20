@@ -105,7 +105,7 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
                                                                             openAction(0),
                                                                             showHelpMessageAction(0),
                                                                             multiSendAction(0),
-                                                                            proposalAction(0),
+																			proposalAction(0),
                                                                             trayIcon(0),
                                                                             trayIconMenu(0),
                                                                             notificator(0),
@@ -113,6 +113,7 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
                                                                             explorerWindow(0),
                                                                             prevBlocks(0),
                                                                             spinnerFrame(0)
+
 {
     QFontDatabase::addApplicationFont(":/fonts/Hind-Bold");
     QFontDatabase::addApplicationFont(":/fonts/Hind-SemiBold");
@@ -124,7 +125,7 @@ BitcoinGUI::BitcoinGUI(const NetworkStyle* networkStyle, QWidget* parent) : QMai
 
     GUIUtil::restoreWindowGeometry("nWindow", QSize(850, 550), this);
 
-    QString windowTitle = tr("Phore Core") + " - ";
+    QString windowTitle = tr("Curium Core") + " - ";
 #ifdef ENABLE_WALLET
     /* if compiled with wallet support, -disablewallet can still disable the wallet */
     enableWallet = !GetBoolArg("-disablewallet", false);
@@ -319,7 +320,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     sendCoinsIcon.addFile(":/icons/send_off",QSize(40,40),QIcon::Normal,QIcon::Off);
 
     sendCoinsAction = new QAction(QIcon(), tr("&Send"), this);
-    sendCoinsAction->setStatusTip(tr("Send coins to a Phore address"));
+    sendCoinsAction->setStatusTip(tr("Send coins to a Curium address"));
     sendCoinsAction->setToolTip(sendCoinsAction->statusTip());
     sendCoinsAction->setCheckable(true);
     sendCoinsAction->setIcon(sendCoinsIcon);
@@ -335,7 +336,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     receiveCoinsIcon.addFile(":/icons/receiving_addresses_off",QSize(40,40),QIcon::Normal,QIcon::Off);
 
     receiveCoinsAction = new QAction(QIcon(), tr("&Receive"), this);
-    receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and phore: URIs)"));
+    receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and curium: URIs)"));
     receiveCoinsAction->setToolTip(receiveCoinsAction->statusTip());
     receiveCoinsAction->setCheckable(true);
     receiveCoinsAction->setIcon(receiveCoinsIcon);
@@ -367,7 +368,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     privacyIcon.addFile(":/icons/privacy_off",QSize(40,40),QIcon::Normal,QIcon::Off);
 
     privacyAction = new QAction(QIcon(":/icons/privacy"), tr("&Privacy"), this);
-    privacyAction->setStatusTip(tr("Privacy Actions for zPHR"));
+    privacyAction->setStatusTip(tr("Privacy Actions for zCRU"));
     privacyAction->setToolTip(privacyAction->statusTip());
     privacyAction->setCheckable(true);
     privacyAction->setIcon(privacyIcon);
@@ -424,6 +425,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     proposalAction->setStatusTip(tr("Browse proposals"));
     proposalAction->setToolTip(proposalAction->statusTip());
     proposalAction->setCheckable(true);
+
     proposalAction->setIcon(proposalIcon);
     proposalAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_7));
     tabGroup->addAction(proposalAction);
@@ -432,8 +434,8 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     quitAction->setStatusTip(tr("Quit application"));
     quitAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
     quitAction->setMenuRole(QAction::QuitRole);
-    aboutAction = new QAction(networkStyle->getAppIcon(), tr("&About Phore Core"), this);
-    aboutAction->setStatusTip(tr("Show information about Phore Core"));
+    aboutAction = new QAction(networkStyle->getAppIcon(), tr("&About Curium Core"), this);
+    aboutAction->setStatusTip(tr("Show information about Curium Core"));
     aboutAction->setMenuRole(QAction::AboutRole);
 #if QT_VERSION < 0x050000
     aboutQtAction = new QAction(QIcon(":/trolltech/qmessagebox/images/qtlogo-64.png"), tr("About &Qt"), this);
@@ -443,7 +445,7 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     aboutQtAction->setStatusTip(tr("Show information about Qt"));
     aboutQtAction->setMenuRole(QAction::AboutQtRole);
     optionsAction = new QAction(QIcon(":/icons/options"), tr("&Options..."), this);
-    optionsAction->setStatusTip(tr("Modify configuration options for Phore"));
+    optionsAction->setStatusTip(tr("Modify configuration options for Curium"));
     optionsAction->setMenuRole(QAction::PreferencesRole);
     toggleHideAction = new QAction(networkStyle->getAppIcon(), tr("&Show / Hide"), this);
     toggleHideAction->setStatusTip(tr("Show or hide the main Window"));
@@ -459,9 +461,9 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     unlockWalletAction->setToolTip(tr("Unlock wallet"));
     lockWalletAction = new QAction(tr("&Lock Wallet"), this);
     signMessageAction = new QAction(QIcon(":/icons/edit"), tr("Sign &message..."), this);
-    signMessageAction->setStatusTip(tr("Sign messages with your Phore addresses to prove you own them"));
+    signMessageAction->setStatusTip(tr("Sign messages with your Curium addresses to prove you own them"));
     verifyMessageAction = new QAction(QIcon(":/icons/transaction_0"), tr("&Verify message..."), this);
-    verifyMessageAction->setStatusTip(tr("Verify messages to ensure they were signed with specified Phore addresses"));
+    verifyMessageAction->setStatusTip(tr("Verify messages to ensure they were signed with specified Curium addresses"));
     bip38ToolAction = new QAction(QIcon(":/icons/key"), tr("&BIP38 tool"), this);
     bip38ToolAction->setToolTip(tr("Encrypt and decrypt private keys using a passphrase"));
     multiSendAction = new QAction(QIcon(":/icons/edit"), tr("&MultiSend"), this);
@@ -498,13 +500,16 @@ void BitcoinGUI::createActions(const NetworkStyle* networkStyle)
     multisigSignAction->setStatusTip(tr("Sign with a multisignature address"));
 
     openAction = new QAction(QApplication::style()->standardIcon(QStyle::SP_FileIcon), tr("Open &URI..."), this);
-    openAction->setStatusTip(tr("Open a Phore: URI or payment request"));
+    openAction->setStatusTip(tr("Open a Curium: URI or payment request"));
     openBlockExplorerAction = new QAction(QIcon(":/icons/explorer"), tr("&Blockchain explorer"), this);
     openBlockExplorerAction->setStatusTip(tr("Block explorer window"));
 
     showHelpMessageAction = new QAction(QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation), tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
-    showHelpMessageAction->setStatusTip(tr("Show the Phore Core help message to get a list with possible Phore command-line options"));
+    showHelpMessageAction->setStatusTip(tr("Show the Curium Core help message to get a list with possible Curium command-line options"));
+
+    connect(proposalAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
+    connect(proposalAction, SIGNAL(triggered()), this, SLOT(gotoProposalPage()));
 
     connect(proposalAction, SIGNAL(triggered()), this, SLOT(showNormalIfMinimized()));
     connect(proposalAction, SIGNAL(triggered()), this, SLOT(gotoProposalPage()));
@@ -746,7 +751,7 @@ void BitcoinGUI::createTrayIcon(const NetworkStyle* networkStyle)
 {
 #ifndef Q_OS_MAC
     trayIcon = new QSystemTrayIcon(this);
-    QString toolTip = tr("Phore Core client") + " " + networkStyle->getTitleAddText();
+    QString toolTip = tr("Curium Core client") + " " + networkStyle->getTitleAddText();
     trayIcon->setToolTip(toolTip);
     trayIcon->setIcon(networkStyle->getAppIcon());
     trayIcon->hide();
@@ -964,7 +969,7 @@ void BitcoinGUI::setNumConnections(int count)
     }
     QIcon connectionItem = QIcon(icon).pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE);
     labelConnectionsIcon->setIcon(connectionItem);
-    labelConnectionsIcon->setToolTip(tr("%n active connection(s) to Phore network", "", count));
+    labelConnectionsIcon->setToolTip(tr("%n active connection(s) to Curium network", "", count));
 }
 
 void BitcoinGUI::setNumBlocks(int count)
@@ -1094,7 +1099,7 @@ void BitcoinGUI::setNumBlocks(int count)
 
 void BitcoinGUI::message(const QString& title, const QString& message, unsigned int style, bool* ret)
 {
-    QString strTitle = tr("Phore Core"); // default title
+    QString strTitle = tr("Curium Core"); // default title
     // Default to information icon
     int nMBoxIcon = QMessageBox::Information;
     int nNotifyIcon = Notificator::Information;
@@ -1119,7 +1124,7 @@ void BitcoinGUI::message(const QString& title, const QString& message, unsigned 
             break;
         }
     }
-    // Append title to "Phore - "
+    // Append title to "Curium - "
     if (!msgType.isEmpty())
         strTitle += " - " + msgType;
 
