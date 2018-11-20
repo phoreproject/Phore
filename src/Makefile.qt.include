@@ -36,6 +36,9 @@ QT_TS = \
 
 QT_FORMS_UI = \
   qt/forms/addressbookpage.ui \
+  qt/forms/privkeypage.ui \
+  qt/forms/outputspage.ui \
+  qt/forms/configuremasternodepage.ui \
   qt/forms/askpassphrasedialog.ui \
   qt/forms/bip38tooldialog.ui \
   qt/forms/coincontroldialog.ui \
@@ -62,6 +65,9 @@ QT_FORMS_UI = \
 
 QT_MOC_CPP = \
   qt/moc_addressbookpage.cpp \
+  qt/moc_privkeypage.cpp \
+  qt/moc_outputspage.cpp \
+  qt/moc_configuremasternodepage.cpp \
   qt/moc_addresstablemodel.cpp \
   qt/moc_askpassphrasedialog.cpp \
   qt/moc_bantablemodel.cpp \
@@ -187,6 +193,9 @@ BITCOIN_QT_H = \
   qt/rpcconsole.h \
   qt/sendcoinsdialog.h \
   qt/sendcoinsentry.h \
+  qt/privkeypage.h \
+  qt/outputspage.h \
+  qt/configuremasternodepage.h \
   qt/signverifymessagedialog.h \
   qt/splashscreen.h \
   qt/trafficgraphwidget.h \
@@ -267,7 +276,7 @@ RES_ICONS = \
   qt/res/icons/tx_inout.png \
   qt/res/icons/tx_input.png \
   qt/res/icons/tx_output.png \
-  qt/res/icons/tx_masternode.png \
+  qt/res/icons/tx_mined.png \
   qt/res/icons/unit_phore.png \
   qt/res/icons/unit_mphore.png \
   qt/res/icons/unit_uphore.png \
@@ -307,6 +316,9 @@ endif
 if ENABLE_WALLET
 BITCOIN_QT_CPP += \
   qt/addressbookpage.cpp \
+  qt/privkeypage.cpp \
+  qt/outputspage.cpp \
+  qt/configuremasternodepage.cpp \
   qt/addresstablemodel.cpp \
   qt/askpassphrasedialog.cpp \
   qt/bip38tooldialog.cpp \
