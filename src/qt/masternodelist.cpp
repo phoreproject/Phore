@@ -334,6 +334,7 @@ void MasternodeList::on_configureMasternodeButton_clicked()
     }
 }
 
+
 void MasternodeList::openEditConfigureMasternodePage(QString strAlias, QString strIP, QString strPrivKey, QString strTxHash, QString strOutputIndex, int count)
 {
     ConfigureMasternodePage dlg(ConfigureMasternodePage::EditConfigureMasternode, this);
@@ -343,8 +344,7 @@ void MasternodeList::openEditConfigureMasternodePage(QString strAlias, QString s
 	dlg.loadTxHash(strTxHash);
 	dlg.loadOutputIndex(strOutputIndex);
 	dlg.counter(count);
-	std::string mnalias = strAlias.toStdString();
-	dlg.MNAliasCache(mnalias);
+	dlg.MNAliasCache(strAlias);
     if ( QDialog::Accepted == dlg.exec() )
     {
       updateMyNodeList(true);
