@@ -1,97 +1,123 @@
-// Copyright (c) 2018 The Phore developers
-// Copyright (c) 2018 The Curium developers
+// Copyright (c) 2014-2015 The Dash developers
+// Copyright (c) 2015-2017 The PIVX developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_QT_CONFIGUREMASTERNODEPAGE_H
-#define BITCOIN_QT_CONFIGUREMASTERNODEPAGE_H
+#ifndef SRC_MASTERNODECONFIG_H_
+#define SRC_MASTERNODECONFIG_H_
 
-#include "masternodelist.h"
-#include "wallet.h"
-
-#include <QAbstractButton>
-#include <QAction>
-#include <QDialog>
-#include <QList>
-#include <QMenu>
 #include <string>
-#include <QPoint>
-#include <QString>
-#include <QTreeWidgetItem>
-#include <univalue.h>
+#include <vector>
 
-class WalletModel;
-class MasternodeList;
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/fstream.hpp>
 
-namespace Ui
+class CMasternodeConfig;
+extern CMasternodeConfig masternodeConfig;
+
+class CMasternodeConfig
 {
-class ConfigureMasternodePage;
-}
-
-QT_BEGIN_NAMESPACE
-class QDataWidgetMapper;
-QT_END_NAMESPACE
-
-/** Dialog for editing an address and associated information.
- */
-class ConfigureMasternodePage : public QDialog
-{
-    Q_OBJECT
-
 public:
-    enum Mode {
-        NewConfigureMasternode,
-        EditConfigureMasternode
+    class CMasternodeEntry
+    {
+    private:
+        std::string alias;
+        std::string ip;
+        std::string privKey;
+        std::string txHash;
+        std::string outputIndex;
+
+    public:
+        CMasternodeEntry(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex)
+        {
+            this->alias = alias;
+            this->ip = ip;
+            this->privKey = privKey;
+            this->txHash = txHash;
+            this->outputIndex = outputIndex;
+        }
+
+        const std::string& getAlias() const
+        {
+            return alias;
+        }
+
+        void setAlias(const std::string& alias)
+        {
+            this->alias = alias;
+        }
+
+        const std::string& getOutputIndex() const
+        {
+            return outputIndex;
+        }
+
+        bool castOutputIndex(int& n);
+
+        void setOutputIndex(const std::string& outputIndex)
+        {
+            this->outputIndex = outputIndex;
+        }
+
+        const std::string& getPrivKey() const
+        {
+            return privKey;
+        }
+
+        void setPrivKey(const std::string& privKey)
+        {
+            this->privKey = privKey;
+        }
+
+        const std::string& getTxHash() const
+        {
+            return txHash;
+        }
+
+        void setTxHash(const std::string& txHash)
+        {
+            this->txHash = txHash;
+        }
+
+        const std::string& getIp() const
+        {
+            return ip;
+        }
+
+        void setIp(const std::string& ip)
+        {
+            this->ip = ip;
+        }
     };
 
-    explicit ConfigureMasternodePage(Mode mode, QWidget* parent);
-    ~ConfigureMasternodePage();
+    CMasternodeConfig()
+    {
+        entries = std::vector<CMasternodeEntry>();
+    }
 
-	void counter(int counter);
-	void MNAliasCache(QString MnAliasCache);
-    void loadAlias(QString strAlias);
-    void loadIP(QString strIP);
-    void loadPrivKey(QString strPrivKey);
-    void loadTxHash(QString strTxHash);
-    void loadOutputIndex(QString strOutputIndex);
-	void updateAlias(std::string Alias, std::string IP, std::string PrivKey, std::string TxHash, std::string OutputIndex, std::string mnAlias);
-	int getCounters()
-	{
-		return counters;
-	}
-	
-	int setCounters(int counter)
-	{
-		counters = counter;
-	}
-	
-	QString getMnAliasCache()
-	{
-		return mnAliasCache;
-	}
-	
-	std::string setMnAliasCache(QString mnAliasCaches)
-	{
-		mnAliasCache = mnAliasCaches;
-	}
+    void clear();
+    bool read(std::string& strErr);
+	void writeToMasternodeConf();
+    void add(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex);
+	void deleteAlias(int count);
 
-    QString getAddress() const;
-    void setAddress(const QString& address);
+    std::vector<CMasternodeEntry>& getEntries()
+    {
+        return entries;
+    }
 
-public slots:
-    void accept();
-    void on_AutoFillPrivKey_clicked();
-    void on_AutoFillOutputs_clicked();
+    int getCount()
+    {
+        int c = -1;
+        BOOST_FOREACH (CMasternodeEntry e, entries) {
+            if (e.getAlias() != "") c++;
+        }
+        return c;
+    }
 
 private:
-    void saveCurrentRow();
-	int counters;
-	QString mnAliasCache;
-    Ui::ConfigureMasternodePage* ui;
-    QDataWidgetMapper* mapper;
-    Mode mode;
-
-    QString address;
+    std::vector<CMasternodeEntry> entries;
 };
 
-#endif // BITCOIN_QT_EDITADDRESSDIALOG_H
+
+#endif /* SRC_MASTERNODECONFIG_H_ */
