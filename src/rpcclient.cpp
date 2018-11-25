@@ -85,6 +85,7 @@ static const CRPCConvertParam vRPCConvertParams[] =
         { "searchrawtransactions", 2 },
         { "searchrawtransactions", 3 },
         { "searchrawtransactions", 4 },
+        {"sendrawtransaction", 1},
         {"sendrawtransaction", 2},
         {"gettxout", 1},
         {"gettxout", 2},
