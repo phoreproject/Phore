@@ -83,6 +83,7 @@ OptionsDialog::OptionsDialog(QWidget* parent, bool enableWallet) : QDialog(paren
     
     /* Theme selector static themes */
     ui->theme->addItem(QString("Default"), QVariant("default"));
+    ui->theme->addItem(QString("Dark"), QVariant("dark"));
 
     /* Preferred Zerocoin Denominations */
     ui->preferredDenom->addItem(QString(tr("Any")), QVariant("0"));
