@@ -467,7 +467,7 @@ UniValue createrawtransaction(const UniValue& params, bool fHelp)
         const UniValue& data    = find_value(o, "data");
         const UniValue& address = find_value(o, "address");
         const UniValue& amount  = find_value(o, "amount");
-        const CAmount nAmount   = (amount.isNum()) ? AmountFromValue(amount) : AmountFromValue(0.01);
+        const CAmount nAmount   = (amount.isNum()) ? AmountFromValue(amount) : AmountFromValue(0.0001);
 
         if (data.isStr()) {
             if (data.get_str().length() > 80)
