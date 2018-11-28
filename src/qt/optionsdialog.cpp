@@ -83,6 +83,7 @@ OptionsDialog::OptionsDialog(QWidget* parent, bool enableWallet) : QDialog(paren
     
     /* Theme selector static themes */
     ui->theme->addItem(QString("Default"), QVariant("default"));
+    ui->theme->addItem(QString("Dark"), QVariant("dark"));
 
     /* Preferred Zerocoin Denominations */
     ui->preferredDenom->addItem(QString(tr("Any")), QVariant("0"));
@@ -98,12 +99,15 @@ OptionsDialog::OptionsDialog(QWidget* parent, bool enableWallet) : QDialog(paren
     /* Theme selector external themes */
     boost::filesystem::path pathAddr = GetDataDir() / "themes";
     QDir dir(pathAddr.string().c_str());
-    dir.setFilter(QDir::Dirs | QDir::NoSymLinks | QDir::NoDotAndDotDot);
+    dir.setNameFilters(QStringList() << "*.css");
     QFileInfoList list = dir.entryInfoList();
+
+    // LogPrintf("DIR PATH -- %s\n", pathAddr.string().c_str());
+    // LogPrintf("DIR SIZE -- %i\n", list.size());
 
     for (int i = 0; i < list.size(); ++i) {
         QFileInfo fileInfo = list.at(i);
-        ui->theme->addItem(fileInfo.fileName(), QVariant(fileInfo.fileName()));
+        ui->theme->addItem(fileInfo.baseName(), QVariant(fileInfo.fileName()));
     }
 
     /* Language selector */

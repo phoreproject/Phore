@@ -166,365 +166,333 @@
                 <layout class="QHBoxLayout" name="horizontalLayout_left">
                  <item>
                   <widget class="QFrame" name="cardFrame__verticalFrameLeft">
-                   <layout class="QVBoxLayout" name="verticalLayout_2">
-                    <item>
-                     <layout class="QVBoxLayout" name="verticalLayout_3">
+                   <layout class="QGridLayout" name="gridLayout">
+                    <item row="0" column="0">
+                     <layout class="QHBoxLayout" name="horizontalLayout_3">
                       <item>
-                       <layout class="QHBoxLayout" name="horizontalLayout_3">
-                        <item>
-                         <widget class="QLabel" name="heading3__labelzODINActions">
-                          <property name="font">
-                           <font>
-                            <pointsize>12</pointsize>
-                            <weight>75</weight>
-                            <bold>true</bold>
-                           </font>
-                          </property>
-                          <property name="text">
-                           <string>Zerocoin Actions:</string>
-                          </property>
-                          <property name="alignment">
-                           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QLabel" name="labelzODINSyncStatus">
-                          <property name="toolTip">
-                           <string>The displayed information may be out of date. Your wallet automatically synchronizes with the ODIN network after a connection is established, but this process has not completed yet.</string>
-                          </property>
-                          <property name="styleSheet">
-                           <string notr="true">QLabel { color: red; }</string>
-                          </property>
-                          <property name="text">
-                           <string notr="true">(out of sync)</string>
-                          </property>
-                          <property name="alignment">
-                           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <spacer name="horizontalSpacer">
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
-                          </property>
-                          <property name="sizeHint" stdset="0">
-                           <size>
-                            <width>40</width>
-                            <height>20</height>
-                           </size>
-                          </property>
-                         </spacer>
-                        </item>
-                       </layout>
-                      </item>
-                      <item>
-                       <widget class="Line" name="lineUpperLeft">
-                        <property name="minimumSize">
-                         <size>
-                          <width>0</width>
-                          <height>1</height>
-                         </size>
+                       <widget class="QLabel" name="heading3__labelzODINActions">
+                        <property name="font">
+                         <font>
+                          <pointsize>12</pointsize>
+                          <weight>75</weight>
+                          <bold>true</bold>
+                         </font>
                         </property>
-                        <property name="maximumSize">
-                         <size>
-                          <width>16777215</width>
-                          <height>1</height>
-                         </size>
+                        <property name="text">
+                         <string>Zerocoin Actions:</string>
                         </property>
-                        <property name="frameShadow">
-                         <enum>QFrame::Sunken</enum>
-                        </property>
-                        <property name="orientation">
-                         <enum>Qt::Horizontal</enum>
+                        <property name="alignment">
+                         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                         </property>
                        </widget>
                       </item>
                       <item>
-                       <layout class="QHBoxLayout" name="horizontalLayout_4">
+                       <widget class="QLabel" name="labelzODINSyncStatus">
+                        <property name="toolTip">
+                         <string>The displayed information may be out of date. Your wallet automatically synchronizes with the ODIN network after a connection is established, but this process has not completed yet.</string>
+                        </property>
+                        <property name="styleSheet">
+                         <string notr="true">QLabel { color: red; }</string>
+                        </property>
+                        <property name="text">
+                         <string notr="true">(out of sync)</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="horizontalSpacer">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="Line" name="lineUpperLeft">
+                      <property name="minimumSize">
+                       <size>
+                        <width>0</width>
+                        <height>1</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>16777215</width>
+                        <height>1</height>
+                       </size>
+                      </property>
+                      <property name="frameShadow">
+                       <enum>QFrame::Sunken</enum>
+                      </property>
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="2" column="0">
+                     <layout class="QHBoxLayout" name="horizontalLayout_4">
+                      <item>
+                       <widget class="QPushButton" name="pushButtonMintzODIN">
+                        <property name="minimumSize">
+                         <size>
+                          <width>131</width>
+                          <height>0</height>
+                         </size>
+                        </property>
+                        <property name="toolTip">
+                         <string>Enter an amount of ODIN to convert to zODIN</string>
+                        </property>
+                        <property name="text">
+                         <string>Mint Zerocoin</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLineEdit" name="labelMintAmountValue">
+                        <property name="minimumSize">
+                         <size>
+                          <width>60</width>
+                          <height>0</height>
+                         </size>
+                        </property>
+                        <property name="text">
+                         <string>0</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="labelzODIN_2">
+                        <property name="text">
+                         <string>zODIN</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="labelzODINAmountText">
+                        <property name="toolTip">
+                         <string>Available for minting are coins which are confirmed and not locked or Masternode collaterals.</string>
+                        </property>
+                        <property name="text">
+                         <string>Available for Minting:</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="labelzODINAmountValue">
+                        <property name="font">
+                         <font>
+                          <weight>75</weight>
+                          <bold>true</bold>
+                         </font>
+                        </property>
+                        <property name="toolTip">
+                         <string>Enter an amount of ODIN to convert to zODIN</string>
+                        </property>
+                        <property name="text">
+                         <string>0.000 000 00 ODIN</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="horizontalSpacer_2">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </item>
+                    <item row="3" column="0">
+                     <layout class="QHBoxLayout" name="horizontalLayout_5">
+                      <item>
+                       <widget class="QPushButton" name="pushButtonCoinControl">
+                        <property name="minimumSize">
+                         <size>
+                          <width>131</width>
+                          <height>27</height>
+                         </size>
+                        </property>
+                        <property name="maximumSize">
+                         <size>
+                          <width>131</width>
+                          <height>16777215</height>
+                         </size>
+                        </property>
+                        <property name="styleSheet">
+                         <string notr="true"/>
+                        </property>
+                        <property name="text">
+                         <string>Coin Control</string>
+                        </property>
+                        <property name="autoDefault">
+                         <bool>false</bool>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <layout class="QVBoxLayout" name="verticalLayout_4">
                         <item>
-                         <widget class="QPushButton" name="pushButtonMintzODIN">
+                         <widget class="QLabel" name="labelCoinControlQuantityText">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
                           <property name="minimumSize">
                            <size>
-                            <width>131</width>
+                            <width>0</width>
                             <height>0</height>
                            </size>
                           </property>
-                          <property name="toolTip">
-                           <string>Enter an amount of ODIN to convert to zODIN</string>
-                          </property>
-                          <property name="text">
-                           <string>Mint Zerocoin</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QLineEdit" name="labelMintAmountValue">
-                          <property name="minimumSize">
+                          <property name="maximumSize">
                            <size>
-                            <width>60</width>
-                            <height>0</height>
+                            <width>16777215</width>
+                            <height>16777215</height>
                            </size>
                           </property>
-                          <property name="text">
-                           <string>0</string>
-                          </property>
-                          <property name="alignment">
-                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QLabel" name="labelzODIN_2">
-                          <property name="text">
-                           <string>zODIN</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QLabel" name="labelzODINAmountText">
-                          <property name="toolTip">
-                           <string>Available for minting are coins which are confirmed and not locked or Masternode collaterals.</string>
-                          </property>
-                          <property name="text">
-                           <string>Available for Minting:</string>
-                          </property>
-                          <property name="alignment">
-                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QLabel" name="labelzODINAmountValue">
                           <property name="font">
                            <font>
                             <weight>75</weight>
                             <bold>true</bold>
                            </font>
                           </property>
-                          <property name="toolTip">
-                           <string>Enter an amount of ODIN to convert to zODIN</string>
-                          </property>
                           <property name="text">
-                           <string>0.000 000 00 ODIN</string>
+                           <string>Quantity:</string>
                           </property>
                           <property name="alignment">
                            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                           </property>
+                          <property name="margin">
+                           <number>0</number>
+                          </property>
                          </widget>
                         </item>
                         <item>
-                         <spacer name="horizontalSpacer_2">
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
+                         <widget class="QLabel" name="labelCoinControlAmountText">
+                          <property name="enabled">
+                           <bool>true</bool>
                           </property>
-                          <property name="sizeHint" stdset="0">
-                           <size>
-                            <width>40</width>
-                            <height>20</height>
-                           </size>
-                          </property>
-                         </spacer>
-                        </item>
-                        <item>
-                         <widget class="QPushButton" name="pushButtonSpentReset">
-                          <property name="maximumSize">
-                           <size>
-                            <width>80</width>
-                            <height>16777215</height>
-                           </size>
-                          </property>
-                          <property name="toolTip">
-                           <string>Reset Zerocoin Wallet DB. Deletes transactions that did not make it into the blockchain.</string>
+                          <property name="font">
+                           <font>
+                            <weight>75</weight>
+                            <bold>true</bold>
+                           </font>
                           </property>
                           <property name="text">
-                           <string>Reset</string>
+                           <string>Amount:</string>
+                          </property>
+                          <property name="margin">
+                           <number>0</number>
                           </property>
                          </widget>
                         </item>
                        </layout>
                       </item>
                       <item>
-                       <layout class="QHBoxLayout" name="horizontalLayout_5">
+                       <layout class="QVBoxLayout" name="verticalLayout_6">
                         <item>
-                         <widget class="QPushButton" name="pushButtonCoinControl">
+                         <widget class="QLabel" name="labelCoinControlQuantity">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
+                          </property>
                           <property name="minimumSize">
                            <size>
-                            <width>131</width>
-                            <height>27</height>
+                            <width>0</width>
+                            <height>0</height>
                            </size>
                           </property>
                           <property name="maximumSize">
                            <size>
-                            <width>131</width>
+                            <width>16777215</width>
                             <height>16777215</height>
                            </size>
                           </property>
-                          <property name="styleSheet">
-                           <string notr="true"/>
+                          <property name="cursor">
+                           <cursorShape>IBeamCursor</cursorShape>
+                          </property>
+                          <property name="contextMenuPolicy">
+                           <enum>Qt::ActionsContextMenu</enum>
                           </property>
                           <property name="text">
-                           <string>Coin Control</string>
+                           <string notr="true">0</string>
                           </property>
-                          <property name="autoDefault">
-                           <bool>false</bool>
+                          <property name="margin">
+                           <number>0</number>
+                          </property>
+                          <property name="textInteractionFlags">
+                           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
                           </property>
                          </widget>
                         </item>
                         <item>
-                         <layout class="QVBoxLayout" name="verticalLayout_4">
-                          <item>
-                           <widget class="QLabel" name="labelCoinControlQuantityText">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                             <size>
-                              <width>0</width>
-                              <height>0</height>
-                             </size>
-                            </property>
-                            <property name="maximumSize">
-                             <size>
-                              <width>16777215</width>
-                              <height>16777215</height>
-                             </size>
-                            </property>
-                            <property name="font">
-                             <font>
-                              <weight>75</weight>
-                              <bold>true</bold>
-                             </font>
-                            </property>
-                            <property name="text">
-                             <string>Quantity:</string>
-                            </property>
-                            <property name="alignment">
-                             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                            </property>
-                            <property name="margin">
-                             <number>0</number>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="labelCoinControlAmountText">
-                            <property name="enabled">
-                             <bool>true</bool>
-                            </property>
-                            <property name="font">
-                             <font>
-                              <weight>75</weight>
-                              <bold>true</bold>
-                             </font>
-                            </property>
-                            <property name="text">
-                             <string>Amount:</string>
-                            </property>
-                            <property name="margin">
-                             <number>0</number>
-                            </property>
-                           </widget>
-                          </item>
-                         </layout>
-                        </item>
-                        <item>
-                         <layout class="QVBoxLayout" name="verticalLayout_6">
-                          <item>
-                           <widget class="QLabel" name="labelCoinControlQuantity">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="minimumSize">
-                             <size>
-                              <width>0</width>
-                              <height>0</height>
-                             </size>
-                            </property>
-                            <property name="maximumSize">
-                             <size>
-                              <width>16777215</width>
-                              <height>16777215</height>
-                             </size>
-                            </property>
-                            <property name="cursor">
-                             <cursorShape>IBeamCursor</cursorShape>
-                            </property>
-                            <property name="contextMenuPolicy">
-                             <enum>Qt::ActionsContextMenu</enum>
-                            </property>
-                            <property name="text">
-                             <string notr="true">0</string>
-                            </property>
-                            <property name="margin">
-                             <number>0</number>
-                            </property>
-                            <property name="textInteractionFlags">
-                             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="labelCoinControlAmount">
-                            <property name="enabled">
-                             <bool>true</bool>
-                            </property>
-                            <property name="cursor">
-                             <cursorShape>IBeamCursor</cursorShape>
-                            </property>
-                            <property name="contextMenuPolicy">
-                             <enum>Qt::ActionsContextMenu</enum>
-                            </property>
-                            <property name="text">
-                             <string notr="true">0.00 ODIN</string>
-                            </property>
-                            <property name="textInteractionFlags">
-                             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-                            </property>
-                           </widget>
-                          </item>
-                         </layout>
-                        </item>
-                        <item>
-                         <spacer name="horizontalSpacer_3">
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
+                         <widget class="QLabel" name="labelCoinControlAmount">
+                          <property name="enabled">
+                           <bool>true</bool>
                           </property>
-                          <property name="sizeHint" stdset="0">
-                           <size>
-                            <width>40</width>
-                            <height>20</height>
-                           </size>
+                          <property name="cursor">
+                           <cursorShape>IBeamCursor</cursorShape>
                           </property>
-                         </spacer>
-                        </item>
-                        <item>
-                         <widget class="QPushButton" name="pushButtonMintReset">
-                          <property name="maximumSize">
-                           <size>
-                            <width>80</width>
-                            <height>16777215</height>
-                           </size>
-                          </property>
-                          <property name="toolTip">
-                           <string>Rescan the complete blockchain for  Zerocoin mints and their meta-data.</string>
+                          <property name="contextMenuPolicy">
+                           <enum>Qt::ActionsContextMenu</enum>
                           </property>
                           <property name="text">
-                           <string>ReScan</string>
+                           <string notr="true">0.00 ODIN</string>
+                          </property>
+                          <property name="textInteractionFlags">
+                           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
                           </property>
                          </widget>
                         </item>
                        </layout>
                       </item>
                       <item>
-                       <spacer name="horizontalSpacer_18">
+                       <spacer name="horizontalSpacer_3">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </item>
+                    <item row="4" column="0">
+                     <layout class="QHBoxLayout" name="horizontalLayout_8">
+                      <item>
+                       <spacer name="horizontalSpacer_30">
                         <property name="orientation">
                          <enum>Qt::Horizontal</enum>
                         </property>
@@ -537,191 +505,476 @@
                        </spacer>
                       </item>
                       <item>
-                       <widget class="QPlainTextEdit" name="TEMintStatus">
-                        <property name="font">
-                         <font>
-                          <pointsize>8</pointsize>
-                         </font>
-                        </property>
-                        <property name="toolTip">
-                         <string>Status and/or Mesages from the last Mint Action.</string>
-                        </property>
-                        <property name="frameShape">
-                         <enum>QFrame::Panel</enum>
-                        </property>
-                        <property name="frameShadow">
-                         <enum>QFrame::Sunken</enum>
-                        </property>
-                        <property name="lineWidth">
-                         <number>2</number>
-                        </property>
-                        <property name="midLineWidth">
-                         <number>2</number>
-                        </property>
-                        <property name="verticalScrollBarPolicy">
-                         <enum>Qt::ScrollBarAlwaysOn</enum>
-                        </property>
-                        <property name="horizontalScrollBarPolicy">
-                         <enum>Qt::ScrollBarAlwaysOff</enum>
-                        </property>
-                        <property name="readOnly">
-                         <bool>true</bool>
-                        </property>
-                        <property name="plainText">
-                         <string notr="true"/>
-                        </property>
-                        <property name="backgroundVisible">
-                         <bool>true</bool>
-                        </property>
-                       </widget>
-                      </item>
-                      <item>
-                       <widget class="Line" name="line">
+                       <widget class="QPushButton" name="pushButtonMintReset">
                         <property name="minimumSize">
                          <size>
-                          <width>0</width>
-                          <height>1</height>
+                          <width>130</width>
+                          <height>0</height>
                          </size>
                         </property>
                         <property name="maximumSize">
                          <size>
                           <width>16777215</width>
-                          <height>1</height>
+                          <height>16777215</height>
                          </size>
                         </property>
-                        <property name="orientation">
-                         <enum>Qt::Horizontal</enum>
+                        <property name="toolTip">
+                         <string>Rescan the complete blockchain for  Zerocoin mints and their meta-data.</string>
+                        </property>
+                        <property name="text">
+                         <string>ReScan</string>
                         </property>
                        </widget>
                       </item>
                       <item>
-                       <layout class="QHBoxLayout" name="horizontalLayout_24">
-                        <property name="leftMargin">
-                         <number>0</number>
+                       <widget class="QPushButton" name="pushButtonSpentReset">
+                        <property name="minimumSize">
+                         <size>
+                          <width>130</width>
+                          <height>0</height>
+                         </size>
                         </property>
-                        <property name="bottomMargin">
-                         <number>0</number>
+                        <property name="maximumSize">
+                         <size>
+                          <width>16777215</width>
+                          <height>16777215</height>
+                         </size>
                         </property>
-                        <item>
-                         <widget class="QPushButton" name="pushButtonzODINControl">
-                          <property name="text">
-                           <string>zODIN Control</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QLabel" name="labelzODINSelected">
-                          <property name="text">
-                           <string>zODIN Selected:</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QLabel" name="labelzODINSelected_int">
-                          <property name="text">
-                           <string>0</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <spacer name="horizontalSpacer_17">
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
-                          </property>
-                          <property name="sizeType">
-                           <enum>QSizePolicy::Fixed</enum>
-                          </property>
-                          <property name="sizeHint" stdset="0">
-                           <size>
-                            <width>40</width>
-                            <height>20</height>
-                           </size>
-                          </property>
-                         </spacer>
-                        </item>
-                        <item>
-                         <widget class="QLabel" name="labelQuantitySelected">
-                          <property name="text">
-                           <string>Quantity Selected:</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QLabel" name="labelQuantitySelected_int">
-                          <property name="text">
-                           <string>0</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <spacer name="horizontalSpacer_19">
-                          <property name="orientation">
-                           <enum>Qt::Horizontal</enum>
-                          </property>
-                          <property name="sizeHint" stdset="0">
-                           <size>
-                            <width>40</width>
-                            <height>20</height>
-                           </size>
-                          </property>
-                         </spacer>
-                        </item>
-                       </layout>
+                        <property name="toolTip">
+                         <string>Reset Zerocoin Wallet DB. Deletes transactions that did not make it into the blockchain.</string>
+                        </property>
+                        <property name="text">
+                         <string>Reset</string>
+                        </property>
+                       </widget>
+                      </item>
+                     </layout>
+                    </item>
+                    <item row="5" column="0">
+                     <spacer name="horizontalSpacer_18">
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                      <property name="sizeHint" stdset="0">
+                       <size>
+                        <width>531</width>
+                        <height>20</height>
+                       </size>
+                      </property>
+                     </spacer>
+                    </item>
+                    <item row="6" column="0">
+                     <widget class="QPlainTextEdit" name="TEMintStatus">
+                      <property name="font">
+                       <font>
+                        <pointsize>8</pointsize>
+                       </font>
+                      </property>
+                      <property name="toolTip">
+                       <string>Status and/or Mesages from the last Mint Action.</string>
+                      </property>
+                      <property name="frameShape">
+                       <enum>QFrame::Panel</enum>
+                      </property>
+                      <property name="frameShadow">
+                       <enum>QFrame::Sunken</enum>
+                      </property>
+                      <property name="lineWidth">
+                       <number>2</number>
+                      </property>
+                      <property name="midLineWidth">
+                       <number>2</number>
+                      </property>
+                      <property name="verticalScrollBarPolicy">
+                       <enum>Qt::ScrollBarAlwaysOn</enum>
+                      </property>
+                      <property name="horizontalScrollBarPolicy">
+                       <enum>Qt::ScrollBarAlwaysOff</enum>
+                      </property>
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                      <property name="plainText">
+                       <string notr="true"/>
+                      </property>
+                      <property name="backgroundVisible">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="7" column="0">
+                     <widget class="Line" name="line">
+                      <property name="minimumSize">
+                       <size>
+                        <width>0</width>
+                        <height>1</height>
+                       </size>
+                      </property>
+                      <property name="maximumSize">
+                       <size>
+                        <width>16777215</width>
+                        <height>1</height>
+                       </size>
+                      </property>
+                      <property name="orientation">
+                       <enum>Qt::Horizontal</enum>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="8" column="0">
+                     <layout class="QHBoxLayout" name="horizontalLayout_24">
+                      <property name="leftMargin">
+                       <number>0</number>
+                      </property>
+                      <property name="bottomMargin">
+                       <number>0</number>
+                      </property>
+                      <item>
+                       <widget class="QPushButton" name="pushButtonzODINControl">
+                        <property name="minimumSize">
+                         <size>
+                          <width>130</width>
+                          <height>0</height>
+                         </size>
+                        </property>
+                        <property name="text">
+                         <string>zODIN Control</string>
+                        </property>
+                       </widget>
                       </item>
                       <item>
-                       <layout class="QHBoxLayout" name="horizontalLayout_6">
-                        <item>
-                         <widget class="QPushButton" name="pushButtonSpendzODIN">
-                          <property name="minimumSize">
-                           <size>
-                            <width>131</width>
-                            <height>0</height>
-                           </size>
-                          </property>
-                          <property name="toolTip">
-                           <string>Spend Zerocoin. Without 'Pay To:' address creates payments to yourself.</string>
-                          </property>
-                          <property name="text">
-                           <string>Spend Zerocoin</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QLabel" name="labelzODINBalanceText">
-                          <property name="toolTip">
-                           <string>Available (mature and spendable) zODIN for spending</string>
-                          </property>
-                          <property name="text">
-                           <string>Available Balance:</string>
-                          </property>
-                          <property name="alignment">
-                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                          </property>
-                         </widget>
-                        </item>
-                        <item>
-                         <widget class="QLabel" name="labelzAvailableAmount_2">
-                          <property name="font">
-                           <font>
-                            <weight>75</weight>
-                            <bold>true</bold>
-                           </font>
-                          </property>
-                          <property name="toolTip">
-                           <string>Available (mature and spendable) zODIN for spending
+                       <widget class="QLabel" name="labelzODINSelected">
+                        <property name="text">
+                         <string>zODIN Selected:</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="labelzODINSelected_int">
+                        <property name="text">
+                         <string>0</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="horizontalSpacer_17">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeType">
+                         <enum>QSizePolicy::Fixed</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="labelQuantitySelected">
+                        <property name="text">
+                         <string>Quantity Selected:</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="labelQuantitySelected_int">
+                        <property name="text">
+                         <string>0</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="horizontalSpacer_19">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                     </layout>
+                    </item>
+                    <item row="9" column="0">
+                     <layout class="QHBoxLayout" name="horizontalLayout_6">
+                      <item>
+                       <widget class="QPushButton" name="pushButtonSpendzODIN">
+                        <property name="minimumSize">
+                         <size>
+                          <width>131</width>
+                          <height>0</height>
+                         </size>
+                        </property>
+                        <property name="toolTip">
+                         <string>Spend Zerocoin. Without 'Pay To:' address creates payments to yourself.</string>
+                        </property>
+                        <property name="text">
+                         <string>Spend Zerocoin</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="labelzODINBalanceText">
+                        <property name="toolTip">
+                         <string>Available (mature and spendable) zODIN for spending</string>
+                        </property>
+                        <property name="text">
+                         <string>Available Balance:</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="labelzAvailableAmount_2">
+                        <property name="font">
+                         <font>
+                          <weight>75</weight>
+                          <bold>true</bold>
+                         </font>
+                        </property>
+                        <property name="toolTip">
+                         <string>Available (mature and spendable) zODIN for spending
 
 zODIN are mature when they have more than 20 confirmations AND more than 1 mint of the same denomination after them were minted</string>
+                        </property>
+                        <property name="text">
+                         <string>0 zODIN</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <spacer name="horizontalSpacer_4">
+                        <property name="orientation">
+                         <enum>Qt::Horizontal</enum>
+                        </property>
+                        <property name="sizeHint" stdset="0">
+                         <size>
+                          <width>40</width>
+                          <height>20</height>
+                         </size>
+                        </property>
+                       </spacer>
+                      </item>
+                      <item>
+                       <widget class="QLabel" name="labelSecurityLevel">
+                        <property name="toolTip">
+                         <string>Security Level for Zerocoin Transactions. More is better, but needs more time and resources.</string>
+                        </property>
+                        <property name="frameShape">
+                         <enum>QFrame::Box</enum>
+                        </property>
+                        <property name="text">
+                         <string>Security Level:</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                        </property>
+                       </widget>
+                      </item>
+                      <item>
+                       <layout class="QHBoxLayout" name="securityLevelLayout">
+                        <item>
+                         <widget class="QSpinBox" name="securityLevel">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
                           </property>
-                          <property name="text">
-                           <string>0 zODIN</string>
+                          <property name="toolTip">
+                           <string>Security Level 1 - 100 (default: 42)</string>
                           </property>
-                          <property name="alignment">
-                           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                          <property name="buttonSymbols">
+                           <enum>QAbstractSpinBox::PlusMinus</enum>
+                          </property>
+                          <property name="accelerated">
+                           <bool>true</bool>
+                          </property>
+                          <property name="correctionMode">
+                           <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
+                          </property>
+                          <property name="minimum">
+                           <number>1</number>
+                          </property>
+                          <property name="maximum">
+                           <number>100</number>
+                          </property>
+                          <property name="value">
+                           <number>42</number>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                     </layout>
+                    </item>
+                    <item row="10" column="0">
+                     <layout class="QGridLayout" name="gridLayout_7">
+                      <property name="spacing">
+                       <number>12</number>
+                      </property>
+                      <item row="0" column="0">
+                       <widget class="QLabel" name="payToLabel">
+                        <property name="minimumSize">
+                         <size>
+                          <width>80</width>
+                          <height>0</height>
+                         </size>
+                        </property>
+                        <property name="text">
+                         <string>Pay &amp;To:</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                        </property>
+                        <property name="buddy">
+                         <cstring>payTo</cstring>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="0" column="1">
+                       <layout class="QHBoxLayout" name="payToLayout">
+                        <property name="spacing">
+                         <number>0</number>
+                        </property>
+                        <item>
+                         <widget class="QValidatedLineEdit" name="payTo">
+                          <property name="enabled">
+                           <bool>true</bool>
+                          </property>
+                          <property name="minimumSize">
+                           <size>
+                            <width>0</width>
+                            <height>31</height>
+                           </size>
+                          </property>
+                          <property name="toolTip">
+                           <string>The ODIN address to send the payment to. Creates local payment to yourself when empty.</string>
                           </property>
                          </widget>
                         </item>
                         <item>
-                         <spacer name="horizontalSpacer_4">
+                         <widget class="QToolButton" name="addressBookButton">
+                          <property name="toolTip">
+                           <string>Choose previously used address</string>
+                          </property>
+                          <property name="text">
+                           <string/>
+                          </property>
+                          <property name="icon">
+                           <iconset>
+                            <normaloff>:/icons/address-book</normaloff>:/icons/address-book</iconset>
+                          </property>
+                          <property name="shortcut">
+                           <string>Alt+A</string>
+                          </property>
+                         </widget>
+                        </item>
+                        <item>
+                         <widget class="QToolButton" name="pasteButton">
+                          <property name="toolTip">
+                           <string>Paste address from clipboard</string>
+                          </property>
+                          <property name="text">
+                           <string/>
+                          </property>
+                          <property name="icon">
+                           <iconset>
+                            <normaloff>:/icons/editpaste</normaloff>:/icons/editpaste</iconset>
+                          </property>
+                          <property name="shortcut">
+                           <string>Alt+P</string>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item row="1" column="0">
+                       <widget class="QLabel" name="labelLabel">
+                        <property name="minimumSize">
+                         <size>
+                          <width>80</width>
+                          <height>0</height>
+                         </size>
+                        </property>
+                        <property name="text">
+                         <string>&amp;Label:</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                        </property>
+                        <property name="buddy">
+                         <cstring>addAsLabel</cstring>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="1" column="1">
+                       <widget class="QLineEdit" name="addAsLabel">
+                        <property name="toolTip">
+                         <string>Enter a label for this address to add it to the list of used addresses</string>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="2" column="0">
+                       <widget class="QLabel" name="amountLabel">
+                        <property name="minimumSize">
+                         <size>
+                          <width>80</width>
+                          <height>0</height>
+                         </size>
+                        </property>
+                        <property name="text">
+                         <string>A&amp;mount:</string>
+                        </property>
+                        <property name="alignment">
+                         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                        </property>
+                        <property name="buddy">
+                         <cstring>zODINpayAmount</cstring>
+                        </property>
+                       </widget>
+                      </item>
+                      <item row="2" column="1">
+                       <layout class="QHBoxLayout" name="horizontalLayout_9">
+                        <property name="spacing">
+                         <number>0</number>
+                        </property>
+                        <item>
+                         <widget class="QLineEdit" name="zODINpayAmount"/>
+                        </item>
+                        <item>
+                         <widget class="QLabel" name="labelzOIDN">
+                          <property name="minimumSize">
+                           <size>
+                            <width>55</width>
+                            <height>0</height>
+                           </size>
+                          </property>
+                          <property name="text">
+                           <string>zODIN</string>
+                          </property>
+                          <property name="alignment">
+                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                          </property>
+                         </widget>
+                        </item>
+                       </layout>
+                      </item>
+                      <item row="3" column="0" colspan="2">
+                       <layout class="QHBoxLayout" name="horizontalLayout_10">
+                        <item>
+                         <spacer name="horizontalSpacer_5">
                           <property name="orientation">
                            <enum>Qt::Horizontal</enum>
                           </property>
@@ -734,265 +987,43 @@ zODIN are mature when they have more than 20 confirmations AND more than 1 mint 
                          </spacer>
                         </item>
                         <item>
-                         <widget class="QLabel" name="labelSecurityLevel">
-                          <property name="toolTip">
-                           <string>Security Level for Zerocoin Transactions. More is better, but needs more time and resources.</string>
+                         <widget class="QCheckBox" name="checkBoxMintChange">
+                          <property name="sizePolicy">
+                           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                            <horstretch>0</horstretch>
+                            <verstretch>0</verstretch>
+                           </sizepolicy>
                           </property>
-                          <property name="frameShape">
-                           <enum>QFrame::Box</enum>
+                          <property name="layoutDirection">
+                           <enum>Qt::LeftToRight</enum>
                           </property>
                           <property name="text">
-                           <string>Security Level:</string>
-                          </property>
-                          <property name="alignment">
-                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                           <string>Convert Change to Zerocoin (might cost additional fees)</string>
                           </property>
                          </widget>
                         </item>
                         <item>
-                         <layout class="QHBoxLayout" name="securityLevelLayout">
-                          <item>
-                           <widget class="QSpinBox" name="securityLevel">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="toolTip">
-                             <string>Security Level 1 - 100 (default: 42)</string>
-                            </property>
-                            <property name="buttonSymbols">
-                             <enum>QAbstractSpinBox::PlusMinus</enum>
-                            </property>
-                            <property name="accelerated">
-                             <bool>true</bool>
-                            </property>
-                            <property name="correctionMode">
-                             <enum>QAbstractSpinBox::CorrectToNearestValue</enum>
-                            </property>
-                            <property name="minimum">
-                             <number>1</number>
-                            </property>
-                            <property name="maximum">
-                             <number>100</number>
-                            </property>
-                            <property name="value">
-                             <number>42</number>
-                            </property>
-                           </widget>
-                          </item>
-                         </layout>
-                        </item>
-                       </layout>
-                      </item>
-                      <item>
-                       <layout class="QGridLayout" name="gridLayout_7">
-                        <property name="spacing">
-                         <number>12</number>
-                        </property>
-                        <item row="0" column="0">
-                         <widget class="QLabel" name="payToLabel">
-                          <property name="minimumSize">
-                           <size>
-                            <width>80</width>
-                            <height>0</height>
-                           </size>
-                          </property>
-                          <property name="text">
-                           <string>Pay &amp;To:</string>
-                          </property>
-                          <property name="alignment">
-                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                          </property>
-                          <property name="buddy">
-                           <cstring>payTo</cstring>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="0" column="1">
-                         <layout class="QHBoxLayout" name="payToLayout">
-                          <property name="spacing">
-                           <number>0</number>
-                          </property>
-                          <item>
-                           <widget class="QValidatedLineEdit" name="payTo">
-                            <property name="enabled">
-                             <bool>true</bool>
-                            </property>
-                            <property name="minimumSize">
-                             <size>
-                              <width>0</width>
-                              <height>31</height>
-                             </size>
-                            </property>
-                            <property name="toolTip">
-                             <string>The ODIN address to send the payment to. Creates local payment to yourself when empty.</string>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QToolButton" name="addressBookButton">
-                            <property name="toolTip">
-                             <string>Choose previously used address</string>
-                            </property>
-                            <property name="text">
-                             <string/>
-                            </property>
-                            <property name="icon">
-                             <iconset>
-                              <normaloff>:/icons/address-book</normaloff>:/icons/address-book</iconset>
-                            </property>
-                            <property name="shortcut">
-                             <string>Alt+A</string>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QToolButton" name="pasteButton">
-                            <property name="toolTip">
-                             <string>Paste address from clipboard</string>
-                            </property>
-                            <property name="text">
-                             <string/>
-                            </property>
-                            <property name="icon">
-                             <iconset>
-                              <normaloff>:/icons/editpaste</normaloff>:/icons/editpaste</iconset>
-                            </property>
-                            <property name="shortcut">
-                             <string>Alt+P</string>
-                            </property>
-                           </widget>
-                          </item>
-                         </layout>
-                        </item>
-                        <item row="1" column="0">
-                         <widget class="QLabel" name="labelLabel">
-                          <property name="minimumSize">
-                           <size>
-                            <width>80</width>
-                            <height>0</height>
-                           </size>
-                          </property>
-                          <property name="text">
-                           <string>&amp;Label:</string>
-                          </property>
-                          <property name="alignment">
-                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                          </property>
-                          <property name="buddy">
-                           <cstring>addAsLabel</cstring>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="1" column="1">
-                         <widget class="QLineEdit" name="addAsLabel">
+                         <widget class="QCheckBox" name="checkBoxMinimizeChange">
                           <property name="toolTip">
-                           <string>Enter a label for this address to add it to the list of used addresses</string>
-                          </property>
-                         </widget>
-                        </item>
-                        <item row="2" column="0">
-                         <widget class="QLabel" name="amountLabel">
-                          <property name="minimumSize">
-                           <size>
-                            <width>80</width>
-                            <height>0</height>
-                           </size>
+                           <string>If checked, the wallet tries to minimize the returning change instead of minimizing the number of spent denominations.</string>
                           </property>
                           <property name="text">
-                           <string>A&amp;mount:</string>
-                          </property>
-                          <property name="alignment">
-                           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                          </property>
-                          <property name="buddy">
-                           <cstring>zODINpayAmount</cstring>
+                           <string>Minimize Change</string>
                           </property>
                          </widget>
                         </item>
-                        <item row="2" column="1">
-                         <layout class="QHBoxLayout" name="horizontalLayout_9">
-                          <property name="spacing">
-                           <number>0</number>
+                        <item>
+                         <spacer name="horizontalSpacer_6">
+                          <property name="orientation">
+                           <enum>Qt::Horizontal</enum>
                           </property>
-                          <item>
-                           <widget class="QLineEdit" name="zODINpayAmount"/>
-                          </item>
-                          <item>
-                           <widget class="QLabel" name="labelzOIDN">
-                            <property name="minimumSize">
-                             <size>
-                              <width>55</width>
-                              <height>0</height>
-                             </size>
-                            </property>
-                            <property name="text">
-                             <string>zODIN</string>
-                            </property>
-                            <property name="alignment">
-                             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                            </property>
-                           </widget>
-                          </item>
-                         </layout>
-                        </item>
-                        <item row="3" column="0" colspan="2">
-                         <layout class="QHBoxLayout" name="horizontalLayout_10">
-                          <item>
-                           <spacer name="horizontalSpacer_5">
-                            <property name="orientation">
-                             <enum>Qt::Horizontal</enum>
-                            </property>
-                            <property name="sizeHint" stdset="0">
-                             <size>
-                              <width>40</width>
-                              <height>20</height>
-                             </size>
-                            </property>
-                           </spacer>
-                          </item>
-                          <item>
-                           <widget class="QCheckBox" name="checkBoxMintChange">
-                            <property name="sizePolicy">
-                             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                              <horstretch>0</horstretch>
-                              <verstretch>0</verstretch>
-                             </sizepolicy>
-                            </property>
-                            <property name="layoutDirection">
-                             <enum>Qt::LeftToRight</enum>
-                            </property>
-                            <property name="text">
-                             <string>Convert Change to Zerocoin (might cost additional fees)</string>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <widget class="QCheckBox" name="checkBoxMinimizeChange">
-                            <property name="toolTip">
-                             <string>If checked, the wallet tries to minimize the returning change instead of minimizing the number of spent denominations.</string>
-                            </property>
-                            <property name="text">
-                             <string>Minimize Change</string>
-                            </property>
-                           </widget>
-                          </item>
-                          <item>
-                           <spacer name="horizontalSpacer_6">
-                            <property name="orientation">
-                             <enum>Qt::Horizontal</enum>
-                            </property>
-                            <property name="sizeHint" stdset="0">
-                             <size>
-                              <width>40</width>
-                              <height>20</height>
-                             </size>
-                            </property>
-                           </spacer>
-                          </item>
-                         </layout>
+                          <property name="sizeHint" stdset="0">
+                           <size>
+                            <width>40</width>
+                            <height>20</height>
+                           </size>
+                          </property>
+                         </spacer>
                         </item>
                        </layout>
                       </item>

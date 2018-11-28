@@ -61,16 +61,17 @@ static void convertSeed6(std::vector<CAddress>& vSeedsOut, const SeedSpec6* data
  */
 static Checkpoints::MapCheckpoints mapCheckpoints =
     boost::assign::map_list_of
-    (    0, uint256("0x31ca29566549e444cf227a0e2e067aed847c2acc541d3bbf9ca1ae89f4fd57d7"))
-    (  200, uint256("0x000000ab78415e3e4cb423061911332f6e1748fd17a5694afd8927f0668d580a"))
-    ( 1000, uint256("0xa039641b0d00eb71b3ff0ac7c9cfe4b782908bddaf7e16e10b24760263185fbc"))
-    ( 3000, uint256("0x71d1e02eef9f59adb3ec14fdba2aa5806b1740e0a0297f318831e960c68b21e2"))
-    ( 4995, uint256("0x1bc38e92d23938cd8448b0aa14480f03a8ea899a8a2200cfc68bb69f264543c8"));
+     (    0, uint256("0x31ca29566549e444cf227a0e2e067aed847c2acc541d3bbf9ca1ae89f4fd57d7"))
+     (  200, uint256("0x000000ab78415e3e4cb423061911332f6e1748fd17a5694afd8927f0668d580a"))
+     ( 1000, uint256("0xa039641b0d00eb71b3ff0ac7c9cfe4b782908bddaf7e16e10b24760263185fbc"))
+     ( 3000, uint256("0x71d1e02eef9f59adb3ec14fdba2aa5806b1740e0a0297f318831e960c68b21e2"))
+     ( 4995, uint256("0x1bc38e92d23938cd8448b0aa14480f03a8ea899a8a2200cfc68bb69f264543c8"))
+    ( 88061, uint256("0x198ccea2db058e2726593655d8a0761d3c8d237f29b2ee0453f038a473d5f2b4"));
 
 static const Checkpoints::CCheckpointData data = {
     &mapCheckpoints,
-    1538411121, // * UNIX timestamp of last checkpoint block
-    9829,       // * total number of transactions between genesis and last checkpoint
+    1543391873, // * UNIX timestamp of last checkpoint block
+    180986,     // * total number of transactions between genesis and last checkpoint
                 //   (the tx=... number in the SetBestChain debug.log lines)
     2880        // * estimated number of transactions per day after checkpoint
 };
@@ -253,7 +254,7 @@ class CMainParams : public CChainParams
         base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x27)(0x25)(0x67)(0x46).convert_to_container<std::vector<unsigned char> >();
 
         // 	BIP44 coin type is from https://github.com/satoshilabs/slips/blob/master/slip-0044.md
-        base58Prefixes[EXT_COIN_TYPE] = boost::assign::list_of(0x6f)(0x64)(0x69)(0x6e).convert_to_container<std::vector<unsigned char> >();
+        base58Prefixes[EXT_COIN_TYPE] = boost::assign::list_of(0x80)(0x00)(0x08)(0x34).convert_to_container<std::vector<unsigned char> >();
 
         bech32_hrp = "odin";
 

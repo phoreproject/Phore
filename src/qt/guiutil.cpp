@@ -826,7 +826,7 @@ bool isExternal(QString theme)
     if (theme.isEmpty())
         return false;
 
-    return (theme.operator!=("default"));
+    return ( theme.operator != ("default") );
 }
 
 // Open CSS when configured
@@ -834,26 +834,31 @@ QString loadStyleSheet()
 {
     QString styleSheet;
     QSettings settings;
-    QString cssName;
-    QString theme = settings.value("theme", "").toString();
+    QString cssFilePath;
 
-    if (isExternal(theme)) {
-        // External CSS
-        settings.setValue("fCSSexternal", true);
-        boost::filesystem::path pathAddr = GetDataDir() / "themes/";
-        cssName = pathAddr.string().c_str() + theme + "/css/theme.css";
-    } else {
-        // Build-in CSS
+    QString theme             = settings.value("theme", "").toString();
+    QString localThemePath    = QString(":/css/") + theme;
+    QString externalThemePath = (GetDataDir() / "themes/").string().c_str() + theme;
+
+    if (QFile::exists(localThemePath)) {
+        LogPrintf("[THEME] Detected Local Theme '%s'\n", theme.toStdString());
         settings.setValue("fCSSexternal", false);
-        if (!theme.isEmpty()) {
-            cssName = QString(":/css/") + theme;
-        } else {
-            cssName = QString(":/css/default");
-            settings.setValue("theme", "default");
-        }
+        cssFilePath = localThemePath;
+    }
+    else if (QFile::exists(externalThemePath)) {
+        LogPrintf("[THEME] Detected External Theme '%s'\n", theme.toStdString());
+        settings.setValue("fCSSexternal", true);
+        cssFilePath = externalThemePath;
+    }
+    else {
+        LogPrintf("[THEME] Unable to find theme '%s' Locally or Externally... setting to DEFAULT\n", theme.toStdString());
+        settings.setValue("fCSSexternal", false);
+        settings.setValue("theme", "default");
+        cssFilePath = QString(":/css/default");
     }
 
-    QFile qFile(cssName);
+    QFile qFile(cssFilePath);
+    LogPrintf("[THEME] Load File Path '%s'\n", qFile.fileName().toStdString());
     if (qFile.open(QFile::ReadOnly)) {
         styleSheet = QLatin1String(qFile.readAll());
     }

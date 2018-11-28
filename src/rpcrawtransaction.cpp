@@ -408,7 +408,7 @@ UniValue createrawtransaction(const UniValue& params, bool fHelp)
             "it is not stored in the wallet or transmitted to the network.\n"
 
             "\nArguments:\n"
-            "1. \"transactions\"        (string, required) A json array of json objects\n"
+            "1. \"transactions\" (string, required) A json array of json objects\n"
             "     [\n"
             "       {\n"
             "         \"txid\":\"id\",  (string, required) The transaction id\n"
@@ -416,23 +416,30 @@ UniValue createrawtransaction(const UniValue& params, bool fHelp)
             "       }\n"
             "       ,...\n"
             "     ]\n"
-            "2. \"addresses\"           (string, required) a json object with addresses as keys and amounts as values\n"
-            "    {\n"
-            "      \"address\": x.xxx   (numeric, required) The key is the ODIN address, the value is the btc amount\n"
-            "      ,...\n"
-            "    }\n"
+            "2. \"addresses\" (string, required) a json array of objects. Each entry must include either an address or data delivery. Amount is optional and will default to 0.01 ODIN.\n"
+            "   [\n"
+            "     {\n"
+            "       \"address\": \"address\"    (string) The ODIN address to send funds to\n"
+            "       \"amount\": x.xx            (numeric) The amount of ODIN to send\n"
+            "     },\n"
+            "     {\n"
+            "       \"data\": \"HEX_DATA\"      (string) The HEX string to attach to transaction as data. Limit 1 per transaction, up to 80 characters.\n"
+            "       \"amount\": x.xx            (numeric) The amount to attach to the data transaction, minimum 0.01 ODIN. This amount is BURNED and not recoverable!\n"
+            "     }\n"
+            "     ,...\n"
+            "   ]\n"
 
             "\nResult:\n"
-            "\"transaction\"            (string) hex string of the transaction\n"
+            "   \"transaction\" (string) hex string of the transaction\n"
 
             "\nExamples\n" +
-            HelpExampleCli("createrawtransaction", "\"[{\\\"txid\\\":\\\"myid\\\",\\\"vout\\\":0}]\" \"{\\\"address\\\":0.01}\"") + HelpExampleRpc("createrawtransaction", "\"[{\\\"txid\\\":\\\"myid\\\",\\\"vout\\\":0}]\", \"{\\\"address\\\":0.01}\""));
+            HelpExampleCli("createrawtransaction", "'[{\"txid\":\"mytxid\", \"vout\":1}]' '[{\"address\":\"oWwrvqa3QP5EHHBiUn9eAQf7d1ts5BnChG\", \"amount\":1.0}, {\"data\":\"74657374\", \"amount\":0.01}]'") + HelpExampleRpc("createrawtransaction", "'[{\"txid\":\"mytxid\", \"vout\":1}]' '[{\"address\":\"oWwrvqa3QP5EHHBiUn9eAQf7d1ts5BnChG\", \"amount\":1.0}, {\"data\":\"74657374\", \"amount\":0.01}]'"));
 
     LOCK(cs_main);
-    RPCTypeCheck(params, boost::assign::list_of(UniValue::VARR)(UniValue::VOBJ));
+    RPCTypeCheck(params, boost::assign::list_of(UniValue::VARR)(UniValue::VARR));
 
     UniValue inputs = params[0].get_array();
-    UniValue sendTo = params[1].get_obj();
+    UniValue outputs = params[1].get_array();
 
     CMutableTransaction rawTx;
 
@@ -453,23 +460,34 @@ UniValue createrawtransaction(const UniValue& params, bool fHelp)
         rawTx.vin.push_back(in);
     }
 
-    set<CTxDestination> setAddress;
-    vector<string> addrList = sendTo.getKeys();
-    BOOST_FOREACH(const string& name_, addrList) {
-        if (!IsValidDestinationString(name_))
-            throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, string("Invalid ODIN address: ")+name_);
-        
-        CTxDestination address = DecodeDestination(name_);
+    for (unsigned int ido = 0; ido < outputs.size(); ido++) {
+        const UniValue& output = outputs[ido];
+        const UniValue& o = output.get_obj();
 
-        if (setAddress.count(address))
-            throw JSONRPCError(RPC_INVALID_PARAMETER, string("Invalid parameter, duplicated address: ")+name_);
-        setAddress.insert(address);
+        const UniValue& data    = find_value(o, "data");
+        const UniValue& address = find_value(o, "address");
+        const UniValue& amount  = find_value(o, "amount");
+        const CAmount nAmount   = (amount.isNum()) ? AmountFromValue(amount) : AmountFromValue(0.0001);
 
-        CScript scriptPubKey = GetScriptForDestination(address);
-        CAmount nAmount = AmountFromValue(sendTo[name_]);
+        if (data.isStr()) {
+            if (data.get_str().length() > 80)
+              throw JSONRPCError(RPC_INVALID_PARAMETER, string("Data value must not be more than 80 characters long ... "));
 
-        CTxOut out(nAmount, scriptPubKey);
-        rawTx.vout.push_back(out);
+            std::vector<unsigned char> txData = ParseHexV(data.get_str(), "Data");
+            
+            CTxOut out(nAmount, CScript() << OP_RETURN << txData);
+            rawTx.vout.push_back(out);
+        }
+        else if (address.isStr()) {
+            if (!IsValidDestinationString(address.get_str()))
+              throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, string("Invalid ODIN address: ") + address.get_str());
+
+            CTxDestination pubAddress = DecodeDestination(address.get_str());
+
+            CScript scriptPubKey = GetScriptForDestination(pubAddress);
+            CTxOut out(nAmount, scriptPubKey);
+            rawTx.vout.push_back(out);
+        }
     }
 
     return EncodeHexTx(rawTx, PROTOCOL_VERSION | RPCSerializationFlags());
@@ -873,8 +891,8 @@ UniValue sendrawtransaction(const UniValue& params, bool fHelp)
             "\"hex\"             (string) The transaction hash in hex\n"
             "\nExamples:\n"
             "\nCreate a transaction\n" +
-            HelpExampleCli("createrawtransaction", "\"[{\\\"txid\\\" : \\\"mytxid\\\",\\\"vout\\\":0}]\" \"{\\\"myaddress\\\":0.01}\"") +
-            "Sign the transaction, and get back the hex\n" + HelpExampleCli("signrawtransaction", "\"myhex\"") +
+            HelpExampleCli("createrawtransaction", "'[{\"txid\":\"mytxid\", \"vout\":1}]' '[{\"address\":\"oWwrvqa3QP5EHHBiUn9eAQf7d1ts5BnChG\", \"amount\":1.0}, {\"data\":\"74657374\", \"amount\":0.01}]'") +
+            "\nSign the transaction, and get back the hex\n" + HelpExampleCli("signrawtransaction", "\"myhex\"") +
             "\nSend the transaction (signed hex)\n" + HelpExampleCli("sendrawtransaction", "\"signedhex\"") +
             "\nAs a json rpc call\n" + HelpExampleRpc("sendrawtransaction", "\"signedhex\""));
 

@@ -351,7 +351,8 @@ RES_IMAGES = \
   qt/res/images/odin_black_repeat.png
 
 RES_CSS = \
-  qt/res/css/default.css
+  qt/res/css/default.css \
+  qt/res/css/dark.css
 
 RES_MOVIES = $(wildcard $(srcdir)/qt/res/movies/spinner-*.png)
 
