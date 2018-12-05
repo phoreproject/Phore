@@ -238,18 +238,8 @@ void MasternodeList::updateMyNodeList(bool fForce)
     if (nSecondsTillUpdate > 0 && !fForce) return;
     nTimeMyListUpdated = GetTime();
 	
-	while (ui->tableWidgetMyMasternodes->rowCount() > 0)
-	{
-		ui->tableWidgetMyMasternodes->removeRow(0);
-	}		
-	
-	// clear cache
-	masternodeConfig.clear();
-    // parse masternode.conf
-    std::string strErr;
-    if (!masternodeConfig.read(strErr)) {
-        LogPrintf("Error reading masternode configuration file: \n");
-    }	
+
+   
 
     ui->tableWidgetMyMasternodes->setSortingEnabled(false);
     BOOST_FOREACH (CMasternodeConfig::CMasternodeEntry mne, masternodeConfig.getEntries()) {
@@ -330,6 +320,18 @@ void MasternodeList::on_configureMasternodeButton_clicked()
     ConfigureMasternodePage dlg(ConfigureMasternodePage::NewConfigureMasternode, this);
     if ( QDialog::Accepted == dlg.exec() )
     {
+while (ui->tableWidgetMyMasternodes->rowCount() > 0)
+	{
+		ui->tableWidgetMyMasternodes->removeRow(0);
+	}		
+	
+	// clear cache
+	masternodeConfig.clear();
+    // parse masternode.conf
+    std::string strErr;
+    if (!masternodeConfig.read(strErr)) {
+        LogPrintf("Error reading masternode configuration file: \n");
+    }	
       updateMyNodeList(true);
     }
 }
@@ -347,6 +349,18 @@ void MasternodeList::openEditConfigureMasternodePage(QString strAlias, QString s
 	dlg.MNAliasCache(strAlias);
     if ( QDialog::Accepted == dlg.exec() )
     {
+while (ui->tableWidgetMyMasternodes->rowCount() > 0)
+	{
+		ui->tableWidgetMyMasternodes->removeRow(0);
+	}		
+	
+	// clear cache
+	masternodeConfig.clear();
+    // parse masternode.conf
+    std::string strErr;
+    if (!masternodeConfig.read(strErr)) {
+        LogPrintf("Error reading masternode configuration file: \n");
+    }	
       updateMyNodeList(true);
     }
 }
@@ -378,6 +392,18 @@ void MasternodeList::deleteAlias()
 			masternodeConfig.deleteAlias(count);
 			// write to masternode.conf
 			masternodeConfig.writeToMasternodeConf();
+while (ui->tableWidgetMyMasternodes->rowCount() > 0)
+	{
+		ui->tableWidgetMyMasternodes->removeRow(0);
+	}		
+	
+	// clear cache
+	masternodeConfig.clear();
+    // parse masternode.conf
+    std::string strErr;
+    if (!masternodeConfig.read(strErr)) {
+        LogPrintf("Error reading masternode configuration file: \n");
+    }			
 			updateMyNodeList(true);
 			break;
 			
