@@ -13,7 +13,7 @@
     </message>
     <message>
         <source>&amp;New</source>
-        <translation>＆新規</translation>
+        <translation>新規</translation>
     </message>
     <message>
         <source>Copy the currently selected address to the system clipboard</source>
@@ -21,7 +21,7 @@
     </message>
     <message>
         <source>&amp;Copy</source>
-        <translation>＆コピー</translation>
+        <translation>コピー</translation>
     </message>
     <message>
         <source>Delete the currently selected address from the list</source>
@@ -29,7 +29,7 @@
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation>＆削除</translation>
+        <translation>削除</translation>
     </message>
     <message>
         <source>Export the data in the current tab to a file</source>
@@ -37,11 +37,11 @@
     </message>
     <message>
         <source>&amp;Export</source>
-        <translation>＆エクスポート</translation>
+        <translation>エクスポート</translation>
     </message>
     <message>
         <source>C&amp;lose</source>
-        <translation>＆閉じる</translation>
+        <translation>閉じる</translation>
     </message>
     <message>
         <source>Choose the address to send coins to</source>
@@ -53,7 +53,7 @@
     </message>
     <message>
         <source>C&amp;hoose</source>
-        <translation>＆選択</translation>
+        <translation>選択</translation>
     </message>
     <message>
         <source>Sending addresses</source>
@@ -73,15 +73,15 @@
     </message>
     <message>
         <source>&amp;Copy Address</source>
-        <translation>＆アドレスをコピー</translation>
+        <translation>アドレスをコピー</translation>
     </message>
     <message>
         <source>Copy &amp;Label</source>
-        <translation>＆ラベルをコピー</translation>
+        <translation>ラベルをコピー</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation>＆編集</translation>
+        <translation>編集</translation>
     </message>
     <message>
         <source>Export Address List</source>
@@ -1377,7 +1377,7 @@ Address: %4
     </message>
     <message>
         <source>Alias</source>
-        <translation>エイリアス</translation>
+        <translation>名前</translation>
     </message>
     <message>
         <source>Address</source>
@@ -1404,8 +1404,20 @@ Address: %4
         <translation>共通鍵</translation>
     </message>
     <message>
+        <source>G&amp;et MN Priv Key</source>
+        <translation>&amp;MN Privキー取得</translation>
+    </message>
+    <message>
+        <source>G&amp;et Outputs</source>
+        <translation>&amp;アウトプット取得</translation>
+    </message>
+    <message>
+        <source>C&amp;onfigure Masternode</source>
+        <translation>&amp;MNを設定</translation>
+    </message>
+    <message>
         <source>S&amp;tart alias</source>
-        <translation>&amp;エイリアスからスタート</translation>
+        <translation>&amp;名前からスタート</translation>
     </message>
     <message>
         <source>Start &amp;all</source>
@@ -1417,11 +1429,11 @@ Address: %4
     </message>
     <message>
         <source>&amp;Update status</source>
-        <translation>&amp;ステータスアップデート</translation>
+        <translation>&amp;更新</translation>
     </message>
     <message>
         <source>Status will be updated automatically in (sec):</source>
-        <translation>ステータスは自動的にアップデートされます。(秒):</translation>
+        <translation>自動更新(秒):</translation>
     </message>
     <message>
         <source>0</source>
@@ -1429,7 +1441,19 @@ Address: %4
     </message>
     <message>
         <source>Start alias</source>
-        <translation>エイリアスからスタート</translation>
+        <translation>名前からスタート</translation>
+    </message>
+    <message>
+        <source>Copy alias</source>
+        <translation>コピー</translation>
+    </message>
+    <message>
+        <source>Edit alias</source>
+        <translation>編集</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>削除</translation>
     </message>
     <message>
         <source>Confirm masternode start</source>
@@ -2231,7 +2255,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
     </message>
     <message>
         <source>Enter a Phore address (e.g. %1)</source>
-        <translation>Phoreアドレスを入力してください。 (例: %1)</translation>
+        <translation>Phoreアドレスを入力してください (例: %1)</translation>
     </message>
     <message>
         <source>%1 d</source>
@@ -2296,6 +2320,26 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
     <message>
         <source>Phore Core didn&apos;t yet exit safely...</source>
         <translation>Phore コアは正常に停止していません...</translation>
+    </message>
+    <message>
+        <source>Enter a Masternode Alias (e.g. %1)</source>
+        <translation>マスターノード名を入力 (例: %1)</translation>
+    </message>
+    <message>
+        <source>Enter a VPS IP (e.g. %1)</source>
+        <translation>VPSのIPアドレスを入力 (例: %1)</translation>
+    </message>
+    <message>
+        <source>Enter a Private Key (e.g. %1)</source>
+        <translation>プライベートキーを入力 (例: %1)</translation>
+    </message>
+    <message>
+        <source>Enter a TX Output (e.g. %1)</source>
+        <translation>アウトプットTXIDを入力 (例: %1)</translation>
+    </message>
+    <message>
+        <source>Enter a TX Index (e.g. %1)</source>
+        <translation>TXインデックスを入力 (例: %1)</translation>
     </message>
 </context>
 <context>
@@ -2668,7 +2712,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
     </message>
     <message>
         <source>An optional label to associate with the new receiving address.</source>
-        <translation>新しい受け取りアドレスに紐づく追加のラベル</translation>
+        <translation>支払いリクエストのラベル</translation>
     </message>
     <message>
         <source>An optional message to attach to the payment request, which will be displayed when the request is opened. Note: The message will not be sent with the payment over the Phore network.</source>
@@ -3270,7 +3314,7 @@ Immature: confirmed, but less than 3 mints of the same denomination after it was
     </message>
     <message>
         <source>Enter a label for this address to add it to your address book</source>
-        <translation>アドレス帳へ追加するため、ラベルを入力してください。</translation>
+        <translation>アドレス帳に登録する際のラベルを入力して下さい</translation>
     </message>
 </context>
 <context>
@@ -6395,8 +6439,81 @@ Please be patient after clicking import.</source>
         <translation>予算案の要求枚数</translation>
     </message>
     <message>
-        <source>Current vote needed to pass</source>
+        <source>Current votes needed to pass</source>
         <translation>承認に必要な投票数</translation>
+    </message>
+</context>
+<context>
+    <name>ConfigureMasternodePage</name>
+    <message>
+        <source>New Masternode Alias</source>
+        <translation>新規マスターノードの設定</translation>
+    </message>
+    <message>
+        <source>Edit Masternode Alias</source>
+        <translation>既存マスターノードの設定</translation>
+    </message>
+    <message>
+        <source>&amp;Alias Name</source>
+        <translation>&amp;MNの名前</translation>
+    </message>
+    <message>
+        <source>&amp;VPS IP</source>
+        <translation>&amp;VPSのIP</translation>
+    </message>
+    <message>
+        <source>&amp;Priv Key</source>
+        <translation>&amp;Priv キー</translation>
+    </message>
+    <message>
+        <source>&amp;Output</source>
+        <translation>&amp;アウトプットTX</translation>
+    </message>
+    <message>
+        <source>&amp;Output ID</source>
+        <translation>&amp;アウトプットID</translation>
+    </message>
+    <message>
+        <source>&amp;AutoFill PrivKey</source>
+        <translation>&amp;Privキーを自動挿入</translation>
+    </message>
+    <message>
+        <source>&amp;AutoFill Outputs</source>
+        <translation>&amp;アウトプットを自動挿入</translation>
+    </message>
+</context>
+<context>
+    <name>PrivKeyPage</name>
+    <message>
+        <source>&amp;Copy Address</source>
+        <translation>アドレスをコピー</translation>
+    </message>
+    <message>
+        <source>The Phore address to send the payment to</source>
+        <translation>生成されたプライベートキー</translation>
+    </message>
+    <message>
+        <source>Enter a Phore address (e.g. PCYiHgGJJ6xGHqivmdZrYjRnhaYf6AJ2Mp)</source>
+        <translation>消してしまった場合、閉じて開き直しましょう</translation>
+    </message>
+    <message>
+        <source>Copy the currently selected address to the system clipboard</source>
+        <translation>プライベートキーをコピー</translation>
+    </message>
+    <message>
+        <source>&amp;Copy</source>
+        <translation>&amp;コピー</translation>
+    </message>
+    <message>
+        <source>C&amp;lose</source>
+        <translation>&amp;閉じる</translation>
+    </message>
+</context>
+<context>
+    <name>OutPutsPage</name>
+    <message>
+        <source>C&amp;lose</source>
+        <translation>&amp;閉じる</translation>
     </message>
 </context>
 </TS>
