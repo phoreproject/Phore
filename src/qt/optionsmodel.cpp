@@ -398,7 +398,7 @@ bool OptionsModel::setData(const QModelIndex& index, const QVariant& value, int 
             settings.setValue("fHideOrphans", fHideOrphans);
             emit hideOrphansChanged(fHideOrphans);
             break;
-        case nAnonymizePhoreAmount:
+        case AnonymizePhoreAmount:
             nAnonymizePhoreAmount = value.toInt();
             settings.setValue("nAnonymizePhoreAmount", nAnonymizePhoreAmount);
             emit anonymizePhoreAmountChanged(nAnonymizePhoreAmount);
