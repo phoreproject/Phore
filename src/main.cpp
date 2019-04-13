@@ -3065,9 +3065,14 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
 
     // Ensure that accumulator checkpoints are valid and in the same state as this instance of the chain
     AccumulatorMap mapAccumulators(GetZerocoinParams(pindex->nHeight));
-    if (!ValidateAccumulatorCheckpoint(block, pindex, mapAccumulators))
-        return state.DoS(100, error("%s: Failed to validate accumulator checkpoint for block=%s height=%d", __func__,
-                                    block.GetHash().GetHex(), pindex->nHeight), REJECT_INVALID, "bad-acc-checkpoint");
+    if (!ValidateAccumulatorCheckpoint(block, pindex, mapAccumulators)) {
+        if (!ShutdownRequested()) {
+            return state.DoS(100, error("%s: Failed to validate accumulator checkpoint for block=%s height=%d", __func__,
+                                   block.GetHash().GetHex(), pindex->nHeight), REJECT_INVALID, "bad-acc-checkpoint");
+        }
+        return error("%s: Failed to validate accumulator checkpoint for block=%s height=%d because wallet is shutting down", __func__,
+                block.GetHash().GetHex(), pindex->nHeight);
+    }
 
     if (!control.Wait())
         return state.DoS(100, false);
