@@ -357,7 +357,6 @@ static const CRPCCommand vRPCCommands[] =
         {"hidden", "setmocktime", &setmocktime, true, false, false},
 
         /* Phore features */
-        {"phore", "masternode", &masternode, true, true, false},
         {"phore", "listmasternodes", &listmasternodes, true, true, false},
         {"phore", "createmasternodebroadcast", &createmasternodebroadcast, true, true, false},
         {"phore", "decodemasternodebroadcast", &decodemasternodebroadcast, true, true, false},
@@ -373,7 +372,6 @@ static const CRPCCommand vRPCCommands[] =
         {"phore", "getmasternodestatus", &getmasternodestatus, true, true, false},
         {"phore", "getmasternodewinners", &getmasternodewinners, true, true, false},
         {"phore", "getmasternodescores", &getmasternodescores, true, true, false},
-        {"phore", "mnbudget", &mnbudget, true, true, false},
         {"phore", "preparebudget", &preparebudget, true, true, false},
         {"phore", "submitbudget", &submitbudget, true, true, false},
         {"phore", "mnbudgetvote", &mnbudgetvote, true, true, false},
