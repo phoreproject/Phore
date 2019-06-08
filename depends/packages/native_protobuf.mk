@@ -6,7 +6,7 @@ $(package)_file_name=protobuf-cpp-$($(package)_version).tar.gz
 $(package)_sha256_hash=c28dba8782da2cfea1e11c61d335958c31a9c1bc553063546af9cbe98f204092
 
 define $(package)_set_vars
-$(package)_config_opts=--disable-shared
+$(package)_config_opts=--disable-shared --without-zlib
 endef
 
 define $(package)_config_cmds
