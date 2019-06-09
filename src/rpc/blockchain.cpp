@@ -5,16 +5,16 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#include "../base58.h"
-#include "../checkpoints.h"
-#include "../clientversion.h"
-#include "../consensus/validation.h"
-#include "../main.h"
+#include "base58.h"
+#include "checkpoints.h"
+#include "clientversion.h"
+#include "consensus/validation.h"
+#include "main.h"
 #include "server.h"
-#include "../sync.h"
-#include "../txdb.h"
-#include "../util.h"
-#include "../utilmoneystr.h"
+#include "sync.h"
+#include "txdb.h"
+#include "util.h"
+#include "utilmoneystr.h"
 
 #include <stdint.h>
 #include <univalue.h>
