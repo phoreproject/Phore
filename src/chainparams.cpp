@@ -302,7 +302,7 @@ public:
         pchMessageStart[2] = 0x25;
         pchMessageStart[3] = 0x84;
 
-        vAlertPubKey = ParseHex("04b9fb4c92f20b633da21eb532edc892bf63b3c0460bd7addf53c7d8911e831201d75d8f12dc70fe82179ed9e09d86e506c09e609dd259b55d09ad35265872507c");
+        vAlertPubKey = ParseHex("04037d9efd76849218d6b0de9827a1b4bb627037468d62a64259eda49846935b391e055a5ccb639a539e7e7d9af7a4a9cb67c6ad310da7ac9b628185c5e28fb7b1");
 
         nEnforceBlockUpgradeMajority = 51;
         nRejectBlockOutdatedMajority = 75;
@@ -387,7 +387,7 @@ public:
 
         nPoolMaxTransactions = 2;
 
-        vSporkKey = ParseHex("046c501d82ed3624c1d902c96e265b7f59aeeeef075e3ae44f08cf0a73f5b8179a32acf37004bb0565215119626beae9cd85faa81e8817e56719d7181f0557397c");
+        vSporkKey = ParseHex("04429fdc9d9051f424fb1d4e927dbc44c409d09d16c468fac4987023a259500e623dcf6a5e0d4deafb8d48c2557568e17d087895b96dcf5324815b93d15cc085bc");
 
         strObfuscationPoolDummyAddress = "PCYiHgGJJ6xGHqivmdZrYjRnhaYf6AJ2Mp";
         //nStartMasternodePayments = 1505224800; //Fri, 09 Jan 2015 21:05:58 GMT
