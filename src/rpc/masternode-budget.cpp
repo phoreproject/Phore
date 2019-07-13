@@ -60,8 +60,10 @@ void checkBudgetInputs(const UniValue& params, std::string &strProposalName, std
         throw std::runtime_error("Invalid proposal name, limit of 20 characters.");
 
     strURL = SanitizeString(params[1].get_str());
-    if (strURL.size() > 64)
-        throw std::runtime_error("Invalid url, limit of 64 characters.");
+
+    std::string strErr;
+    if (!validateURL(strURL, strErr))
+        throw JSONRPCError(RPC_INVALID_PARAMETER, strErr);
 
     nPaymentCount = params[2].get_int();
     if (nPaymentCount < 1)
