@@ -105,7 +105,9 @@ protected:
     bool fReadOnly;
     int nSerVersion;
 
-    explicit CDB(const std::string& strFilename, const char* pszMode = "r+", int nSerVersion = CLIENT_VERSION);
+    bool fFlushOnClose;
+
+    explicit CDB(const std::string& strFilename, const char* pszMode = "r+", bool fFlushOnCloseIn=true);
     ~CDB() { Close(); }
 
 public:
