@@ -8,7 +8,7 @@
 #include "uint256.h"
 #include "version.h"
 #include "test/test_phore.h"
-#include "test_random.h"
+#include "consensus/merkle.h"
 #include <vector>
 
 #include <boost/test/unit_test.hpp>
@@ -44,7 +44,7 @@ BOOST_AUTO_TEST_CASE(pmt_test1)
         }
 
         // calculate actual merkle root and height
-        uint256 merkleRoot1 = block.ComputeMerkleRoot();
+        uint256 merkleRoot1 = BlockMerkleRoot(block);
         std::vector<uint256> vTxid(nTx, 0);
         for (unsigned int j=0; j<nTx; j++)
             vTxid[j] = block.vtx[j].GetHash();

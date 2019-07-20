@@ -104,6 +104,7 @@ BITCOIN_CORE_H = \
   consensus/merkle.h \
   consensus/validation.h \
   compressor.h \
+  consensus/merkle.h \
   primitives/block.h \
   primitives/deterministicmint.h \
   primitives/transaction.h \
