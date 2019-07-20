@@ -176,7 +176,7 @@ public:
         txNew.vout[0].SetEmpty();
         genesis.vtx.push_back(txNew);
         genesis.hashPrevBlock = 0;
-        genesis.hashMerkleRoot = genesis.BuildMerkleTree();
+        genesis.hashMerkleRoot = genesis.ComputeMerkleRoot();
         genesis.nVersion = 1;
         genesis.nTime = 1505224800;
         genesis.nBits = 0x207fffff;;
