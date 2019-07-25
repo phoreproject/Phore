@@ -110,6 +110,8 @@ BITCOIN_CORE_H = \
   checkpoints.h \
   checkqueue.h \
   clientversion.h \
+  coins.h \
+  compat.h \  
   compat/sanity.h \
   consensus/merkle.h \
   consensus/validation.h \
