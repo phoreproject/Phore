@@ -126,16 +126,26 @@ StartOptionsSort::StartOptionsSort(std::vector<std::string> Words, int rows, QWi
     for(int k=0; k<6; k++){
 
         QListWidget* itemListWidget = new QListWidget;
-        QStringList itemList;
         if(rows == 4){
-            itemList.append(QString::fromStdString(randomWords[k]));
-            itemList.append(QString::fromStdString(randomWords[k + 1]));
-            itemList.append(QString::fromStdString(randomWords[k + 2]));
-            itemList.append(QString::fromStdString(randomWords[k + 3]));
-
+            if(k<0){
+                itemList.append(QString::fromStdString(Words[k]));
+                itemList.append(QString::fromStdString(Words[k + 1]));
+                itemList.append(QString::fromStdString(Words[k + 2]));
+                itemList.append(QString::fromStdString(Words[k + 3]));
+            } else if(k<6) {
+                itemList.append(QString::fromStdString(Words[k * 4]));
+                itemList.append(QString::fromStdString(Words[k * 4 + 1]));
+                itemList.append(QString::fromStdString(Words[k * 4 + 2]));
+                itemList.append(QString::fromStdString(Words[k * 4 + 3]));
+            }
         } else {
-            itemList.append(QString::fromStdString(randomWords[k]));
-            itemList.append(QString::fromStdString(randomWords[k + 1]));
+            if(k<0){
+                itemList.append(QString::fromStdString(Words[k]));
+                itemList.append(QString::fromStdString(Words[k + 1]));
+            } else if(k<6) {
+                itemList.append(QString::fromStdString(Words[k * 2]));
+                itemList.append(QString::fromStdString(Words[k * 2 + 1]));
+            }
         }
 
         itemListWidget->addItems(itemList);
