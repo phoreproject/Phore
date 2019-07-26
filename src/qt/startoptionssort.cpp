@@ -126,6 +126,8 @@ StartOptionsSort::StartOptionsSort(std::vector<std::string> Words, int rows, QWi
     for(int k=0; k<6; k++){
 
         QListWidget* itemListWidget = new QListWidget;
+        QStringList itemList;
+        
         if(rows == 4){
             if(k<0){
                 itemList.append(QString::fromStdString(Words[k]));
