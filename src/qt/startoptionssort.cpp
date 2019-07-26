@@ -10,6 +10,9 @@
 #include <QListView>
 #include <QStringListModel>
 #include <QLineEdit>
+#include <algorithm>
+#include <random>
+#include <chrono>
 #include <QListWidget>
 
 CustomRectItem::CustomRectItem(QGraphicsItem *parent):
@@ -54,16 +57,6 @@ void CustomRectItem::dropEvent(QGraphicsSceneDragDropEvent *event){
     else
         event->ignore();
 }
-
-
-
-static QLabel *createDragLabel(const QString &text, QWidget *parent)
-{
-    QLabel *label = new QLabel(text, parent);
-    return label;
-}
-
-static QString hotSpotMimeDataKey() { return QStringLiteral("application/x-hotspot"); }
 
 StartOptionsSort::StartOptionsSort(std::vector<std::string> Words, int rows, QWidget *parent)
         : QWidget(parent), ui(new Ui::StartOptionsSort) {
@@ -125,30 +118,24 @@ StartOptionsSort::StartOptionsSort(std::vector<std::string> Words, int rows, QWi
     }
     ui->gridLayoutRevealed->addWidget(view, 0, 0, 1, 6, Qt::AlignCenter);
 
+    // Randomizes the word list
+    std::vector<std::string> randomWords = Words;
+    unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+    shuffle (randomWords.begin(), randomWords.end(), std::default_random_engine(seed));
+
     for(int k=0; k<6; k++){
 
         QListWidget* itemListWidget = new QListWidget;
         QStringList itemList;
         if(rows == 4){
-            if(k<0){
-                itemList.append(QString::fromStdString(Words[k]));
-                itemList.append(QString::fromStdString(Words[k + 1]));
-                itemList.append(QString::fromStdString(Words[k + 2]));
-                itemList.append(QString::fromStdString(Words[k + 3]));
-            } else if(k<6) {
-                itemList.append(QString::fromStdString(Words[k * 4]));
-                itemList.append(QString::fromStdString(Words[k * 4 + 3]));
-                itemList.append(QString::fromStdString(Words[k * 4 + 1]));
-                itemList.append(QString::fromStdString(Words[k * 4 + 2]));
-            }
+            itemList.append(QString::fromStdString(randomWords[k]));
+            itemList.append(QString::fromStdString(randomWords[k + 1]));
+            itemList.append(QString::fromStdString(randomWords[k + 2]));
+            itemList.append(QString::fromStdString(randomWords[k + 3]));
+
         } else {
-            if(k<0){
-                itemList.append(QString::fromStdString(Words[k]));
-                itemList.append(QString::fromStdString(Words[k + 1]));
-            } else if(k<6) {
-                itemList.append(QString::fromStdString(Words[k * 2 + 1]));
-                itemList.append(QString::fromStdString(Words[k * 2]));
-            }
+            itemList.append(QString::fromStdString(randomWords[k]));
+            itemList.append(QString::fromStdString(randomWords[k + 1]));
         }
 
         itemListWidget->addItems(itemList);
