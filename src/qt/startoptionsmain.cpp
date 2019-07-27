@@ -158,7 +158,7 @@ void StartOptionsMain::on_Next_clicked()
                 if (words_empty_str.empty())
                     words_empty_str = q_word.toStdString();
                 else
-                    words_empty_str += " " + q_word.toStdString();
+                    words_empty_str += "" + q_word.toStdString();
             }
 
             words_mnemonic = "";
@@ -166,7 +166,7 @@ void StartOptionsMain::on_Next_clicked()
                 if (words_mnemonic.empty())
                     words_mnemonic = q_word;
                 else
-                    words_mnemonic += " " + q_word;
+                    words_mnemonic += "" + q_word;
             }
             boost::trim_right(words_empty_str);
             boost::trim_right(words_mnemonic);
