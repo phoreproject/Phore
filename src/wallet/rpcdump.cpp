@@ -22,8 +22,6 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <openssl/aes.h>
-#include <openssl/sha.h>
 
 #include <univalue.h>
 
