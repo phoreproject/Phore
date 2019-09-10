@@ -2759,7 +2759,8 @@ UniValue mintzerocoin(const UniValue& params, bool fHelp)
     }
 
     int64_t nTime = GetTimeMillis();
-    if(GetAdjustedTime() > GetSporkValue(SPORK_16_ZEROCOIN_MAINTENANCE_MODE))
+
+    if(sporkManager.IsSporkActive(SPORK_16_ZEROCOIN_MAINTENANCE_MODE))
         throw JSONRPCError(RPC_WALLET_ERROR, "zPHR is currently disabled due to maintenance.");
 
     EnsureWalletIsUnlocked(true);
@@ -2866,11 +2867,10 @@ UniValue spendzerocoin(const UniValue& params, bool fHelp)
             HelpExampleRpc("spendzerocoin", "5000 false true 100 \"DMJRSsuU9zfyrvxVaAEFQqK4MxZg6vgeS6\""));
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
-    
-    if(GetAdjustedTime() > GetSporkValue(SPORK_16_ZEROCOIN_MAINTENANCE_MODE))
-        throw JSONRPCError(RPC_WALLET_ERROR, "zPHR is currently disabled due to maintenance.");
-
     int64_t nTimeStart = GetTimeMillis();
+
+    if(sporkManager.IsSporkActive(SPORK_16_ZEROCOIN_MAINTENANCE_MODE))
+        throw JSONRPCError(RPC_WALLET_ERROR, "zPIV is currently disabled due to maintenance.");
 
     EnsureWalletIsUnlocked();
 
@@ -2878,7 +2878,6 @@ UniValue spendzerocoin(const UniValue& params, bool fHelp)
     bool fMintChange = params[1].get_bool();        // Mint change to zPHR
     bool fMinimizeChange = params[2].get_bool();    // Minimize change
     int nSecurityLevel = params[3].get_int();       // Security level
-
     CTxDestination address = CNoDestination(); // Optional sending address. Dummy initialization here.
     if (params.size() == 5) {
         // Destination address was supplied as params[4]. Optional parameters MUST be at the end

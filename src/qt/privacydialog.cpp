@@ -162,7 +162,7 @@ void PrivacyDialog::on_pushButtonMintzPHR_clicked()
     if (!walletModel || !walletModel->getOptionsModel())
         return;
 
-    if(GetAdjustedTime() > GetSporkValue(SPORK_16_ZEROCOIN_MAINTENANCE_MODE)) {
+    if(sporkManager.IsSporkActive(SPORK_16_ZEROCOIN_MAINTENANCE_MODE)) {
         QMessageBox::information(this, tr("Mint Zerocoin"),
                                  tr("zPHR is currently undergoing maintenance."), QMessageBox::Ok,
                                  QMessageBox::Ok);
@@ -272,7 +272,7 @@ void PrivacyDialog::on_pushButtonSpendzPHR_clicked()
     if (!walletModel || !walletModel->getOptionsModel() || !pwalletMain)
         return;
 
-    if(GetAdjustedTime() > GetSporkValue(SPORK_16_ZEROCOIN_MAINTENANCE_MODE)) {
+    if(sporkManager.IsSporkActive(SPORK_16_ZEROCOIN_MAINTENANCE_MODE)) {
         QMessageBox::information(this, tr("Mint Zerocoin"),
                                  tr("zPHR is currently undergoing maintenance."), QMessageBox::Ok, QMessageBox::Ok);
         return;
@@ -738,8 +738,9 @@ void PrivacyDialog::keyPressEvent(QKeyEvent* event)
 void PrivacyDialog::updateSPORK16Status()
 {
     // Update/enable labels, buttons and tooltips depending on the current SPORK_16 status
-    bool fButtonsEnabled =  ui->pushButtonMintzPHR->isEnabled();
-    bool fMaintenanceMode = GetAdjustedTime() > GetSporkValue(SPORK_16_ZEROCOIN_MAINTENANCE_MODE);
+    //bool fButtonsEnabled =  ui->pushButtonMintzPIV->isEnabled();
+    bool fButtonsEnabled = false;
+    bool fMaintenanceMode = sporkManager.IsSporkActive(SPORK_16_ZEROCOIN_MAINTENANCE_MODE);
     if (fMaintenanceMode && fButtonsEnabled) {
         // Mint zPHR
         ui->pushButtonMintzPHR->setEnabled(false);
