@@ -156,6 +156,7 @@ BITCOIN_CORE_H = \
   support/allocators/zeroafterfree.h \
   spork.h \
   sporkdb.h \
+  sporkid.h \
   streams.h \
   support/cleanse.h \
   sync.h \

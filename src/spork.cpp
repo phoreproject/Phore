@@ -26,16 +26,16 @@ void CSporkManager::Clear()
 // Phore: on startup load spork values from previous session if they exist in the sporkDB
 void CSporkManager::LoadSporksFromDB()
 {
+    SporkId id;
     for (int i = SPORK_START; i <= SPORK_END; ++i) {
+        id = (SporkId) i;
         // Since not all spork IDs are in use, we have to exclude undefined IDs
-        std::string strSpork = sporkManager.GetSporkNameByID(i);
-        if (strSpork == "Unknown") {
-            LogPrintf("%s : unknown spork ID %d\n", __func__, i);
-            continue;
-        }
+        std::string strSpork = sporkManager.GetSporkNameByID(id);
+        if (strSpork == "Unknown") continue;
+
         // attempt to read spork from sporkDB
         CSporkMessage spork;
-        if (!pSporkDB->ReadSpork(i, spork)) {
+        if (!pSporkDB->ReadSpork(id, spork)) {
             LogPrintf("%s : no previous value for %s found in database\n", __func__, strSpork);
             continue;
         }
@@ -127,7 +127,7 @@ void CSporkManager::ProcessSpork(CNode* pfrom, std::string& strCommand, CDataStr
     }
 }
 
-bool CSporkManager::UpdateSpork(int nSporkID, int64_t nValue)
+bool CSporkManager::UpdateSpork(SporkId nSporkID, int64_t nValue)
 {
 
     CSporkMessage spork = CSporkMessage(nSporkID, nValue, GetTime());
@@ -144,7 +144,7 @@ bool CSporkManager::UpdateSpork(int nSporkID, int64_t nValue)
 }
 
 // grab the spork value, and see if it's off
-bool CSporkManager::IsSporkActive(int nSporkID)
+bool CSporkManager::IsSporkActive(SporkId nSporkID)
 {
     int64_t r = GetSporkValue(nSporkID);
     if (r == -1) return false;
@@ -152,7 +152,7 @@ bool CSporkManager::IsSporkActive(int nSporkID)
 }
 
 // grab the value of the spork on the network, or the default
-int64_t CSporkManager::GetSporkValue(int nSporkID)
+int64_t CSporkManager::GetSporkValue(SporkId nSporkID)
 {
     LOCK(cs);
     int64_t r = -1;
@@ -180,7 +180,7 @@ int64_t CSporkManager::GetSporkValue(int nSporkID)
     return r;
 }
 
-int CSporkManager::GetSporkIDByName(std::string strName)
+SporkId CSporkManager::GetSporkIDByName(std::string strName)
 {
 
     if (strName == "SPORK_2_SWIFTTX") return SPORK_2_SWIFTTX;
@@ -197,10 +197,10 @@ int CSporkManager::GetSporkIDByName(std::string strName)
     //if (strName == "SPORK_18_NEW_PROTOCOL_ENFORCEMENT_3") return SPORK_18_NEW_PROTOCOL_ENFORCEMENT_3;
     if (strName == "SPORK_19_SEGWIT_ON_COINBASE") return SPORK_19_SEGWIT_ON_COINBASE_DEFAULT;
 
-    return -1;
+    return SPORK_INVALID;
 }
 
-std::string CSporkManager::GetSporkNameByID(int id)
+std::string CSporkManager::GetSporkNameByID(SporkId id)
 {
     if (id == SPORK_2_SWIFTTX) return "SPORK_2_SWIFTTX";
     if (id == SPORK_3_SWIFTTX_BLOCK_FILTERING) return "SPORK_3_SWIFTTX_BLOCK_FILTERING";
