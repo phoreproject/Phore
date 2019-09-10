@@ -10,12 +10,6 @@
 #include "spork.h"
 #include "sporkdb.h"
 
-class CSporkMessage;
-class CSporkManager;
-
-CSporkManager sporkManager;
-
-std::map<uint256, CSporkMessage> mapSporks;
 
 #define MAKE_SPORK_DEF(name, defaultValue) CSporkDef(name, defaultValue, #name)
 
@@ -35,6 +29,9 @@ std::vector<CSporkDef> sporkDefs = {
     MAKE_SPORK_DEF(SPORK_19_SEGWIT_ON_COINBASE,             4070908800ULL), // OFF
 };
 
+CSporkManager sporkManager;
+std::map<uint256, CSporkMessage> mapSporks;
+
 CSporkManager::CSporkManager()
 {
     for (auto& sporkDef : sporkDefs) {
@@ -52,17 +49,11 @@ void CSporkManager::Clear()
 // Phore: on startup load spork values from previous session if they exist in the sporkDB
 void CSporkManager::LoadSporksFromDB()
 {
-    SporkId id;
-    for (int i = SPORK_START; i <= SPORK_END; ++i) {
-        id = (SporkId) i;
-        // Since not all spork IDs are in use, we have to exclude undefined IDs
-        std::string strSpork = sporkManager.GetSporkNameByID(id);
-        if (strSpork == "Unknown") continue;
-
+    for (const auto& sporkDef : sporkDefs) {
         // attempt to read spork from sporkDB
         CSporkMessage spork;
-        if (!pSporkDB->ReadSpork(id, spork)) {
-            LogPrintf("%s : no previous value for %s found in database\n", __func__, strSpork);
+        if (!pSporkDB->ReadSpork(sporkDef.sporkId, spork)) {
+            LogPrintf("%s : no previous value for %s found in database\n", __func__, sporkDef.name);
             continue;
         }
 
