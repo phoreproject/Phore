@@ -24,7 +24,7 @@ enum SporkId : int32_t {
     SPORK_17_SEGWIT_ACTIVATION                  = 10016,
     //SPORK_18_NEW_PROTOCOL_ENFORCEMENT_3       = 10017,
     SPORK_19_SEGWIT_ON_COINBASE                 = 10018,
-    
+
     SPORK_INVALID                               = -1
 };
 
