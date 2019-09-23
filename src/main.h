@@ -521,7 +521,7 @@ bool FindTransactionsByDestination(const CTxDestination &dest, std::set<CExtDisk
 bool DisconnectBlock(CBlock& block, CValidationState& state, CBlockIndex* pindex, CCoinsViewCache& coins, bool* pfClean = NULL);
 
 /** Reprocess a number of blocks to try and get on the correct chain again **/
-bool DisconnectBlocks(int blocks);
+bool DisconnectBlocks(int nBlocks);
 void ReprocessBlocks(int nBlocks);
 
 /** Apply the effects of this block (with given index) on the UTXO set represented by coins */
