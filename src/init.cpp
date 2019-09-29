@@ -1083,8 +1083,6 @@ bool AppInit2(const std::vector<std::string>& words)
             return InitError(_("Unable to start HTTP server. See debug log for details."));
     }
 
-    int64_t nStart;
-
 // ********************************************************* Step 5: Backup wallet and verify wallet database integrity
 #ifdef ENABLE_WALLET
     if (!fDisableWallet) {
@@ -1404,6 +1402,7 @@ bool AppInit2(const std::vector<std::string>& words)
     nCoinCacheSize = nTotalCache / 300; // coins in memory require around 300 bytes
 
     bool fLoaded = false;
+    int64_t nStart = GetTimeMillis();
     while (!fLoaded && !ShutdownRequested()) {
         bool fReset = fReindex;
         std::string strLoadError;
