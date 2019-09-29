@@ -948,7 +948,6 @@ bool AppInit2(const std::vector<std::string>& words)
     else if (nScriptCheckThreads > MAX_SCRIPTCHECK_THREADS)
         nScriptCheckThreads = MAX_SCRIPTCHECK_THREADS;
 
-    fServer = GetBoolArg("-server", false);
     setvbuf(stdout, NULL, _IOLBF, 0); /// ***TODO*** do we still need this after -printtoconsole is gone?
 
     // Staking needs a CWallet instance, so make sure wallet is enabled
@@ -1103,7 +1102,7 @@ bool AppInit2(const std::vector<std::string>& words)
      * that the server is there and will be ready later).  Warmup mode will
      * be disabled when initialisation is finished.
      */
-    if (fServer) {
+    if (GetBoolArg("-server", false)) {
         uiInterface.InitMessage.connect(SetRPCWarmupStatus);
         if (!AppInitServers())
             return InitError(_("Unable to start HTTP server. See debug log for details."));
@@ -1435,8 +1434,9 @@ bool AppInit2(const std::vector<std::string>& words)
 
         uiInterface.InitMessage(_("Loading block index..."));
 
-        nStart = GetTimeMillis();
         do {
+            const int64_t load_block_index_start_time = GetTimeMillis();
+
             try {
                 UnloadBlockIndex();
                 delete pcoinsTip;
@@ -1608,6 +1608,7 @@ bool AppInit2(const std::vector<std::string>& words)
 
             fVerifyingBlocks = false;
             fLoaded = true;
+            LogPrintf(" block index %15dms\n", GetTimeMillis() - load_block_index_start_time);
         } while (false);
 
         if (!fLoaded && !ShutdownRequested()) {
@@ -1636,7 +1637,6 @@ bool AppInit2(const std::vector<std::string>& words)
         LogPrintf("Shutdown requested. Exiting.\n");
         return false;
     }
-    LogPrintf(" block index %15dms\n", GetTimeMillis() - nStart);
 
     boost::filesystem::path est_path = GetDataDir() / FEE_ESTIMATES_FILENAME;
     CAutoFile est_filein(fopen(est_path.string().c_str(), "rb"), SER_DISK, CLIENT_VERSION);
@@ -1672,7 +1672,7 @@ bool AppInit2(const std::vector<std::string>& words)
         uiInterface.InitMessage(_("Loading wallet..."));
         fVerifyingBlocks = true;
 
-        nStart = GetTimeMillis();
+        const int64_t nWalletStartTime = GetTimeMillis();
         bool fFirstRun = true;
         pwalletMain = new CWallet(strWalletFile);
         DBErrors nLoadWalletRet = pwalletMain->LoadWallet(fFirstRun);
@@ -1741,8 +1741,7 @@ bool AppInit2(const std::vector<std::string>& words)
     }
 
         LogPrintf("%s", strErrors.str());
-        LogPrintf(" wallet      %15dms\n", GetTimeMillis() - nStart);
-
+        LogPrintf("Wallet completed loading in %15dms\n", GetTimeMillis() - nWalletStartTime);
         zwalletMain = new CzPHRWallet(pwalletMain->strWalletFile);
         pwalletMain->setZWallet(zwalletMain);
 
@@ -1762,9 +1761,9 @@ bool AppInit2(const std::vector<std::string>& words)
         if (chainActive.Tip() && chainActive.Tip() != pindexRescan) {
             uiInterface.InitMessage(_("Rescanning..."));
             LogPrintf("Rescanning last %i blocks (from block %i)...\n", chainActive.Height() - pindexRescan->nHeight, pindexRescan->nHeight);
-            nStart = GetTimeMillis();
+            const int64_t nWalletRescanTime = GetTimeMillis();
             pwalletMain->ScanForWalletTransactions(pindexRescan, true);
-            LogPrintf(" rescan      %15dms\n", GetTimeMillis() - nStart);
+            LogPrintf("Rescan completed in %15dms\n", GetTimeMillis() - nWalletRescanTime);
             pwalletMain->SetBestChain(chainActive.GetLocator());
             nWalletDBUpdated++;
 
