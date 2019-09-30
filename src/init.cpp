@@ -1717,14 +1717,13 @@ bool AppInit2(const std::vector<std::string>& words)
             // ensure this wallet.dat can only be opened by clients supporting HD
             pwalletMain->SetMinVersion(FEATURE_HD);
         }
-
         CPubKey newDefaultKey;
         if (pwalletMain->GetKeyFromPool(newDefaultKey, false)) {
             pwalletMain->SetDefaultKey(newDefaultKey);
             if (!pwalletMain->SetAddressBook(pwalletMain->vchDefaultKey.GetID(), "", "receive"))
                 return InitError(_("Cannot write default address") += "\n");
         }
-
+        
         pwalletMain->SetBestChain(chainActive.GetLocator());
     }
     else if (mapArgs.count("-usehd")) {
@@ -1740,7 +1739,7 @@ bool AppInit2(const std::vector<std::string>& words)
         InitWarning(_("Make sure to encrypt your wallet and delete all non-encrypted backups after you verified that wallet works!"));
     }
 
-        LogPrintf("%s", strErrors.str());
+        LogPrintf("Init errors: %s\n", strErrors.str());
         LogPrintf("Wallet completed loading in %15dms\n", GetTimeMillis() - nWalletStartTime);
         zwalletMain = new CzPHRWallet(pwalletMain->strWalletFile);
         pwalletMain->setZWallet(zwalletMain);
