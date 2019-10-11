@@ -1723,7 +1723,7 @@ bool AppInit2(const std::vector<std::string>& words)
             if (!pwalletMain->SetAddressBook(pwalletMain->vchDefaultKey.GetID(), "", "receive"))
                 return InitError(_("Cannot write default address") += "\n");
         }
-        
+
         pwalletMain->SetBestChain(chainActive.GetLocator());
     }
     else if (mapArgs.count("-usehd")) {
