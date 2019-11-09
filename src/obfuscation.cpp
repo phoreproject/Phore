@@ -666,7 +666,7 @@ void ThreadCheckObfuScationPool()
 
     // Make this thread recognisable as the wallet flushing thread
     RenameThread("phore-obfuscation");
-
+    LogPrintf("Masternodes thread started\n");
     unsigned int c = 0;
 
     while (true) {
