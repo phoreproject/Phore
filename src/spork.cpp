@@ -75,7 +75,15 @@ void CSporkManager::LoadSporksFromDB()
 
 void CSporkManager::ProcessSpork(CNode* pfrom, std::string& strCommand, CDataStream& vRecv)
 {
-    if (fLiteMode || chainActive.Tip() == nullptr) return; // disable all obfuscation/masternode related functionality
+    if (fLiteMode) return; // disable all obfuscation/masternode related functionality
+
+    int nChainHeight = 0;
+    {
+        LOCK(cs_main);
+        if (chainActive.Tip() == nullptr)
+            return;
+        nChainHeight = chainActive.Height();
+    }
 
     if (strCommand == "spork") {
 
@@ -101,20 +109,19 @@ void CSporkManager::ProcessSpork(CNode* pfrom, std::string& strCommand, CDataStr
                 // spork is active
                 if (mapSporksActive[spork.nSporkID].nTimeSigned >= spork.nTimeSigned) {
                     // spork in memory has been signed more recently
-                    if (fDebug) LogPrintf("%s : seen %s block %d \n", __func__, hash.ToString(), chainActive.Tip()->nHeight);
+                    if (fDebug) LogPrintf("%s : seen %s block %d \n", __func__, hash.ToString(), nChainHeight);
                     return;
                 } else {
                     // update active spork
-                    if (fDebug) LogPrintf("%s : got updated spork %s block %d \n", __func__, hash.ToString(), chainActive.Tip()->nHeight);
+                    if (fDebug) LogPrintf("%s : got updated spork %s block %d \n", __func__, hash.ToString(), nChainHeight);
                 }
             } else {
                 // spork is not active
-                if (fDebug) LogPrintf("%s : got new spork %s block %d \n", __func__, hash.ToString(), chainActive.Tip()->nHeight);
+                if (fDebug) LogPrintf("%s : got new spork %s block %d \n", __func__, hash.ToString(), nChainHeight);
             }
         }
 
-        LogPrintf("spork - new %s ID %d Time %d bestHeight %d\n", hash.ToString(), spork.nSporkID, spork.nValue, chainActive.Tip()->nHeight);
-
+        LogPrintf("%s : new %s ID %d Time %d bestHeight %d\n", __func__, hash.ToString(), spork.nSporkID, spork.nValue, nChainHeight);
         if (!spork.CheckSignature()) {
             LOCK(cs_main);
             LogPrintf("%s : Invalid Signature\n", __func__);
