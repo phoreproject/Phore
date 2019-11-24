@@ -31,9 +31,9 @@ CAmount CPhoreStake::GetValue()
     return txFrom.vout[nPosition].nValue;
 }
 
-bool CPhoreStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout)
+bool CPhoreStake::CreateTxOuts(CWallet* pwallet, std::vector<CTxOut>& vout, CAmount nTotal)
 {
-    vector<valtype> vSolutions;
+    std::vector<valtype> vSolutions;
     txnouttype whichType;
     CScript scriptPubKeyKernel = txFrom.vout[nPosition].scriptPubKey;
     if (!Solver(scriptPubKeyKernel, whichType, vSolutions)) {
@@ -49,7 +49,8 @@ bool CPhoreStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout)
     {
         //convert to pay to public key type
         CKey key;
-        if (!pwallet->GetKey(uint160(vSolutions[0]), key))
+        CKeyID keyID = CKeyID(uint160(vSolutions[0]));
+        if (!pwallet->GetKey(keyID, key))
             return false;
 
         scriptPubKey << key.GetPubKey() << OP_CHECKSIG;
@@ -57,6 +58,11 @@ bool CPhoreStake::CreateTxOuts(CWallet* pwallet, vector<CTxOut>& vout)
         scriptPubKey = scriptPubKeyKernel;
 
     vout.emplace_back(CTxOut(0, scriptPubKey));
+
+    // Calculate if we need to split the output
+    if (nTotal / 2 > (CAmount)(pwallet->nStakeSplitThreshold * COIN))
+        vout.emplace_back(CTxOut(0, scriptPubKey));
+
     return true;
 }
 
