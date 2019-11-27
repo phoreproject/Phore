@@ -4594,39 +4594,29 @@ bool AcceptBlock(CBlock& block, CValidationState& state, CBlockIndex** ppindex, 
         // Coin stake
         CTransaction &stakeTxIn = block.vtx[1];
 
-            for (CTxIn in : block.vtx[1].vin) {
-                auto it = mapStakeSpent.find(in.prevout);
-                if (it == mapStakeSpent.end()) {
-                    return false;
-                }
-                if (it->second < pindexPrev->nHeight) {
-                    return false;
-            }
+        // Inputs
+        std::vector<CTxIn> phrInputs;
+
+        for (const CTxIn& stakeIn : stakeTxIn.vin) {
+                phrInputs.push_back(stakeIn);
         }
         const bool hasPHRInputs = !phrInputs.empty();
+        
+        // Check whether is a fork or not
+        if (isBlockFromFork) {
+
+            // Start at the block we're adding on to
+            CBlockIndex *prev = pindexPrev;
 
             CBlock bl;
+            if (!ReadBlockFromDisk(bl, prev))
                 return error("%s: previous block %s not on disk", __func__, prev->GetBlockHash().GetHex());
 
             std::vector<CBigNum> vBlockSerials;
+            int readBlock = 0;
             // Go backwards on the forked chain up to the split
+            while (!chainActive.Contains(prev)) {
 
-        // if this is on a fork
-            // start at the block we're adding on to
-            CBlockIndex *last = pindexPrev;
-
-            // while that block is not on the main chain
-            while (!chainActive.Contains(last) && last != NULL) {
-                CBlock bl;
-                ReadBlockFromDisk(bl, last);
-                // loop through every spent input from said block
-                for (CTransaction t : bl.vtx) {
-                    for (CTxIn in: t.vin) {
-                        // loop through every spent input in the staking transaction of the new block
-                        for (CTxIn stakeIn : block.vtx[1].vin) {
-                            // if they spend the same input
-                            if (stakeIn.prevout == in.prevout) {
-                                // reject the block
                 // Increase amount of read blocks
                 readBlock++;
                 // Check if the forked chain is longer than the max reorg limit
