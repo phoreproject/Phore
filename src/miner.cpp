@@ -125,8 +125,10 @@ CBlockTemplate* CreateNewBlock(const CScript& scriptPubKeyIn, CWallet* pwallet, 
     bool fZerocoinActive = nHeight >= Params().Zerocoin_StartHeight();
     if(Params().IsStakeModifierV2(nHeight)) {
         pblock->nVersion = 5;       //!> Supports V2 Stake Modifiers.
-    } else {
+    } else if (fZerocoinActive) {
         pblock->nVersion = 4;
+    } else {
+        pblock->nVersion = 3;
     }
 
     // -regtest only: allow overriding block.nVersion with
