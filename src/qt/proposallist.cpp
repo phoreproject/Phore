@@ -20,6 +20,7 @@
 #include "masternode-payments.h"
 #include "masternodeconfig.h"
 #include "masternodeman.h"
+#include "walletmodel.h"
 #include "rpcserver.h"
 #include "ui_interface.h"
 #include "utilmoneystr.h"
@@ -45,9 +46,9 @@
 #include <QUrl>
 #include <QVBoxLayout>
 
-ProposalList::ProposalList(QWidget *parent) :
+ProposalList::ProposalList(QWidget* parent) :
     QWidget(parent), proposalTableModel(0), proposalProxyModel(0),
-    proposalList(0), columnResizingFixer(0)
+    proposalList(0), columnResizingFixer(0), walletModel(0)
 {
     proposalTableModel = new ProposalTableModel(this);
     QSettings settings;
@@ -305,8 +306,22 @@ ProposalList::ProposalList(QWidget *parent) :
     setLayout(vlayout);
 }
 
+void ProposalList::setWalletModel(WalletModel* walletModel)
+{
+    this->walletModel = walletModel;
+}
+
 void ProposalList::createProposal()
 {
+
+    WalletModel::EncryptionStatus encStatus = walletModel->getEncryptionStatus();
+
+    if (encStatus == walletModel->Locked || encStatus == walletModel->UnlockedForAnonymizationOnly) {
+        WalletModel::UnlockContext ctx(walletModel->requestUnlock());
+
+        if (!ctx.isValid()) return; // Unlock wallet was cancelled
+    }
+
     ProposalDialog dlg(ProposalDialog::PrepareProposal, this);
     if (QDialog::Accepted == dlg.exec())
     {

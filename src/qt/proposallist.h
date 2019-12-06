@@ -16,6 +16,7 @@
 #include <QWidget>
 
 class ProposalFilterProxy;
+class WalletModel;
 
 QT_BEGIN_NAMESPACE
 class QComboBox;
@@ -36,9 +37,11 @@ class ProposalList : public QWidget
     Q_OBJECT
 
 public:
-    explicit ProposalList(QWidget *parent = 0);
+    explicit ProposalList(QWidget* parent = 0);
 
     void setModel();
+    void setWalletModel(WalletModel* model);
+
 
     enum DateEnum
     {
@@ -77,6 +80,8 @@ private:
     QLineEdit *totalPaymentCountWidget;
     QLineEdit *remainingPaymentCountWidget;
     QTimer *timer;
+
+    WalletModel* walletModel;
 
     QLineEdit *yesVotesWidget;
     QLineEdit *noVotesWidget;

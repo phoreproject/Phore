@@ -209,6 +209,7 @@ void WalletView::setWalletModel(WalletModel* walletModel)
         masternodeListPage->setWalletModel(walletModel);
     }
     privacyPage->setModel(walletModel);
+    proposalList->setWalletModel(walletModel);
     receiveCoinsPage->setModel(walletModel);
     sendCoinsPage->setModel(walletModel);
 

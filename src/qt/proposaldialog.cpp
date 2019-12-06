@@ -37,7 +37,7 @@ ProposalDialog::ProposalDialog(Mode mode, QWidget* parent) : QDialog(parent), ui
             setWindowTitle(tr("Prepare Proposal"));
             ui->confirmLabel->setVisible(false);
             ui->hashEdit->setVisible(false);
-            ui->hashLabel->setVisible(false); 
+            ui->hashLabel->setVisible(false);
             break;
         case SubmitProposal:
             setWindowTitle(tr("Submit Proposal"));
@@ -79,7 +79,7 @@ ProposalDialog::ProposalDialog(Mode mode, QWidget* parent) : QDialog(parent), ui
     ui->hashEdit->setToolTip(tr("The TXID of the proposal hash, must be confirmed before use"));
 
     ui->confirmLabel->setWordWrap(true);
-    ui->infoLabel->setWordWrap(true); 
+    ui->infoLabel->setWordWrap(true);
 
     // Load next superblock number.
     CBlockIndex* pindexPrev = chainActive.Tip();
@@ -100,7 +100,7 @@ ProposalDialog::~ProposalDialog()
 void ProposalDialog::prepareProposal()
 {
     std::string strError = "";
-    
+
     if (pwalletMain->IsLocked())
     {
         strError = "Error: Please enter the wallet passphrase with walletpassphrase first.";
@@ -124,7 +124,7 @@ void ProposalDialog::prepareProposal()
     if (!budgetProposalBroadcast.IsValid(err, false)) strError = "Proposal is not valid - " + budgetProposalBroadcast.GetHash().ToString() + " - " + err;
 
     bool useIX = false;
-    if (strError.empty() && !pwalletMain->GetBudgetSystemCollateralTX(wtx, budgetProposalBroadcast.GetHash(), useIX)) 
+    if (strError.empty() && !pwalletMain->GetBudgetSystemCollateralTX(wtx, budgetProposalBroadcast.GetHash(), useIX))
     {
         strError = "Error making collateral transaction for proposal. Please check your wallet balance.";
     }
@@ -136,14 +136,14 @@ void ProposalDialog::prepareProposal()
     {
         strError = "Unable to commit proposal transaction.";
     }
-    
-    if (!strError.empty()) 
+
+    if (!strError.empty())
     {
         std::cout << strError << std::endl;
         QMessageBox::critical(this, "Prepare Proposal Error", QString::fromStdString(strError));
         return;
     }
-    
+
     // update the local view with submit view
     ui->cancelButton->setDisabled(true);
     ui->nameEdit->setDisabled(true);
@@ -166,7 +166,7 @@ void ProposalDialog::prepareProposal()
 
     mode = SubmitProposal;
     setWindowTitle(tr("Submit Proposal"));
-    
+
     timer->start(1000);
     counter = chainActive.Tip()->nHeight + 1;
 }
@@ -174,7 +174,7 @@ void ProposalDialog::prepareProposal()
 void ProposalDialog::submitProposal()
 {
     std::string strError = "";
-    
+
     std::string strProposalName = SanitizeString(ui->nameEdit->text().toStdString());
     std::string strURL = SanitizeString(ui->urlEdit->text().toStdString());
     int nPaymentCount = ui->paymentsEdit->text().toInt();
@@ -196,8 +196,8 @@ void ProposalDialog::submitProposal()
     }
 
     if (strError.empty() && !budget.AddProposal(budgetProposalBroadcast)) strError = "Invalid proposal, see debug.log for details.";
-    
-    if (!strError.empty()) 
+
+    if (!strError.empty())
     {
         std::cout << strError << std::endl;
         QMessageBox::critical(this, tr("Submit Proposal Error"), QString::fromStdString(strError));
@@ -206,7 +206,7 @@ void ProposalDialog::submitProposal()
 
     budget.mapSeenMasternodeBudgetProposals.insert(make_pair(budgetProposalBroadcast.GetHash(), budgetProposalBroadcast));
     budgetProposalBroadcast.Relay();
-    
+
     this->accept();
 }
 
@@ -215,7 +215,7 @@ bool ProposalDialog::validateProposal()
     std::string strError = "";
 
     if (!masternodeSync.IsBlockchainSynced()) strError = "Must wait for client to sync with masternode network. Try again in a minute or so.";
-    
+
     std::string strProposalName = SanitizeString(ui->nameEdit->text().toStdString());
     if (strProposalName.size() > 20) strError = "Invalid proposal name, limit of 20 characters.";
 
@@ -244,7 +244,7 @@ bool ProposalDialog::validateProposal()
     std::string address = ui->addressEdit->text().toStdString();
     if (!IsValidDestinationString(address)) strError = "Invalid Phore address";
 
-    if (!strError.empty()) 
+    if (!strError.empty())
     {
         QMessageBox::critical(this, tr("Submit Proposal Error"), QString::fromStdString(strError));
         return false;
@@ -259,7 +259,7 @@ void ProposalDialog::checkProposalTX()
 
     int nConf = Params().BudgetFeeConfirmations();
     int nDepth = (chainActive.Tip()->nHeight + 1) - counter;
-    if (nDepth > nConf) 
+    if (nDepth > nConf)
     {
         ui->acceptButton->setDisabled(false);
         ui->acceptButton->setText("Finish Proposal");
@@ -281,7 +281,7 @@ void ProposalDialog::on_acceptButton_clicked()
 {
     if (!validateProposal()) return;
 
-    if (mode == PrepareProposal) 
+    if (mode == PrepareProposal)
     {
         prepareProposal();
     }
