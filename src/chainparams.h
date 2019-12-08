@@ -122,7 +122,7 @@ public:
     int LAST_POW_BLOCK() const { return nLastPOWBlock; }
     int Zerocoin_StartHeight() const { return nZerocoinStartHeight; }
     int Zerocoin_LastOldParams() const { return nZerocoinLastOldParams; }
-    bool IsStakeModifierV2(const int nHeight) const { return nHeight >= nBlockStakeModifierlV2; }
+    bool IsStakeModifierV2(const int nHeight) const { return nHeight >= nBlockStakeModifierV2; }
     bool IsTxFeeRequired(const int nHeight) const { return nHeight >= nTxFeeRequired; }
 
 protected:
@@ -180,7 +180,7 @@ protected:
     int64_t nBudgetFeeConfirmations;
     int nZerocoinStartHeight;
     int nZerocoinLastOldParams;
-    int nBlockStakeModifierlV2;
+    int nBlockStakeModifierV2;
     int nTxFeeRequired;
 };
 

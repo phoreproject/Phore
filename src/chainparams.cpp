@@ -232,7 +232,7 @@ public:
         strSporkKey = "04659d53bd8f7ad9d34a17281febedac754e5a6eb136142d3a9c6c0ea21b6ed7498ceb3d872eed00ae755f7aeadaeb1d9ab5e1a8f1e7efcd0ddcb39d4623c12790";
         strObfuscationPoolDummyAddress = "PCYiHgGJJ6xGHqivmdZrYjRnhaYf6AJ2Mp";
 
-        nBlockStakeModifierlV2 = 1159000; // TODO: this will be set at a later date
+        nBlockStakeModifierV2 = 1196640; // TODO: this will be set at a later date
         nTxFeeRequired = 9000000; // TODO: to be set before release;
 
         /** Zerocoin */
@@ -327,7 +327,7 @@ public:
         nPoolMaxTransactions = 2;
         strSporkKey = "040d2595becca91020213bf94735fa26bb92a206aa21be45b0e95f205ff8588ecb9398c5c7d8cfaf78149d230b8dc066c3660573ff2104dac98e43283d6dc882d6"; 
         strObfuscationPoolDummyAddress = "PCYiHgGJJ6xGHqivmdZrYjRnhaYf6AJ2Mp";
-        nBlockStakeModifierlV2 = 5000; // this will be set at a later date
+        nBlockStakeModifierV2 = 5000; // this will be set at a later date
         nBudgetFeeConfirmations = 3; // Number of confirmations for the finalization fee. We have to make this very short
                                      // here because we only have a 8 block finalization window on testnet
     }
@@ -368,7 +368,7 @@ public:
         nZerocoinLastOldParams = 499;
         nZerocoinStartHeight = 100;
 
-        nBlockStakeModifierlV2 = std::numeric_limits<int>::max(); // max integer value (never switch on regtest)
+        nBlockStakeModifierV2 = std::numeric_limits<int>::max(); // max integer value (never switch on regtest)
         nTxFeeRequired = 500;
 
         hashGenesisBlock = genesis.GetHash();
