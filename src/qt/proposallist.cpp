@@ -277,7 +277,6 @@ ProposalList::ProposalList(QWidget* parent) :
     proposalProxyModel->setSourceModel(proposalTableModel);
 
     proposalList->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    proposalList->setModel(proposalProxyModel);
     proposalList->setAlternatingRowColors(true);
     proposalList->setSelectionBehavior(QAbstractItemView::SelectRows);
     proposalList->setSortingEnabled(true);
@@ -306,9 +305,9 @@ ProposalList::ProposalList(QWidget* parent) :
     setLayout(vlayout);
 }
 
-void ProposalList::setWalletModel(WalletModel* walletModel)
+void ProposalList::setModel(WalletModel* model)
 {
-    this->walletModel = walletModel;
+    this->walletModel = model;
 }
 
 void ProposalList::createProposal()

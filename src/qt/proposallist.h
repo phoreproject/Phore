@@ -39,8 +39,7 @@ class ProposalList : public QWidget
 public:
     explicit ProposalList(QWidget* parent = 0);
 
-    void setModel();
-    void setWalletModel(WalletModel* model);
+    void setModel(WalletModel* walletModel);
 
 
     enum DateEnum
