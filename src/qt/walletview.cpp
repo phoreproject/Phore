@@ -361,7 +361,9 @@ void WalletView::showOutOfSyncWarning(bool fShow)
 
 void WalletView::updateEncryptionStatus()
 {
+    LogPrintf("t12 : \n");
     emit encryptionStatusChanged(walletModel->getEncryptionStatus());
+    LogPrintf("t13 : \n");
 }
 
 void WalletView::encryptWallet(bool status)

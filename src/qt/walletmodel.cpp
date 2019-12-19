@@ -126,10 +126,14 @@ CAmount WalletModel::getWatchImmatureBalance() const
 
 void WalletModel::updateStatus()
 {
+    LogPrintf("t8 : \n");
     EncryptionStatus newEncryptionStatus = getEncryptionStatus();
+    LogPrintf("t9 : \n");
 
     if (cachedEncryptionStatus != newEncryptionStatus)
+        LogPrintf("t10 : \n");
         emit encryptionStatusChanged(newEncryptionStatus);
+    LogPrintf("t11 : \n");
 }
 
 void WalletModel::pollBalanceChanged()

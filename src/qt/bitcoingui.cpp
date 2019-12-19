@@ -1266,7 +1266,9 @@ bool BitcoinGUI::handlePaymentRequest(const SendCoinsRecipient& recipient)
 
 void BitcoinGUI::setEncryptionStatus(int status)
 {
+    LogPrintf("t14 : \n");
     switch (status) {
+        LogPrintf("t15 : \n");
     case WalletModel::Unencrypted:
         labelEncryptionIcon->hide();
         encryptWalletAction->setChecked(false);
@@ -1274,8 +1276,10 @@ void BitcoinGUI::setEncryptionStatus(int status)
         unlockWalletAction->setVisible(false);
         lockWalletAction->setVisible(false);
         encryptWalletAction->setEnabled(true);
+        LogPrintf("t16 : \n");
         break;
     case WalletModel::Unlocked:
+        LogPrintf("t17 : \n");
         labelEncryptionIcon->show();
         labelEncryptionIcon->setIcon(QIcon(":/icons/lock_open").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
         labelEncryptionIcon->setToolTip(tr("Wallet is <b>encrypted</b> and currently <b>unlocked</b>"));
@@ -1284,8 +1288,10 @@ void BitcoinGUI::setEncryptionStatus(int status)
         unlockWalletAction->setVisible(false);
         lockWalletAction->setVisible(true);
         encryptWalletAction->setEnabled(false); // TODO: decrypt currently not supported
+        LogPrintf("t18 : \n");
         break;
     case WalletModel::UnlockedForAnonymizationOnly:
+        LogPrintf("t19 : \n");
         labelEncryptionIcon->show();
         labelEncryptionIcon->setIcon(QIcon(":/icons/lock_open").pixmap(STATUSBAR_ICONSIZE, STATUSBAR_ICONSIZE));
         labelEncryptionIcon->setToolTip(tr("Wallet is <b>encrypted</b> and currently <b>unlocked</b> for anonymization and staking only"));
@@ -1294,8 +1300,10 @@ void BitcoinGUI::setEncryptionStatus(int status)
         unlockWalletAction->setVisible(true);
         lockWalletAction->setVisible(true);
         encryptWalletAction->setEnabled(false); // TODO: decrypt currently not supported
+        LogPrintf("t20 : \n");
         break;
     case WalletModel::Locked:
+        LogPrintf("t21 : \n");
         labelEncryptionIcon->show();
         labelEncryptionIcon->setIcon(QIcon(":/icons/lock_closed").pixmap(QSize(16,16)));
         labelEncryptionIcon->setToolTip(tr("Wallet is <b>encrypted</b> and currently <b>locked</b>"));
@@ -1304,6 +1312,7 @@ void BitcoinGUI::setEncryptionStatus(int status)
         unlockWalletAction->setVisible(true);
         lockWalletAction->setVisible(false);
         encryptWalletAction->setEnabled(false); // TODO: decrypt currently not supported
+        LogPrintf("t22 : \n");
         break;
     }
 }
