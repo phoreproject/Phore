@@ -16,6 +16,7 @@ class ClientModel;
 class OverviewPage;
 class ReceiveCoinsDialog;
 class PrivacyDialog;
+class ProposalList;
 class SendCoinsDialog;
 class SendCoinsRecipient;
 class TransactionView;
