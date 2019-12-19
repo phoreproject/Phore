@@ -467,12 +467,16 @@ bool WalletModel::setWalletEncrypted(bool encrypted, const SecureString& passphr
 
 bool WalletModel::setWalletLocked(bool locked, const SecureString& passPhrase, bool anonymizeOnly)
 {
+    LogPrintf("t47 : \n");
     if (locked) {
+        LogPrintf("t48 : \n");
         // Lock
         wallet->fWalletUnlockAnonymizeOnly = false;
+        LogPrintf("t49 : \n");
         return wallet->Lock();
     } else {
         // Unlock
+        LogPrintf("t50 : \n");
         return wallet->Unlock(passPhrase, anonymizeOnly);
     }
 }
