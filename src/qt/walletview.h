@@ -16,7 +16,6 @@ class ClientModel;
 class OverviewPage;
 class ReceiveCoinsDialog;
 class PrivacyDialog;
-class ProposalList;
 class SendCoinsDialog;
 class SendCoinsRecipient;
 class TransactionView;
@@ -70,10 +69,9 @@ private:
     SendCoinsDialog* sendCoinsPage;
     BlockExplorer* explorerWindow;
     MasternodeList* masternodeListPage;
-    QWidget* proposalListPage;	
+    ProposalList* proposalListPage;
 
     TransactionView* transactionView;
-    ProposalList* proposalList;
 
     QProgressDialog* progressDialog;
     QLabel* transactionSum;
