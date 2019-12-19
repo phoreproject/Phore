@@ -445,10 +445,7 @@ void WalletView::toggleLockWallet()
         LogPrintf("t42 : \n");
         dlg.exec();
         LogPrintf("t43 : \n");
-    }
-
-    LogPrintf("t44 : \n");
-    else if (encStatus == walletModel->Unlocked || encStatus == walletModel->UnlockedForAnonymizationOnly) {
+    } else if (encStatus == walletModel->Unlocked || encStatus == walletModel->UnlockedForAnonymizationOnly) {
         LogPrintf("t45 : \n");
             walletModel->setWalletLocked(true);
         LogPrintf("t46 : \n");
