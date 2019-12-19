@@ -402,39 +402,56 @@ void WalletView::changePassphrase()
 
 void WalletView::unlockWallet()
 {
+    LogPrintf("t30 : \n");
     if (!walletModel)
         return;
+    LogPrintf("t31 : \n");
     // Unlock wallet when requested by wallet model
 
     if (walletModel->getEncryptionStatus() == WalletModel::Locked || walletModel->getEncryptionStatus() == WalletModel::UnlockedForAnonymizationOnly) {
+        LogPrintf("t32 : \n");
         AskPassphraseDialog dlg(AskPassphraseDialog::UnlockAnonymize, this, walletModel);
+        LogPrintf("t33 : \n");
         dlg.exec();
+        LogPrintf("t34 : \n");
     }
 }
 
 void WalletView::lockWallet()
 {
+    LogPrintf("t35 : \n");
     if (!walletModel)
         return;
+    LogPrintf("t36 : \n");
 
     walletModel->setWalletLocked(true);
+    LogPrintf("t37 : \n");
 }
 
 void WalletView::toggleLockWallet()
 {
+    LogPrintf("t38 : \n");
     if (!walletModel)
         return;
+    LogPrintf("t39 : \n");
 
     WalletModel::EncryptionStatus encStatus = walletModel->getEncryptionStatus();
 
+    LogPrintf("t40 : \n");
     // Unlock the wallet when requested
     if (encStatus == walletModel->Locked) {
+        LogPrintf("t41 : \n");
         AskPassphraseDialog dlg(AskPassphraseDialog::UnlockAnonymize, this, walletModel);
+        LogPrintf("t42 : \n");
         dlg.exec();
+        LogPrintf("t43 : \n");
     }
 
+    LogPrintf("t44 : \n");
     else if (encStatus == walletModel->Unlocked || encStatus == walletModel->UnlockedForAnonymizationOnly) {
+        LogPrintf("t45 : \n");
             walletModel->setWalletLocked(true);
+        LogPrintf("t46 : \n");
     }
 }
 

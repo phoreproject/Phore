@@ -220,16 +220,24 @@ void WalletFrame::changePassphrase()
 
 void WalletFrame::unlockWallet()
 {
+    LogPrintf("t23 : \n");
     WalletView* walletView = currentWalletView();
+    LogPrintf("t24 : \n");
     if (walletView)
+        LogPrintf("t25 : \n");
         walletView->unlockWallet();
+        LogPrintf("t26 : \n");
 }
 
 void WalletFrame::lockWallet()
 {
+    LogPrintf("t27 : \n");
     WalletView* walletView = currentWalletView();
+    LogPrintf("t28 : \n");
     if (walletView)
+        LogPrintf("t29 : \n");
         walletView->lockWallet();
+        LogPrintf("t30 : \n");
 }
 
 void WalletFrame::toggleLockWallet()
