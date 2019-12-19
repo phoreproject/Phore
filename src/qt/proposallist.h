@@ -10,6 +10,7 @@
 #include "columnalignedlayout.h"
 #include "guiutil.h"
 #include "proposaltablemodel.h"
+#include "walletmodel.h"
 
 #include <QKeyEvent>
 #include <QTimer>

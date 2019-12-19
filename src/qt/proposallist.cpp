@@ -308,18 +308,24 @@ ProposalList::ProposalList(QWidget* parent) :
 
 void ProposalList::setWalletModel(WalletModel* model)
 {
+    LogPrintf("t1 : \n");
     this->walletModel = model;
+    LogPrintf("t2 : \n");
 }
 
 void ProposalList::createProposal()
 {
 
+    LogPrintf("t3 : \n");
     WalletModel::EncryptionStatus encStatus = walletModel->getEncryptionStatus();
-
+    LogPrintf("t4 : \n");
     if (encStatus == walletModel->Locked || encStatus == walletModel->UnlockedForAnonymizationOnly) {
+        LogPrintf("t5 : \n");
         WalletModel::UnlockContext ctx(walletModel->requestUnlock());
+        LogPrintf("t6 : \n");
 
         if (!ctx.isValid()) return; // Unlock wallet was cancelled
+        LogPrintf("t7 : \n");
     }
 
     ProposalDialog dlg(ProposalDialog::PrepareProposal, this);
