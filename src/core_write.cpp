@@ -6,7 +6,7 @@
 
 #include "base58.h"
 #include "primitives/transaction.h"
-#include "rpcprotocol.h"
+#include "rpc/protocol.h"
 #include "script/script.h"
 #include "script/standard.h"
 #include "serialize.h"

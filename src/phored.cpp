@@ -11,12 +11,12 @@
 #include "main.h"
 #include "noui.h"
 #include "scheduler.h"
-#include "rpcserver.h"
+#include "rpc/server.h"
 #include "ui_interface.h"
 #include "util.h"
 #include "httpserver.h"
 #include "httprpc.h"
-#include "rpcserver.h"
+#include "rpc/server.h"
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/filesystem.hpp>
