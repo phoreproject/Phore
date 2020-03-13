@@ -195,7 +195,7 @@ void MultiSendDialog::on_activateButton_clicked()
     if (pwalletMain->vMultiSend.size() < 1)
         strRet = tr("Unable to activate MultiSend, check MultiSend vector");
     else if (!(ui->multiSendStakeCheckBox->isChecked() || ui->multiSendMasternodeCheckBox->isChecked())) {
-        strRet = tr("Need to select to send on stake and/or masternode rewards);
+        strRet = tr("Need to select to send on stake and/or masternode rewards");
     } else if (IsValidDestinationString(pwalletMain->vMultiSend[0].first)) {
         pwalletMain->fMultiSendStake = ui->multiSendStakeCheckBox->isChecked();
         pwalletMain->fMultiSendMasternodeReward = ui->multiSendMasternodeCheckBox->isChecked();
