@@ -934,7 +934,7 @@
                     </size>
                    </property>
                    <property name="toolTip">
-                    <string>SwiftX technology allows for near instant transactions - A flat fee of 0.01 PIV applies</string>
+                    <string>SwiftX technology allows for near instant transactions - A flat fee of 0.01 PHR applies</string>
                    </property>
                    <property name="text">
                     <string>SwiftX</string>
