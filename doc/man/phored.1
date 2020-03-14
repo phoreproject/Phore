@@ -3,11 +3,11 @@
 .SH NAME
 phored \- manual page for phored v3.1.99.0
 .SH DESCRIPTION
-Pivx Core Daemon version v3.1.99.0\-11f4a2bba4\-dirty
+Phore Core Daemon version v3.1.99.0\-11f4a2bba4\-dirty
 .SS "Usage:"
 .TP
 phored [options]
-Start Pivx Core Daemon
+Start Phore Core Daemon
 .SH OPTIONS
 .HP
 \-?
@@ -88,7 +88,7 @@ Reindex the accumulator database on startup
 .HP
 \fB\-reindexmoneysupply\fR
 .IP
-Reindex the PIV and zPIV money supply statistics on startup
+Reindex the PHR and zPHR money supply statistics on startup
 .HP
 \fB\-resync\fR
 .IP
@@ -263,7 +263,7 @@ Set key pool size to <n> (default: 100)
 .HP
 \fB\-paytxfee=\fR<amt>
 .IP
-Fee (in PIV/kB) to add to transactions you send (default: 0.00)
+Fee (in PHR/Kb) to add to transactions you send (default: 0.00)
 .HP
 \fB\-rescan\fR
 .IP
@@ -373,7 +373,7 @@ Prepend debug output with timestamp (default: 1)
 .HP
 \fB\-minrelaytxfee=\fR<amt>
 .IP
-Fees (in PIV/Kb) smaller than this are considered zero fee for relaying
+Fees (in PHR/Kb) smaller than this are considered zero fee for relaying
 (default: 0.0001)
 .HP
 \fB\-printtoconsole\fR
@@ -399,14 +399,9 @@ Staking options:
 .IP
 Enable staking functionality (0\-1, default: 1)
 .HP
-\fB\-pivstake=\fR<n>
+\fB\-phrstake=\fR<n>
 .IP
-Enable or disable staking functionality for PIV inputs (0\-1, default: 1)
-.HP
-\fB\-zpivstake=\fR<n>
-.IP
-Enable or disable staking functionality for zPIV inputs (0\-1, default:
-1)
+Enable or disable staking functionality for PHR inputs (0\-1, default: 1)
 .HP
 \fB\-reservebalance=\fR<amt>
 .IP
