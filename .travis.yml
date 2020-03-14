@@ -9,7 +9,6 @@ cache:
   - depends/sdk-sources
   - $HOME/.ccache
 stages:
-  - lint
   - test
 env:
   global:
