@@ -12,8 +12,7 @@ define $(package)_set_vars
 endef
 
 define $(package)_preprocess_cmds
-   cp -f $(BASEDIR)/config.guess $(BASEDIR)/config.sub . &&\
-   cp -f $(BASEDIR)/config.guess $(BASEDIR)/config.sub gtest/build-aux
+   cp -f $(BASEDIR)/config.guess $(BASEDIR)/config.sub .
 endef
 
 define $(package)_config_cmds
