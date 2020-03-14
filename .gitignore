@@ -91,7 +91,6 @@ background.tiff*
 # Unit-tests
 Makefile.test
 phore-qt_test
-src/test/buildenv.py
 
 # Resources cpp
 qrc_*.cpp
