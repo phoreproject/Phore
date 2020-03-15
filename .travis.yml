@@ -9,6 +9,7 @@ cache:
   - depends/sdk-sources
   - $HOME/.ccache
 stages:
+  - lint
   - test
 env:
   global:
@@ -145,4 +146,4 @@ jobs:
         RUN_UNIT_TESTS=false
         RUN_FUNCTIONAL_TESTS=false
         GOAL="all deploy"
-        BITCOIN_CONFIG="--enable-gui --enable-reduce-exports --enable-werror"
+        BITCOIN_CONFIG="--enable-gui --enable-reduce-exports"
