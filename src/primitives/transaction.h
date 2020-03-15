@@ -491,8 +491,6 @@ public:
     }
 
     std::string ToString() const;
-
-    bool GetCoinAge(uint64_t& nCoinAge) const;  // ppcoin: get transaction coin age
     
     void UpdateHash() const;
 };

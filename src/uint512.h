@@ -3,7 +3,9 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#pragma once
+#ifndef PHORE_UINT512_H
+#define PHORE_UINT512_H
+
 #include "arith_uint256.h"
 #include "uint256.h"
 
@@ -40,3 +42,5 @@ inline uint512 uint512S(const char* str)
     rv.SetHex(str);
     return rv;
 }
+
+#endif // PHORE_UINT512_H

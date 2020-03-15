@@ -7,7 +7,7 @@ KeePass integration use KeePassHttp (https://github.com/pfn/keepasshttp/) to fac
 
 The implementation is dependent on the following:
  - crypter.h for AES encryption helper functions.
- - rpcprotocol.h for handling RPC communications. Could only be used partially however due some static values in the code.
+ - rpc/protocol.h for handling RPC communications. Could only be used partially however due some static values in the code.
  - OpenSSL for base64 encoding. regular util.h libraries were not used for base64 encoding/decoding since they do not use secure allocation.
  - JSON Spirit for reading / writing RPC communications
 

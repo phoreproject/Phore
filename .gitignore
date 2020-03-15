@@ -86,11 +86,11 @@ src/leveldb/build_config.mk
 Makefile
 phore-qt
 phore-Qt.app
+background.tiff*
 
 # Unit-tests
 Makefile.test
 phore-qt_test
-src/test/buildenv.py
 
 # Resources cpp
 qrc_*.cpp
@@ -113,6 +113,8 @@ coverage_percent.txt
 linux-coverage-build
 linux-build
 win32-build
+test/config.ini
+test/cache/*
 qa/pull-tester/run-bitcoind-for-test.sh
 qa/pull-tester/tests-config.sh
 qa/pull-tester/cache/*
@@ -128,7 +130,7 @@ background.tiff@2x.png
 /doc/doxygen/
 doc/Doxyfile
 /nbproject/
-
+libbitcoinconsensus.pc
 .idea
 cmake-build-debug
 
