@@ -15,6 +15,7 @@
 #include "util.h"
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/foreach.hpp>
 #include <boost/filesystem/fstream.hpp>
 
 #include <algorithm>

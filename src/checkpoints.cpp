@@ -10,10 +10,10 @@
 #include "chainparams.h"
 #include "main.h"
 #include "uint256.h"
-
+#include <boost/foreach.hpp>
 #include <stdint.h>
 
-#include <boost/foreach.hpp>
+
 
 namespace Checkpoints
 {

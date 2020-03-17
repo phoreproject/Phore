@@ -11,7 +11,7 @@
 #include "script/standard.h"
 #include "util.h"
 
-#include <boost/foreach.hpp>
+
 
 static bool ExtractPubKey(const CScript &dest, CPubKey& pubKeyOut)
 {

@@ -233,13 +233,13 @@ bool ProposalDialog::validateProposal()
 
     int nBlockStart = ui->blockEdit->text().toInt();
     if (nBlockStart < nBlockMin) strError = "Invalid block start, must be more than current height.";
-    if (nBlockStart % GetBudgetPaymentCycleBlocks() != 0)
+    if (nBlockStart % Params().GetBudgetCycleBlocks() != 0)
     {
         int nNext = pindexPrev->nHeight - pindexPrev->nHeight % Params().GetBudgetCycleBlocks() + Params().GetBudgetCycleBlocks();
         strError = strprintf("Invalid block start - must be a budget cycle block. Next valid block: %d", nNext);
     }
 
-    int nBlockEnd = nBlockStart + (GetBudgetPaymentCycleBlocks() * nPaymentCount); // End must be AFTER current cycle
+    int nBlockEnd = nBlockStart + (Params().GetBudgetCycleBlocks() * nPaymentCount); // End must be AFTER current cycle
     if (nBlockEnd < pindexPrev->nHeight) strError = "Invalid ending block, starting block + (payment_cycle*payments) must be more than current height.";
 
     std::string address = ui->addressEdit->text().toStdString();
