@@ -527,7 +527,7 @@ void MultisigDialog::on_signButton_clicked()
             CCoinsViewMemPool viewMempool(&viewChain, mempool);
             view.SetBackend(viewMempool); // temporarily switch cache backend to db+mempool view
 
-            BOOST_FOREACH (const CTxIn& txin, tx.vin) {
+            for (const CTxIn& txin : tx.vin) {
                 const uint256& prevHash = txin.prevout.hash;
                 CCoins coins;
                 view.AccessCoins(prevHash); // this is certainly allowed to fail
