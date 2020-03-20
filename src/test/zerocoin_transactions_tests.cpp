@@ -13,7 +13,6 @@
 #include <boost/test/unit_test.hpp>
 #include <iostream>
 
-using namespace libzerocoin;
 
 
 BOOST_AUTO_TEST_SUITE(zerocoin_transactions_tests)
@@ -28,7 +27,7 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test)
 
     bool fFirstRun;
     cWallet.LoadWallet(fFirstRun);
-    cWallet.zphrTracker = unique_ptr<CzPHRTracker>(new CzPHRTracker(cWallet.strWalletFile));
+    cWallet.zphrTracker = std::unique_ptr<CzPHRTracker>(new CzPHRTracker(cWallet.strWalletFile));
     CMutableTransaction tx;
     CWalletTx* wtx = new CWalletTx(&cWallet, tx);
     bool fMintChange=true;

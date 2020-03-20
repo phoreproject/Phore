@@ -15,7 +15,6 @@
 
 #include <boost/test/unit_test.hpp>
 
-using namespace std;
 
 // Helpers:
 static std::vector<unsigned char>
@@ -164,8 +163,8 @@ BOOST_AUTO_TEST_CASE(GetTxSigOpCost)
         CScript scriptSig = CScript();
         CTxinWitness witness;
         CScriptWitness scriptWitness;
-        scriptWitness.stack.push_back(vector<unsigned char>(0));
-        scriptWitness.stack.push_back(vector<unsigned char>(0));
+        scriptWitness.stack.push_back(std::vector<unsigned char>(0));
+        scriptWitness.stack.push_back(std::vector<unsigned char>(0));
         witness.scriptWitness = scriptWitness;
 
 
@@ -196,8 +195,8 @@ BOOST_AUTO_TEST_CASE(GetTxSigOpCost)
         scriptSig = CScript() << ToByteVector(scriptSig);
         CTxinWitness witness;
         CScriptWitness scriptWitness;
-        scriptWitness.stack.push_back(vector<unsigned char>(0));
-        scriptWitness.stack.push_back(vector<unsigned char>(0));
+        scriptWitness.stack.push_back(std::vector<unsigned char>(0));
+        scriptWitness.stack.push_back(std::vector<unsigned char>(0));
         witness.scriptWitness = scriptWitness;
 
         BuildTxs(spendingTx, coins, creationTx, scriptPubKey, scriptSig, witness);
@@ -212,9 +211,9 @@ BOOST_AUTO_TEST_CASE(GetTxSigOpCost)
         CScript scriptSig = CScript();
         CTxinWitness witness;
         CScriptWitness scriptWitness;
-        scriptWitness.stack.push_back(vector<unsigned char>(0));
-        scriptWitness.stack.push_back(vector<unsigned char>(0));
-        scriptWitness.stack.push_back(vector<unsigned char>(witnessScript.begin(), witnessScript.end()));
+        scriptWitness.stack.push_back(std::vector<unsigned char>(0));
+        scriptWitness.stack.push_back(std::vector<unsigned char>(0));
+        scriptWitness.stack.push_back(std::vector<unsigned char>(witnessScript.begin(), witnessScript.end()));
         witness.scriptWitness = scriptWitness;
 
         BuildTxs(spendingTx, coins, creationTx, scriptPubKey, scriptSig, witness);
@@ -231,9 +230,9 @@ BOOST_AUTO_TEST_CASE(GetTxSigOpCost)
         CScript scriptSig = CScript() << ToByteVector(redeemScript);
         CTxinWitness witness;
         CScriptWitness scriptWitness;
-        scriptWitness.stack.push_back(vector<unsigned char>(0));
-        scriptWitness.stack.push_back(vector<unsigned char>(0));
-        scriptWitness.stack.push_back(vector<unsigned char>(witnessScript.begin(), witnessScript.end()));
+        scriptWitness.stack.push_back(std::vector<unsigned char>(0));
+        scriptWitness.stack.push_back(std::vector<unsigned char>(0));
+        scriptWitness.stack.push_back(std::vector<unsigned char>(witnessScript.begin(), witnessScript.end()));
         witness.scriptWitness = scriptWitness;
 
         BuildTxs(spendingTx, coins, creationTx, scriptPubKey, scriptSig, witness);

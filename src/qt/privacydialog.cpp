@@ -198,8 +198,8 @@ void PrivacyDialog::on_pushButtonMintzPHR_clicked()
     int64_t nTime = GetTimeMillis();
 
     CWalletTx wtx;
-    vector<CDeterministicMint> vMints;
-    string strError = pwalletMain->MintZerocoin(nAmount, wtx, vMints, CoinControlDialog::coinControl);
+    std::vector<CDeterministicMint> vMints;
+    std::string strError = pwalletMain->MintZerocoin(nAmount, wtx, vMints, CoinControlDialog::coinControl);
 
     // Return if something went wrong during minting
     if (strError != ""){
@@ -243,7 +243,7 @@ void PrivacyDialog::on_pushButtonMintReset_clicked()
     ui->TEMintStatus->repaint ();
 
     int64_t nTime = GetTimeMillis();
-    string strResetMintResult = pwalletMain->ResetMintZerocoin(); // do not do the extended search from GUI
+    std::string strResetMintResult = pwalletMain->ResetMintZerocoin(); // do not do the extended search from GUI
     double fDuration = (double)(GetTimeMillis() - nTime)/1000.0;
     ui->TEMintStatus->setPlainText(QString::fromStdString(strResetMintResult) + tr("Duration: ") + QString::number(fDuration) + tr(" sec.\n"));
     ui->TEMintStatus->repaint ();
@@ -257,7 +257,7 @@ void PrivacyDialog::on_pushButtonSpentReset_clicked()
     ui->TEMintStatus->setPlainText(tr("Starting ResetSpentZerocoin: "));
     ui->TEMintStatus->repaint ();
     int64_t nTime = GetTimeMillis();
-    string strResetSpentResult = pwalletMain->ResetSpentZerocoin();
+    std::string strResetSpentResult = pwalletMain->ResetSpentZerocoin();
     double fDuration = (double)(GetTimeMillis() - nTime)/1000.0;
     ui->TEMintStatus->setPlainText(QString::fromStdString(strResetSpentResult) + tr("Duration: ") + QString::number(fDuration) + tr(" sec.\n"));
     ui->TEMintStatus->repaint ();
@@ -413,8 +413,8 @@ void PrivacyDialog::sendzPHR()
     ui->TEMintStatus->repaint();
 
     // use mints from zPHR selector if applicable
-    vector<CMintMeta> vMintsToFetch;
-    vector<CZerocoinMint> vMintsSelected;
+    std::vector<CMintMeta> vMintsToFetch;
+    std::vector<CZerocoinMint> vMintsSelected;
     if (!ZPhrControlDialog::setSelectedMints.empty()) {
         vMintsToFetch = ZPhrControlDialog::GetSelectedMints();
 
@@ -616,13 +616,13 @@ void PrivacyDialog::setBalance(const CAmount& balance, const CAmount& unconfirme
     std::map<libzerocoin::CoinDenomination, int> mapUnconfirmed;
     std::map<libzerocoin::CoinDenomination, int> mapImmature;
     for (const auto& denom : libzerocoin::zerocoinDenomList){
-        mapDenomBalances.insert(make_pair(denom, 0));
-        mapUnconfirmed.insert(make_pair(denom, 0));
-        mapImmature.insert(make_pair(denom, 0));
+        mapDenomBalances.insert(std::make_pair(denom, 0));
+        mapUnconfirmed.insert(std::make_pair(denom, 0));
+        mapImmature.insert(std::make_pair(denom, 0));
     }
 
     std::vector<CMintMeta> vMints = pwalletMain->zphrTracker->GetMints(false);
-    map<libzerocoin::CoinDenomination, int> mapMaturityHeights = GetMintMaturityHeight();
+    std::map<libzerocoin::CoinDenomination, int> mapMaturityHeights = GetMintMaturityHeight();
     for (CMintMeta& meta : vMints){
         // All denominations
         mapUnconfirmed.at(meta.denom)++;

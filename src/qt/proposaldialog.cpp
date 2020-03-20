@@ -205,7 +205,7 @@ void ProposalDialog::submitProposal()
         return;
     }
 
-    budget.mapSeenMasternodeBudgetProposals.insert(make_pair(budgetProposalBroadcast.GetHash(), budgetProposalBroadcast));
+    budget.mapSeenMasternodeBudgetProposals.insert(std::make_pair(budgetProposalBroadcast.GetHash(), budgetProposalBroadcast));
     budgetProposalBroadcast.Relay();
     
     this->accept();

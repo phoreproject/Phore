@@ -136,7 +136,7 @@ void ConfigureMasternodePage::updateAlias(std::string Alias, std::string IP, std
 		if(mnAlias == mne.getAlias()) {
 			int count = 0;
 			count = getCounters();
-			vector<COutPoint> confLockedCoins;
+			std::vector<COutPoint> confLockedCoins;
 			uint256 mnTxHash;
 			mnTxHash.SetHex(mne.getTxHash());
 			int nIndex;
@@ -167,7 +167,7 @@ void ConfigureMasternodePage::on_AutoFillPrivKey_clicked()
 void ConfigureMasternodePage::on_AutoFillOutputs_clicked()
 {
     // Find possible candidates
-    vector<COutput> possibleCoins = activeMasternode.SelectCoinsMasternode();
+    std::vector<COutput> possibleCoins = activeMasternode.SelectCoinsMasternode();
         int test = 0;
     for (COutput& out : possibleCoins) {
         std::string TXHash = out.tx->GetHash().ToString();

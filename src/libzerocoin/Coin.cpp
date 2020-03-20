@@ -36,7 +36,7 @@ PublicCoin::PublicCoin(const ZerocoinParams* p, const CBigNum& coin, const CoinD
 	}
 
 	denomination = d;
-	for(const CoinDenomination denom : zerocoinDenomList) {
+	for(const CoinDenomination denom : libzerocoin::zerocoinDenomList) {
 		if(denom == d)
 			denomination = d;
 	}
@@ -49,17 +49,17 @@ PublicCoin::PublicCoin(const ZerocoinParams* p, const CBigNum& coin, const CoinD
 bool PublicCoin::validate() const
 {
     if (this->params->accumulatorParams.minCoinValue >= value) {
-        cout << "PublicCoin::validate value is too low\n";
+        std::cout << "PublicCoin::validate value is too low\n";
         return false;
     }
 
     if (value > this->params->accumulatorParams.maxCoinValue) {
-        cout << "PublicCoin::validate value is too high\n";
+        std::cout << "PublicCoin::validate value is too high\n";
         return false;
     }
 
     if (!value.isPrime(params->zkp_iterations)) {
-        cout << "PublicCoin::validate value is not prime\n";
+        std::cout << "PublicCoin::validate value is not prime\n";
         return false;
     }
 
@@ -105,7 +105,7 @@ PrivateCoin::PrivateCoin(const ZerocoinParams* p, const CoinDenomination denomin
 bool PrivateCoin::IsValid()
 {
     if (!IsValidSerial(params, serialNumber)) {
-        cout << "Serial not valid\n";
+        std::cout << "Serial not valid\n";
         return false;
     }
 
@@ -151,7 +151,7 @@ const CPubKey PrivateCoin::getPubKey() const
 	return key.GetPubKey();
 }
 
-bool PrivateCoin::sign(const uint256& hash, vector<unsigned char>& vchSig) const
+bool PrivateCoin::sign(const uint256& hash, std::vector<unsigned char>& vchSig) const
 {
 	CKey key;
 	key.SetPrivKey(privkey, true);

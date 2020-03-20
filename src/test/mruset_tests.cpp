@@ -15,7 +15,6 @@
 #define NUM_TESTS 16
 #define MAX_SIZE 100
 
-using namespace std;
 
 class mrutester
 {
@@ -88,7 +87,7 @@ BOOST_AUTO_TEST_CASE(mruset_window)
     {
         mru.insert(permute(n));
 
-        set<int> tester;
+        std::set<int> tester;
         for (int m=max(0,n-MAX_SIZE+1); m<=n; m++)
             tester.insert(permute(m));
 

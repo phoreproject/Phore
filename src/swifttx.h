@@ -26,19 +26,16 @@
 #define SWIFTTX_SIGNATURES_REQUIRED 6
 #define SWIFTTX_SIGNATURES_TOTAL 10
 
-using namespace std;
-using namespace boost;
-
 class CConsensusVote;
 class CTransaction;
 class CTransactionLock;
 
 static const int MIN_SWIFTTX_PROTO_VERSION = 70103;
 
-extern map<uint256, CTransaction> mapTxLockReq;
-extern map<uint256, CTransaction> mapTxLockReqRejected;
-extern map<uint256, CConsensusVote> mapTxLockVote;
-extern map<uint256, CTransactionLock> mapTxLocks;
+extern std::map<uint256, CTransaction> mapTxLockReq;
+extern std::map<uint256, CTransaction> mapTxLockReqRejected;
+extern std::map<uint256, CConsensusVote> mapTxLockVote;
+extern std::map<uint256, CTransactionLock> mapTxLocks;
 extern std::map<COutPoint, uint256> mapLockedInputs;
 extern int nCompleteTXLocks;
 

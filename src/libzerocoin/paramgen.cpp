@@ -22,9 +22,6 @@
 #define DEFAULT_MODULUS_SIZE    3072
 #define MIN_MODULUS_SIZE        1026
 
-using namespace std;
-using namespace libzerocoin;
-
 void
 PrintWarning()
 {

@@ -506,7 +506,7 @@ void ProposalList::vote_click_handler(const std::string voteString)
 
             std::string strError = "";
             if (budget.UpdateProposal(vote, NULL, strError)) {
-                budget.mapSeenMasternodeBudgetVotes.insert(make_pair(vote.GetHash(), vote));
+                budget.mapSeenMasternodeBudgetVotes.insert(std::make_pair(vote.GetHash(), vote));
                 vote.Relay();
                 success++;
             } else {

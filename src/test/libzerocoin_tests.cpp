@@ -25,8 +25,6 @@
 #include "libzerocoin/Accumulator.h"
 #include "test_phore.h"
 
-using namespace std;
-using namespace libzerocoin;
 
 #define COLOR_STR_GREEN   "\033[32m"
 #define COLOR_STR_NORMAL  "\033[0m"
@@ -55,21 +53,21 @@ ZerocoinParams *g_Params;
 //////////
 
 void
-LogTestResult(string testName, bool (*testPtr)())
+LogTestResult(std::string testName, bool (*testPtr)())
 {
-    string colorGreen(COLOR_STR_GREEN);
-    string colorNormal(COLOR_STR_NORMAL);
-    string colorRed(COLOR_STR_RED);
+    std::string colorGreen(COLOR_STR_GREEN);
+    std::string colorNormal(COLOR_STR_NORMAL);
+    std::string colorRed(COLOR_STR_RED);
 
-    cout << "Testing if " << testName << "..." << endl;
+    std::cout << "Testing if " << testName << "..." << endl;
 
     bool testResult = testPtr();
 
     if (testResult == true) {
-        cout << "\t" << colorGreen << "[PASS]"  << colorNormal << endl;
+        std::cout << "\t" << colorGreen << "[PASS]"  << colorNormal << endl;
         gSuccessfulTests++;
     } else {
-        cout << colorRed << "\t[FAIL]" << colorNormal << endl;
+        std::cout << colorRed << "\t[FAIL]" << colorNormal << endl;
     }
 
     gNumTests++;
@@ -160,7 +158,7 @@ Test_GenerateGroupParams()
         try {
             group = deriveIntegerGroupParams(calculateSeed(GetTestModulus(), "test", ZEROCOIN_DEFAULT_SECURITYLEVEL, "TEST GROUP"), pLen, qLen);
         } catch (std::runtime_error e) {
-            cout << "Caught exception " << e.what() << endl;
+            std::cout << "Caught exception " << e.what() << endl;
             return false;
         }
 
@@ -190,7 +188,7 @@ Test_ParamGen()
         // Instantiating testParams runs the parameter generation code
         ZerocoinParams testParams(GetTestModulus(),ZEROCOIN_DEFAULT_SECURITYLEVEL);
     } catch (runtime_error e) {
-        cout << e.what() << endl;
+        std::cout << e.what() << endl;
         result = false;
     }
 
@@ -225,18 +223,18 @@ Test_Accumulator()
 
         // Compare the accumulated results
         if (accOne.getValue() != accTwo.getValue() || accOne.getValue() != accThree.getValue()) {
-            cout << "Accumulators don't match" << endl;
+            std::cout << "Accumulators don't match" << endl;
             return false;
         }
 
         if(accFour.getValue() != wThree.getValue()) {
-            cout << "Witness math not working," << endl;
+            std::cout << "Witness math not working," << endl;
             return false;
         }
 
         // Verify that the witness is correct
         if (!wThree.VerifyWitness(accThree, gCoins[0]->getPublicCoin()) ) {
-            cout << "Witness not valid" << endl;
+            std::cout << "Witness not valid" << endl;
             return false;
         }
 
@@ -381,7 +379,7 @@ bool Test_InvalidCoin()
         }
 
     } catch (runtime_error &e) {
-        cout << "Caught exception: " << e.what() << endl;
+        std::cout << "Caught exception: " << e.what() << endl;
         return false;
     }
 
@@ -436,7 +434,7 @@ Test_MintAndSpend()
 
         return ret;
     } catch (runtime_error &e) {
-        cout << e.what() << endl;
+        std::cout << e.what() << endl;
         return false;
     }
 
@@ -465,13 +463,13 @@ Test_RunAllTests()
     LogTestResult("the commitment equality PoK works", Test_EqualityPoK);
     LogTestResult("a minted coin can be spent", Test_MintAndSpend);
 
-    cout << endl << "Average coin size is " << gCoinSize << " bytes." << endl;
-    cout << "Serial number size is " << gSerialNumberSize << " bytes." << endl;
-    cout << "Spend proof size is " << gProofSize << " bytes." << endl;
+    std::cout << endl << "Average coin size is " << gCoinSize << " bytes." << endl;
+    std::cout << "Serial number size is " << gSerialNumberSize << " bytes." << endl;
+    std::cout << "Spend proof size is " << gProofSize << " bytes." << endl;
 
     // Summarize test results
     if (gSuccessfulTests < gNumTests) {
-        cout << endl << "ERROR: SOME TESTS FAILED" << endl;
+        std::cout << endl << "ERROR: SOME TESTS FAILED" << endl;
     }
 
     // Clear any generated coins
@@ -479,14 +477,14 @@ Test_RunAllTests()
         delete gCoins[i];
     }
 
-    cout << endl << gSuccessfulTests << " out of " << gNumTests << " tests passed." << endl << endl;
+    std::cout << endl << gSuccessfulTests << " out of " << gNumTests << " tests passed." << endl << endl;
     delete g_Params;
 }
 
 BOOST_FIXTURE_TEST_SUITE(libzerocoin, TestingSetup)
 BOOST_AUTO_TEST_CASE(libzerocoin_tests)
 {
-    cout << "libzerocoin v" << ZEROCOIN_VERSION_STRING << " test utility." << endl << endl;
+    std::cout << "libzerocoin v" << ZEROCOIN_VERSION_STRING << " test utility." << endl << endl;
 
     Test_RunAllTests();
 }

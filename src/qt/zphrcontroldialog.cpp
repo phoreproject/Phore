@@ -9,8 +9,6 @@
 #include "main.h"
 #include "walletmodel.h"
 
-using namespace std;
-using namespace libzerocoin;
 
 std::set<std::string> ZPhrControlDialog::setSelectedMints;
 std::set<CMintMeta> ZPhrControlDialog::setMints;
@@ -51,7 +49,7 @@ void ZPhrControlDialog::updateList()
 
     // add a top level item for each denomination
     QFlags<Qt::ItemFlag> flgTristate = Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsTristate;
-    map<libzerocoin::CoinDenomination, int> mapDenomPosition;
+    std::map<libzerocoin::CoinDenomination, int> mapDenomPosition;
     for (auto denom : libzerocoin::zerocoinDenomList) {
         QTreeWidgetItem* itemDenom(new QTreeWidgetItem);
         ui->treeWidget->addTopLevelItem(itemDenom);
@@ -70,7 +68,7 @@ void ZPhrControlDialog::updateList()
 
     //populate rows with mint info
     int nBestHeight = chainActive.Height();
-    map<CoinDenomination, int> mapMaturityHeight = GetMintMaturityHeight();
+    std::map<CoinDenomination, int> mapMaturityHeight = GetMintMaturityHeight();
     for(const CMintMeta& mint : setMints) {
         // assign this mint to the correct denomination in the tree view
         libzerocoin::CoinDenomination denom = mint.denom;
@@ -110,7 +108,7 @@ void ZPhrControlDialog::updateList()
             if (setSelectedMints.count(strPubCoinHash))
                 setSelectedMints.erase(strPubCoinHash);
 
-            string strReason = "";
+            std::string strReason = "";
             if(nConfirmations < Params().Zerocoin_MintRequiredConfirmations())
                 strReason = strprintf("Needs %d more confirmations", Params().Zerocoin_MintRequiredConfirmations() - nConfirmations);
             else

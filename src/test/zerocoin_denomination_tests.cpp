@@ -14,14 +14,12 @@
 #include <boost/test/unit_test.hpp>
 #include <iostream>
 
-using namespace libzerocoin;
-
 BOOST_FIXTURE_TEST_SUITE(zerocoin_denom_tests, BasicTestingSetup)
 
 //translation from phore quantity to zerocoin denomination
 BOOST_AUTO_TEST_CASE(amount_to_denomination_test)
 {
-    cout << "Running amount_to_denomination_test...\n";
+    std::cout << "Running amount_to_denomination_test...\n";
 
     //valid amount (min edge)
     CAmount amount = 1 * COIN;
@@ -42,7 +40,7 @@ BOOST_AUTO_TEST_CASE(amount_to_denomination_test)
 
 BOOST_AUTO_TEST_CASE(denomination_to_value_test)
 {
-    cout << "Running ZerocoinDenominationToValue_test...\n";
+    std::cout << "Running ZerocoinDenominationToValue_test...\n";
 
     int64_t Value = 1 * COIN;
     CoinDenomination denomination = ZQ_ONE;
@@ -85,7 +83,7 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test241)
     // Create a set of Minted coins that fits profile given by DenomAmounts
     // Also setup Map array corresponding to DenomAmount which is the current set of coins available
 
-    for (const auto& denom : zerocoinDenomList) {
+    for (const auto& denom : libzerocoin::zerocoinDenomList) {
         for (int i = 0; i < DenomAmounts[j]; i++) {
             CAmount currentAmount = ZerocoinDenominationToAmount(denom);
             nTotalAmount += currentAmount;
@@ -109,7 +107,7 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test241)
 
     // Show what we have
     j = 0;
-    for (const auto& denom : zerocoinDenomList)
+    for (const auto& denom : libzerocoin::zerocoinDenomList)
         std::cout << DenomAmounts[j++] << "*" << ZerocoinDenominationToAmount(denom) / COIN << " + ";
     std::cout << "\n";
 
@@ -169,7 +167,7 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test115)
 
     // Create a set of Minted coins that fits profile given by DenomAmounts
     // Also setup Map array corresponding to DenomAmount which is the current set of coins available
-    for (const auto& denom : zerocoinDenomList) {
+    for (const auto& denom : libzerocoin::zerocoinDenomList) {
         for (int i = 0; i < DenomAmounts[j]; i++) {
             CAmount currentAmount = ZerocoinDenominationToAmount(denom);
             nTotalAmount += currentAmount;
@@ -193,7 +191,7 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test115)
 
     // Show what we have
     j = 0;
-    for (const auto& denom : zerocoinDenomList)
+    for (const auto& denom : libzerocoin::zerocoinDenomList)
         std::cout << DenomAmounts[j++] << "*" << ZerocoinDenominationToAmount(denom) / COIN << " + ";
     std::cout << "\n";
 
@@ -253,7 +251,7 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test_from_245)
 
     // Create a set of Minted coins that fits profile given by DenomAmounts
     // Also setup Map array corresponding to DenomAmount which is the current set of coins available
-    for (const auto& denom : zerocoinDenomList) {
+    for (const auto& denom : libzerocoin::zerocoinDenomList) {
         for (int i = 0; i < DenomAmounts[j]; i++) {
             CAmount currentAmount = ZerocoinDenominationToAmount(denom);
             nTotalAmount += currentAmount;
@@ -277,7 +275,7 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test_from_245)
 
     // Show what we have
     j = 0;
-    for (const auto& denom : zerocoinDenomList)
+    for (const auto& denom : libzerocoin::zerocoinDenomList)
         std::cout << DenomAmounts[j++] << "*" << ZerocoinDenominationToAmount(denom) / COIN << " + ";
     std::cout << "\n";
 
@@ -355,7 +353,7 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test_from_145)
 
     // Create a set of Minted coins that fits profile given by DenomAmounts
     // Also setup Map array corresponding to DenomAmount which is the current set of coins available
-    for (const auto& denom : zerocoinDenomList) {
+    for (const auto& denom : libzerocoin::zerocoinDenomList) {
         for (int i = 0; i < DenomAmounts[j]; i++) {
             CAmount currentAmount = ZerocoinDenominationToAmount(denom);
             nTotalAmount += currentAmount;
@@ -382,7 +380,7 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test_from_145)
 
     // Show what we have
     j = 0;
-    for (const auto& denom : zerocoinDenomList)
+    for (const auto& denom : libzerocoin::zerocoinDenomList)
         std::cout << DenomAmounts[j++] << "*" << ZerocoinDenominationToAmount(denom) / COIN << " + ";
     std::cout << "\n";
 
@@ -461,7 +459,7 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test99)
 
     // Create a set of Minted coins that fits profile given by DenomAmounts
     // Also setup Map array corresponding to DenomAmount which is the current set of coins available
-    for (const auto& denom : zerocoinDenomList) {
+    for (const auto& denom : libzerocoin::zerocoinDenomList) {
         for (int i = 0; i < DenomAmounts[j]; i++) {
             CAmount currentAmount = ZerocoinDenominationToAmount(denom);
             nTotalAmount += currentAmount;
@@ -485,7 +483,7 @@ BOOST_AUTO_TEST_CASE(zerocoin_spend_test99)
 
     // Show what we have
     j = 0;
-    for (const auto& denom : zerocoinDenomList)
+    for (const auto& denom : libzerocoin::zerocoinDenomList)
         std::cout << DenomAmounts[j++] << "*" << ZerocoinDenominationToAmount(denom) / COIN << " + ";
     std::cout << "\n";
 

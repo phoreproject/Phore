@@ -23,7 +23,6 @@
 #include <stdint.h>
 #include <string>
 
-using namespace std;
 
 QString TransactionDesc::FormatTxStatus(const CWalletTx& wtx)
 {
@@ -257,14 +256,14 @@ QString TransactionDesc::toHTML(CWallet* wallet, CWalletTx& wtx, TransactionReco
     strHTML += "<b>" + tr("Output index") + ":</b> " + QString::number(rec->getOutputIndex()) + "<br>";
 
     // Message from normal phore:URI (phore:XyZ...?message=example)
-    foreach (const PAIRTYPE(string, string) & r, wtx.vOrderForm)
+    foreach (const PAIRTYPE(string, std::string) & r, wtx.vOrderForm)
         if (r.first == "Message")
             strHTML += "<br><b>" + tr("Message") + ":</b><br>" + GUIUtil::HtmlEscape(r.second, true) + "<br>";
 
     //
     // PaymentRequest info:
     //
-    foreach (const PAIRTYPE(string, string) & r, wtx.vOrderForm) {
+    foreach (const PAIRTYPE(string, std::string) & r, wtx.vOrderForm) {
         if (r.first == "PaymentRequest") {
             PaymentRequestPlus req;
             req.parse(QByteArray::fromRawData(r.second.data(), r.second.size()));

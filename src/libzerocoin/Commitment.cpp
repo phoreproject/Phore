@@ -59,7 +59,7 @@ CommitmentProofOfKnowledge::CommitmentProofOfKnowledge(const IntegerGroupParams*
 	}
 
 	// Select three random values "r1, r2, r3" in the range 0 to (2^l)-1 where l is:
-	// length of challenge value + max(modulus 1, modulus 2, order 1, order 2) + margin.
+	// length of challenge value + std::max(modulus 1, modulus 2, order 1, order 2) + margin.
 	// We set "margin" to be a relatively generous  security parameter.
 	//
 	// We choose these large values to ensure statistical zero knowledge.

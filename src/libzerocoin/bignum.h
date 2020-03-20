@@ -306,7 +306,7 @@ public:
         std::vector<unsigned char> vch(nSize);
         BN_bn2mpi(bn, &vch[0]);
         vch.erase(vch.begin(), vch.begin() + 4);
-        reverse(vch.begin(), vch.end());
+        std::reverse(vch.begin(), vch.end());
         return vch;
     }
 
@@ -440,7 +440,7 @@ public:
         }
         if (BN_is_negative(bn))
             str += "-";
-        reverse(str.begin(), str.end());
+        std::reverse(str.begin(), str.end());
         return str;
     }
 

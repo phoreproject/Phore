@@ -367,7 +367,7 @@ void MasternodeList::deleteAlias()
     for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
 		count = count + 1;
 		if(strAlias == mne.getAlias()) {
-			vector<COutPoint> confLockedCoins;
+			std::vector<COutPoint> confLockedCoins;
 			uint256 mnTxHash;
 			mnTxHash.SetHex(mne.getTxHash());
             int nIndex;

@@ -27,8 +27,6 @@
 
 #include <univalue.h>
 
-using namespace std;
-
 void EnsureWalletIsUnlocked(bool fAllowAnonOnly);
 
 std::string static EncodeDumpTime(int64_t nTime)
@@ -81,7 +79,7 @@ std::string DecodeDumpString(const std::string& str)
 UniValue importprivkey(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 3)
-        throw runtime_error(
+        throw std::runtime_error(
             "importprivkey \"phoreprivkey\" ( \"label\" rescan )\n"
             "\nAdds a private key (as returned by dumpprivkey) to your wallet.\n"
             "\nArguments:\n"
@@ -100,8 +98,8 @@ UniValue importprivkey(const UniValue& params, bool fHelp)
 
     EnsureWalletIsUnlocked();
 
-    string strSecret = params[0].get_str();
-    string strLabel = "";
+    std::string strSecret = params[0].get_str();
+    std::string strLabel = "";
     if (params.size() > 1)
         strLabel = params[1].get_str();
 
@@ -149,8 +147,8 @@ UniValue importprivkey(const UniValue& params, bool fHelp)
     return NullUniValue;
 }
 
-void ImportAddress(const CTxDestination& dest, const string& strLabel);
-void ImportScript(const CScript& script, const string& strLabel, bool isRedeemScript)
+void ImportAddress(const CTxDestination& dest, const std::string& strLabel);
+void ImportScript(const CScript& script, const std::string& strLabel, bool isRedeemScript)
 {
     if (!isRedeemScript && ::IsMine(*pwalletMain, script) == ISMINE_SPENDABLE)
         throw JSONRPCError(RPC_WALLET_ERROR, "The wallet already contains the private key for this address or script");
@@ -173,7 +171,7 @@ void ImportScript(const CScript& script, const string& strLabel, bool isRedeemSc
     }
 }
 
-void ImportAddress(const CTxDestination& dest, const string& strLabel)
+void ImportAddress(const CTxDestination& dest, const std::string& strLabel)
 {
     CScript script = GetScriptForDestination(dest);
     ImportScript(script, strLabel, false);
@@ -184,7 +182,7 @@ void ImportAddress(const CTxDestination& dest, const string& strLabel)
 UniValue importaddress(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 4)
-        throw runtime_error(
+        throw std::runtime_error(
             "importaddress \"address\" ( \"label\" rescan p2sh )\n"
             "\nAdds a script (in hex) or address that can be watched as if it were in your wallet but cannot be used to spend.\n"
             "\nArguments:\n"
@@ -206,7 +204,7 @@ UniValue importaddress(const UniValue& params, bool fHelp)
         );
 
 
-    string strLabel = "";
+    std::string strLabel = "";
     if (params.size() > 1)
         strLabel = params[1].get_str();
 
@@ -245,7 +243,7 @@ UniValue importaddress(const UniValue& params, bool fHelp)
 UniValue importpubkey(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() < 1 || params.size() > 4)
-        throw runtime_error(
+        throw std::runtime_error(
             "importpubkey \"pubkey\" ( \"label\" rescan )\n"
             "\nAdds a public key (in hex) that can be watched as if it were in your wallet but cannot be used to spend.\n"
             "\nArguments:\n"
@@ -263,7 +261,7 @@ UniValue importpubkey(const UniValue& params, bool fHelp)
         );
 
 
-    string strLabel = "";
+    std::string strLabel = "";
     if (params.size() > 1)
         strLabel = params[1].get_str();
 
@@ -296,7 +294,7 @@ UniValue importpubkey(const UniValue& params, bool fHelp)
 UniValue importwallet(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
-        throw runtime_error(
+        throw std::runtime_error(
             "importwallet \"filename\"\n"
             "\nImports keys from a wallet dump file (see dumpallprivatekeys).\n"
             "\nArguments:\n"
@@ -311,7 +309,7 @@ UniValue importwallet(const UniValue& params, bool fHelp)
 
     EnsureWalletIsUnlocked();
 
-    ifstream file;
+    std::ifstream file;
     file.open(params[0].get_str().c_str(), std::ios::in | std::ios::ate);
     if (!file.is_open())
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Cannot open wallet dump file");
@@ -394,7 +392,7 @@ UniValue importwallet(const UniValue& params, bool fHelp)
 UniValue dumpprivkey(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
-        throw runtime_error(
+        throw std::runtime_error(
             "dumpprivkey \"phoreaddress\"\n"
             "\nReveals the private key corresponding to 'phoreaddress'.\n"
             "Then the importprivkey can be used with this output\n"
@@ -412,7 +410,7 @@ UniValue dumpprivkey(const UniValue& params, bool fHelp)
 
     EnsureWalletIsUnlocked();
 
-    string strAddress = params[0].get_str();
+    std::string strAddress = params[0].get_str();
     if (!IsValidDestinationString(strAddress))
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Phore address");
     const CTxDestination dest = DecodeDestination(strAddress);
@@ -432,7 +430,7 @@ UniValue dumphdinfo(const UniValue& params, bool fHelp)
         return NullUniValue;
 
     if (fHelp || params.size() != 0)
-        throw runtime_error(
+        throw std::runtime_error(
                 "dumphdinfo\n"
                 "Returns an object containing sensitive private info about this HD wallet.\n"
                 "\nResult:\n"
@@ -472,7 +470,7 @@ UniValue dumphdinfo(const UniValue& params, bool fHelp)
 UniValue dumpwallet(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
-        throw runtime_error(
+        throw std::runtime_error(
                 "dumpwallet \"filename\"\n"
                 "\nDumps all wallet keys in a human-readable format.\n" +
                 HelpRequiringPassphrase() + "\n"
@@ -487,7 +485,7 @@ UniValue dumpwallet(const UniValue& params, bool fHelp)
     EnsureWalletIsUnlocked();
     boost::filesystem::path filepath = params[0].get_str().c_str();
     filepath = boost::filesystem::absolute(filepath);
-    ofstream file;
+    std::ofstream file;
     file.open(params[0].get_str().c_str());
     if (!file.is_open())
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Cannot open wallet dump file");
@@ -570,7 +568,7 @@ UniValue dumpwallet(const UniValue& params, bool fHelp)
 UniValue dumpallprivatekeys(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 1)
-        throw runtime_error(
+        throw std::runtime_error(
             "dumpallprivatekeys \"filename\"\n"
             "\nDumps all wallet private keys in an unencrypted, human-readable format.\n"
             "\nSCAM WARNING: If anyone asks you to run this command and send them the file,\n"
@@ -586,7 +584,7 @@ UniValue dumpallprivatekeys(const UniValue& params, bool fHelp)
 
     EnsureWalletIsUnlocked();
 
-    ofstream file;
+    std::ofstream file;
     file.open(params[0].get_str().c_str());
     if (!file.is_open())
         throw JSONRPCError(RPC_INVALID_PARAMETER, "Cannot open wallet private key dump file");
@@ -635,7 +633,7 @@ UniValue dumpallprivatekeys(const UniValue& params, bool fHelp)
 UniValue bip38encrypt(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 2)
-        throw runtime_error(
+        throw std::runtime_error(
             "bip38encrypt \"phoreaddress\"\n"
             "\nEncrypts a private key corresponding to 'phoreaddress'.\n"
             "\nArguments:\n"
@@ -649,8 +647,8 @@ UniValue bip38encrypt(const UniValue& params, bool fHelp)
 
     EnsureWalletIsUnlocked();
 
-    string strAddress = params[0].get_str();
-    string strPassphrase = params[1].get_str();
+    std::string strAddress = params[0].get_str();
+    std::string strPassphrase = params[1].get_str();
 
     if (!IsValidDestinationString(strAddress))
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Phore address");
@@ -663,7 +661,7 @@ UniValue bip38encrypt(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_WALLET_ERROR, "Private key for address " + strAddress + " is not known");
 
     uint256 privKey = vchSecret.GetPrivKey_256();
-    string encryptedOut = BIP38_Encrypt(strAddress, strPassphrase, privKey, vchSecret.IsCompressed());
+    std::string encryptedOut = BIP38_Encrypt(strAddress, strPassphrase, privKey, vchSecret.IsCompressed());
 
     UniValue result(UniValue::VOBJ);
     result.push_back(Pair("Addess", strAddress));
@@ -675,7 +673,7 @@ UniValue bip38encrypt(const UniValue& params, bool fHelp)
 UniValue bip38decrypt(const UniValue& params, bool fHelp)
 {
     if (fHelp || params.size() != 2)
-        throw runtime_error(
+        throw std::runtime_error(
             "bip38decrypt \"phoreaddress\"\n"
             "\nDecrypts and then imports password protected private key.\n"
             "\nArguments:\n"
@@ -691,8 +689,8 @@ UniValue bip38decrypt(const UniValue& params, bool fHelp)
     EnsureWalletIsUnlocked();
 
     /** Collect private key and passphrase **/
-    string strKey = params[0].get_str();
-    string strPassphrase = params[1].get_str();
+    std::string strKey = params[0].get_str();
+    std::string strPassphrase = params[1].get_str();
 
     uint256 privKey;
     bool fCompressed;

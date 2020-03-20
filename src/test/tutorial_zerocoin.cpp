@@ -26,7 +26,6 @@
 #include "libzerocoin/Accumulator.h"
 #include "test_phore.h"
 
-using namespace std;
 
 #define COINS_TO_ACCUMULATE     5
 #define DUMMY_TRANSACTION_HASH  0 // in real life these would be uint256 hashes

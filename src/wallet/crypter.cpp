@@ -524,7 +524,7 @@ bool CCryptoKeyStore::AddCryptedKey(const CPubKey& vchPubKey, const std::vector<
         if (!SetCrypted())
             return false;
 
-        mapCryptedKeys[vchPubKey.GetID()] = make_pair(vchPubKey, vchCryptedSecret);
+        mapCryptedKeys[vchPubKey.GetID()] = std::make_pair(vchPubKey, vchCryptedSecret);
         ImplicitlyLearnRelatedKeyScripts(vchPubKey);
     }
     return true;
@@ -595,14 +595,14 @@ bool CCryptoKeyStore::EncryptKeys(CKeyingMaterial& vMasterKeyIn)
 bool CCryptoKeyStore::AddDeterministicSeed(const uint256& seed)
 {
     CWalletDB db(pwalletMain->strWalletFile);
-    string strErr;
+    std::string strErr;
     uint256 hashSeed = Hash(seed.begin(), seed.end());
 
     if(IsCrypted()) {
         if (!IsLocked()) { //if we have password
 
             CKeyingMaterial kmSeed(seed.begin(), seed.end());
-            vector<unsigned char> vchSeedSecret;
+            std::vector<unsigned char> vchSeedSecret;
 
             //attempt encrypt
             if (EncryptSecret(vMasterKey, kmSeed, hashSeed, vchSeedSecret)) {
@@ -629,11 +629,11 @@ bool CCryptoKeyStore::GetDeterministicSeed(const uint256& hashSeed, uint256& see
 {
 
     CWalletDB db(pwalletMain->strWalletFile);
-    string strErr;
+    std::string strErr;
     if (IsCrypted()) {
         if(!IsLocked()) { //if we have password
 
-            vector<unsigned char> vchCryptedSeed;
+            std::vector<unsigned char> vchCryptedSeed;
             //read encrypted seed
             if (db.ReadZPHRSeed(hashSeed, vchCryptedSeed)) {
                 uint256 seedRetrieved = uint256(ReverseEndianString(HexStr(vchCryptedSeed)));
@@ -654,7 +654,7 @@ bool CCryptoKeyStore::GetDeterministicSeed(const uint256& hashSeed, uint256& see
             } else { strErr = "read seed from wallet"; }
         } else { strErr = "read seed; wallet is locked"; }
     } else {
-        vector<unsigned char> vchSeed;
+        std::vector<unsigned char> vchSeed;
         // wallet not crypted
         if (db.ReadZPHRSeed(hashSeed, vchSeed)) {
             seedOut = uint256(ReverseEndianString(HexStr(vchSeed)));

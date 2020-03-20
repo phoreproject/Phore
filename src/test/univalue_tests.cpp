@@ -11,8 +11,6 @@
 
 #include <boost/test/unit_test.hpp>
 
-using namespace std;
-
 BOOST_FIXTURE_TEST_SUITE(univalue_tests, BasicTestingSetup)
 
 BOOST_AUTO_TEST_CASE(univalue_constructor)
@@ -52,7 +50,7 @@ BOOST_AUTO_TEST_CASE(univalue_constructor)
     BOOST_CHECK(v7.isNum());
     BOOST_CHECK_EQUAL(v7.getValStr(), "-7.21");
 
-    string vs("yawn");
+    std::string vs("yawn");
     UniValue v8(vs);
     BOOST_CHECK(v8.isStr());
     BOOST_CHECK_EQUAL(v8.getValStr(), "yawn");
@@ -171,13 +169,13 @@ BOOST_AUTO_TEST_CASE(univalue_array)
     UniValue v((int64_t)1023LL);
     BOOST_CHECK(arr.push_back(v));
 
-    string vStr("zippy");
+    std::string vStr("zippy");
     BOOST_CHECK(arr.push_back(vStr));
 
     const char *s = "pippy";
     BOOST_CHECK(arr.push_back(s));
 
-    vector<UniValue> vec;
+    std::vector<UniValue> vec;
     v.setStr("boing");
     vec.push_back(v);
 
@@ -205,7 +203,7 @@ BOOST_AUTO_TEST_CASE(univalue_array)
 BOOST_AUTO_TEST_CASE(univalue_object)
 {
     UniValue obj(UniValue::VOBJ);
-    string strKey, strVal;
+    std::string strKey, strVal;
     UniValue v;
 
     strKey = "age";
@@ -265,7 +263,7 @@ BOOST_AUTO_TEST_CASE(univalue_object)
 
     BOOST_CHECK(!obj.exists("nyuknyuknyuk"));
 
-    map<string, UniValue::VType> objTypes;
+    std::map<std::string, UniValue::VType> objTypes;
     objTypes["age"] = UniValue::VNUM;
     objTypes["first"] = UniValue::VSTR;
     objTypes["last"] = UniValue::VSTR;
@@ -293,7 +291,7 @@ BOOST_AUTO_TEST_CASE(univalue_readwrite)
     UniValue v;
     BOOST_CHECK(v.read(json1));
 
-    string strJson1(json1);
+    std::string strJson1(json1);
     BOOST_CHECK(v.read(strJson1));
 
     BOOST_CHECK(v.isArray());

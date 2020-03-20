@@ -47,10 +47,10 @@ if(BerkeleyDB_INCLUDE_DIRS)
     # Read the version file db.h into a variable
     file(READ "${BerkeleyDB_INCLUDE_DIRS}/db.h" _BERKELEYDB_DB_HEADER)
     # Parse the DB version into variables to be used in the lib names
-    string(REGEX REPLACE ".*DB_VERSION_MAJOR	([0-9]+).*" "\\1" BerkeleyDB_VERSION_MAJOR "${_BERKELEYDB_DB_HEADER}")
-    string(REGEX REPLACE ".*DB_VERSION_MINOR	([0-9]+).*" "\\1" BerkeleyDB_VERSION_MINOR "${_BERKELEYDB_DB_HEADER}")
+    std::string(REGEX REPLACE ".*DB_VERSION_MAJOR	([0-9]+).*" "\\1" BerkeleyDB_VERSION_MAJOR "${_BERKELEYDB_DB_HEADER}")
+    std::string(REGEX REPLACE ".*DB_VERSION_MINOR	([0-9]+).*" "\\1" BerkeleyDB_VERSION_MINOR "${_BERKELEYDB_DB_HEADER}")
     # Patch version example on non-crypto installs: x.x.xNC
-    string(REGEX REPLACE ".*DB_VERSION_PATCH	([0-9]+(NC)?).*" "\\1" BerkeleyDB_VERSION_PATCH "${_BERKELEYDB_DB_HEADER}")
+    std::string(REGEX REPLACE ".*DB_VERSION_PATCH	([0-9]+(NC)?).*" "\\1" BerkeleyDB_VERSION_PATCH "${_BERKELEYDB_DB_HEADER}")
 else()
     if(BerkeleyDB_FIND_REQUIRED)
         # If the find_package(BerkeleyDB REQUIRED) was used, fail since we couldn't find the header

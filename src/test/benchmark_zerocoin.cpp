@@ -27,8 +27,6 @@
 #include "libzerocoin/Accumulator.h"
 #include "test_phore.h"
 
-using namespace std;
-using namespace libzerocoin;
 
 #define COLOR_STR_GREEN   "\033[32m"
 #define COLOR_STR_NORMAL  "\033[0m"
@@ -87,11 +85,11 @@ public:
 Timer timer;
 
 void
-gLogTestResult(string testName, bool (*testPtr)())
+gLogTestResult(std::string testName, bool (*testPtr)())
 {
-	string colorGreen(COLOR_STR_GREEN);
-	string colorNormal(COLOR_STR_NORMAL);
-	string colorRed(COLOR_STR_RED);
+	std::string colorGreen(COLOR_STR_GREEN);
+	std::string colorNormal(COLOR_STR_NORMAL);
+	std::string colorRed(COLOR_STR_RED);
 
 	cout << "Testing if " << testName << "..." << endl;
 

@@ -127,7 +127,7 @@ public:
  * std::allocator templates.
  *
  * Some implementations of the STL allocate memory in some constructors (i.e., see
- * MSVC's vector<T> implementation where it allocates 1 byte of memory in the allocator.)
+ * MSVC's std::vector<T> implementation where it allocates 1 byte of memory in the allocator.)
  * Due to the unpredictable order of static initializers, we have to make sure the
  * LockedPageManager instance exists before any other STL-based objects that use
  * secure_allocator are created. So instead of having LockedPageManager also be
