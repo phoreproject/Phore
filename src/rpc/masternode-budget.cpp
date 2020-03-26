@@ -50,7 +50,7 @@ void budgetToJSON(CBudgetProposal* pbudgetProposal, UniValue& bObj)
 }
 
 void checkBudgetInputs(const UniValue& params, std::string &strProposalName, std::string &strURL,
-                       int &nPaymentCount, int &nBlockStart, CAmount &nAmount)
+                       int &nPaymentCount, int &nBlockStart, CTxDestination &address, CAmount &nAmount)
 {
     int nBlockMin = 0;
     CBlockIndex* pindexPrev = chainActive.Tip();
@@ -86,6 +86,7 @@ void checkBudgetInputs(const UniValue& params, std::string &strProposalName, std
     if (nBlockEnd < pindexPrev->nHeight)
         throw std::runtime_error("Invalid ending block, starting block + (payment_cycle*payments) must be more than current height.");
 
+    address = DecodeDestination(params[4].get_str());
     if (!IsValidDestinationString(params[4].get_str()))
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Phore address");
 
@@ -122,7 +123,7 @@ UniValue preparebudget(const UniValue& params, bool fHelp)
     std::string strURL;
     int nPaymentCount;
     int nBlockStart;
-    CTxDestination address = DecodeDestination(params[4].get_str());
+    CTxDestination address;
     CAmount nAmount;
 
     checkBudgetInputs(params, strProposalName, strURL, nPaymentCount, nBlockStart, nAmount);
@@ -183,7 +184,7 @@ UniValue submitbudget(const UniValue& params, bool fHelp)
     std::string strURL;
     int nPaymentCount;
     int nBlockStart;
-    CTxDestination address = DecodeDestination(params[4].get_str());
+    CTxDestination address;
     CAmount nAmount;
 
     checkBudgetInputs(params, strProposalName, strURL, nPaymentCount, nBlockStart, nAmount);

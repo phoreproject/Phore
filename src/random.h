@@ -92,8 +92,19 @@ public:
         return ret;
     }
 
-    bool randbool() {
-        return rand32() & 1;
+    /** Generate a random (bits)-bit integer. */
+    uint64_t randbits(int bits) {
+        if (bits == 0) {
+            return 0;
+        } else if (bits > 32) {
+            return rand64() >> (64 - bits);
+        } else {
+            if (bitbuf_size < bits) FillBitBuffer();
+            uint64_t ret = bitbuf & (~(uint64_t)0 >> (64 - bits));
+            bitbuf >>= bits;
+            bitbuf_size -= bits;
+            return ret;
+        }
     }
 
     /** Generate a random integer in the range [0..range). */
