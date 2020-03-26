@@ -90,7 +90,7 @@ bool AppInit(int argc, char* argv[])
         }
         try {
             ReadConfigFile(mapArgs, mapMultiArgs);
-        } catch (std::exception& e) {
+        } catch (const std::exception& e) {
             fprintf(stderr, "Error reading configuration file: %s\n", e.what());
             return false;
         }
@@ -136,7 +136,7 @@ bool AppInit(int argc, char* argv[])
 
         std::vector<std::string> words;
         fRet = AppInit2(words);
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         PrintExceptionContinue(&e, "AppInit()");
     } catch (...) {
         PrintExceptionContinue(NULL, "AppInit()");

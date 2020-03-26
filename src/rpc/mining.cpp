@@ -172,7 +172,7 @@ UniValue setgenerate(const UniValue& params, bool fHelp)
             CBlockTemplate* pblocktemplate;
             try {
                 pblocktemplate = CreateNewBlock(scriptPubKey, pwalletMain, false);
-            } catch(std::runtime_error err) {
+            } catch(const std::runtime_error err) {
                 throw JSONRPCError(RPC_MISC_ERROR, err.what());
             }
             CBlock* pblock = &pblocktemplate->block;

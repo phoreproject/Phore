@@ -186,7 +186,7 @@ Testb_GenerateGroupParams()
 
 		try {
 			group = deriveIntegerGroupParams(calculateSeed(gGetTestModulus(), "test", ZEROCOIN_DEFAULT_SECURITYLEVEL, "TEST GROUP"), pLen, qLen);
-		} catch (std::runtime_error& e) {
+		} catch (const std::runtime_error& e) {
 			cout << "Caught exception " << e.what() << endl;
 			return false;
 		}
@@ -220,7 +220,7 @@ Testb_ParamGen()
         timer.stop();
 
 		cout << "\tPARAMGEN ELAPSED TIME: " << timer.duration() << " ms\t" << timer.duration()*0.001 << " s" << endl;
-	} catch (std::runtime_error& e) {
+	} catch (const std::runtime_error& e) {
 		cout << e.what() << endl;
 		result = false;
 	}
