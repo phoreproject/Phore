@@ -245,7 +245,7 @@ void TraceThread(const char* name, Callable func)
         LogPrintf("%s thread start\n", name);
         func();
         LogPrintf("%s thread exit\n", name);
-    } catch (boost::thread_interrupted) {
+    } catch (boost::thread_interrupted&) {
         LogPrintf("%s thread interrupt\n", name);
         throw;
     } catch (std::exception& e) {

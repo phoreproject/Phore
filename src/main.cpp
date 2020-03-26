@@ -1728,7 +1728,7 @@ bool ReadTransaction(CTransaction& tx, const CDiskTxPos &pos, uint256 &hashBlock
         file >> header;
         fseek(file.Get(), pos.nTxOffset, SEEK_CUR);
         file >> tx;
-    } catch (std::exception &e) {
+    } catch (std::exception& e) {
         return error("%s() : deserialize or I/O error", __PRETTY_FUNCTION__);
     }
     hashBlock = header.GetHash();
@@ -6810,7 +6810,7 @@ bool ProcessMessages(CNode* pfrom)
             } else {
                 PrintExceptionContinue(&e, "ProcessMessages()");
             }
-        } catch (boost::thread_interrupted) {
+        } catch (boost::thread_interrupted&) {
             throw;
         } catch (std::exception& e) {
             PrintExceptionContinue(&e, "ProcessMessages()");
