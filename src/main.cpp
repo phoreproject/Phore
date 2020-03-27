@@ -1470,7 +1470,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
     if (sporkManager.IsSporkActive(SPORK_16_ZEROCOIN_MAINTENANCE_MODE) && tx.ContainsZerocoins())
         return state.DoS(10, error("AcceptToMemoryPool : Zerocoin transactions are temporarily disabled for maintenance"), REJECT_INVALID, "bad-tx");
 
-    if (!CheckTransaction(tx, chainActive.Height() >= Params().Zerocoin_StartHeight(), true, state, GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < chainActive.Tip()->nTime)) {
+    if (!CheckTransaction(tx, chainActive.Height() >= Params().Zerocoin_StartHeight(), true, state, sporkManager.GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < chainActive.Tip()->nTime)) {
         return state.DoS(100, error("AcceptToMemoryPool: : CheckTransaction failed"), REJECT_INVALID, "bad-tx");
     }
 
@@ -1516,7 +1516,7 @@ bool AcceptToMemoryPool(CTxMemPool& pool, CValidationState& state, const CTransa
     }
 
     // Don't accept witness transactions before the final threshold passes
-    if (!GetBoolArg("-prematurewitness", false) && !tx.wit.IsNull() && !IsSporkActive(SPORK_17_SEGWIT_ACTIVATION)) {
+    if (!GetBoolArg("-prematurewitness", false) && !tx.wit.IsNull() && !sporkManager.IsSporkActive(SPORK_17_SEGWIT_ACTIVATION)) {
         return state.DoS(0, false, REJECT_NONSTANDARD, "no-witness-yet", true);
     }
 
@@ -1765,7 +1765,7 @@ bool AcceptableInputs(CTxMemPool& pool, CValidationState& state, const CTransact
     if (pfMissingInputs)
         *pfMissingInputs = false;
 
-    if (!CheckTransaction(tx, chainActive.Height() >= Params().Zerocoin_StartHeight(), true, state, GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < chainActive.Tip()->nTime))
+    if (!CheckTransaction(tx, chainActive.Height() >= Params().Zerocoin_StartHeight(), true, state, sporkManager.GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < chainActive.Tip()->nTime))
         return error("AcceptableInputs: : CheckTransaction failed");
 
     // Coinbase is only valid in a block, not as a loose transaction
@@ -2926,7 +2926,7 @@ bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockIndex* pin
 
     unsigned int flags = SCRIPT_VERIFY_P2SH | SCRIPT_VERIFY_DERSIG;
 
-    if (GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < block.nTime) {
+    if (sporkManager.GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < block.nTime) {
         flags |= SCRIPT_VERIFY_WITNESS | SCRIPT_VERIFY_CHECKLOCKTIMEVERIFY | SCRIPT_VERIFY_CHECKSEQUENCEVERIFY;
     }
 
@@ -3452,7 +3452,7 @@ bool DisconnectBlocks(int nBlocks)
 
     LogPrintf("%s: Got command to replay %d blocks\n", __func__, nBlocks);
     for (int i = 0; i <= nBlocks; i++)
-        DisconnectTip(state);
+        DisconnectTip(state, false);
 
     return true;
 }
@@ -4101,7 +4101,7 @@ bool CheckBlock(const CBlock& block, CValidationState& state, bool fCheckPOW, bo
     if (block.IsProofOfStake()) {
         int commitpos = GetWitnessCommitmentIndex(block);
         if (commitpos >= 0) {
-            if (IsSporkActive(SPORK_19_SEGWIT_ON_COINBASE)) {
+            if (sporkManager.IsSporkActive(SPORK_19_SEGWIT_ON_COINBASE)) {
                 if (block.vtx[0].vout.size() != 2)
                     return state.DoS(100, error("CheckBlock() : coinbase output has wrong size for proof-of-stake block"));
                 if (!block.vtx[0].vout[1].scriptPubKey.IsUnspendable())
@@ -4289,7 +4289,7 @@ void UpdateUncommittedBlockStructures(CBlock& block, const CBlockIndex* pindexPr
 {
     int commitpos = GetWitnessCommitmentIndex(block);
     static const std::vector<unsigned char> nonce(32, 0x00);
-    if (commitpos != -1 && GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < pindexPrev->nTime && block.vtx[0].wit.IsEmpty()) {
+    if (commitpos != -1 && sporkManager.GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < pindexPrev->nTime && block.vtx[0].wit.IsEmpty()) {
         block.vtx[0].wit.vtxinwit.resize(1);
         block.vtx[0].wit.vtxinwit[0].scriptWitness.stack.resize(1);
         block.vtx[0].wit.vtxinwit[0].scriptWitness.stack[0] = nonce;
@@ -4308,7 +4308,7 @@ std::vector<unsigned char> GenerateCoinbaseCommitment(CBlock& block, const CBloc
         }
     }
     std::vector<unsigned char> ret(32, 0x00);
-    if (fHaveWitness && GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < pindexPrev->nTime) {
+    if (fHaveWitness && sporkManager.GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < pindexPrev->nTime) {
         if (commitpos == -1) {
             uint256 witnessroot = BlockWitnessMerkleRoot(block, NULL);
             CHash256().Write(witnessroot.begin(), 32).Write(&ret[0], 32).Finalize(witnessroot.begin());
@@ -4367,7 +4367,7 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, CBlockIn
 
         std::vector<CBigNum> vBlockSerials;
         for (const CTransaction& tx : block.vtx) {
-            if (!CheckTransaction(tx, true, chainActive.Height() + 1 >= Params().Zerocoin_StartHeight(), state, GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < block.nTime))
+            if (!CheckTransaction(tx, true, chainActive.Height() + 1 >= Params().Zerocoin_StartHeight(), state, sporkManager.GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < block.nTime))
                 return error("CheckBlock() : CheckTransaction failed");
 
             // double check that there are no double spent zPHR spends in this block
@@ -4415,10 +4415,10 @@ bool ContextualCheckBlock(const CBlock& block, CValidationState& state, CBlockIn
     //   {0xaa, 0x21, 0xa9, 0xed}, and the following 32 bytes are SHA256(witness root, witness nonce). In case there are
     //   multiple, the last one is used.
     bool fHaveWitness = false;
-    if (pindexPrev != nullptr && GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < pindexPrev->nTime) {
+    if (pindexPrev != nullptr && sporkManager.GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < pindexPrev->nTime) {
         int commitpos = GetWitnessCommitmentIndex(block);
         if (commitpos != -1) {
-            if (!IsSporkActive(SPORK_19_SEGWIT_ON_COINBASE)) {
+            if (!sporkManager.IsSporkActive(SPORK_19_SEGWIT_ON_COINBASE)) {
                 if (fDebug) {
                     LogPrintf("CheckBlock() : staking-on-segwit is not enabled.\n");
                 }
@@ -5109,7 +5109,7 @@ bool RewindBlockIndex(const CChainParams& params)
 
     int nHeight = 1;
     while (nHeight <= chainActive.Height()) {
-        if (GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < chainActive[nHeight - 1]->nTime && !(chainActive[nHeight]->nStatus & BLOCK_OPT_WITNESS)) {
+        if (sporkManager.GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < chainActive[nHeight - 1]->nTime && !(chainActive[nHeight]->nStatus & BLOCK_OPT_WITNESS)) {
             break;
         }
         nHeight++;
@@ -5132,7 +5132,7 @@ bool RewindBlockIndex(const CChainParams& params)
     // to disk before writing the chainstate, resulting in a failure to continue if interrupted.
     for (BlockMap::iterator it = mapBlockIndex.begin(); it != mapBlockIndex.end(); it++) {
         CBlockIndex* pindexIter = it->second;
-        if (GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < pindexIter->nTime && !(pindexIter->nStatus & BLOCK_OPT_WITNESS)) {
+        if (sporkManager.GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) < pindexIter->nTime && !(pindexIter->nStatus & BLOCK_OPT_WITNESS)) {
             // Reduce validity
             pindexIter->nStatus = std::min<unsigned int>(pindexIter->nStatus & BLOCK_VALID_MASK, BLOCK_VALID_TREE) | (pindexIter->nStatus & ~BLOCK_VALID_MASK);
             // Remove have-data flags.
@@ -6129,7 +6129,7 @@ bool static ProcessMessage(CNode* pfrom, std::string strCommand, CDataStream& vR
                     // doing this will result in the received block being rejected as an orphan in case it is
                     // not a direct successor.
                     if (State(pfrom->GetId())->fHaveWitness &&
-                       (GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) > chainActive.Tip()->nTime || State(pfrom->GetId())->fHaveWitness)) {
+                       (sporkManager.GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) > chainActive.Tip()->nTime || State(pfrom->GetId())->fHaveWitness)) {
                         inv.type = MSG_WITNESS_BLOCK;
                     }
                     vToFetch.push_back(inv);
@@ -7064,7 +7064,7 @@ bool SendMessages(CNode* pto, bool fSendTrickle)
             NodeId staller = -1;
             FindNextBlocksToDownload(pto->GetId(), MAX_BLOCKS_IN_TRANSIT_PER_PEER - state.nBlocksInFlight, vToDownload, staller);
             for (CBlockIndex *pindex : vToDownload) {
-                if (State(pto->GetId())->fHaveWitness || GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) > pindex->pprev->nTime) {
+                if (State(pto->GetId())->fHaveWitness || sporkManager.GetSporkValue(SPORK_17_SEGWIT_ACTIVATION) > pindex->pprev->nTime) {
                     vGetData.push_back(CInv(State(staller)->fHaveWitness ? MSG_WITNESS_BLOCK : MSG_BLOCK, pindex->GetBlockHash()));
                     MarkBlockAsInFlight(pto->GetId(), pindex->GetBlockHash(), pindex);
                     LogPrint("net", "Requesting block %s (%d) peer=%d\n", pindex->GetBlockHash().ToString(),
