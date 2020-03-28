@@ -45,7 +45,7 @@ public:
 
     uint256 GetHash() { return HashQuark(BEGIN(nSporkID), END(nTimeSigned)); }
     bool Sign(std::string strSignKey);
-    bool CheckSignature(bool fRequireNew = false);
+    bool CheckSignature();
     void Relay();
 
     ADD_SERIALIZE_METHODS;

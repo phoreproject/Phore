@@ -115,8 +115,7 @@ void CSporkManager::ProcessSpork(CNode* pfrom, std::string& strCommand, CDataStr
 
         LogPrintf("spork - new %s ID %d Time %d bestHeight %d\n", hash.ToString(), spork.nSporkID, spork.nValue, chainActive.Tip()->nHeight);
 
-        bool fRequireNew = spork.nTimeSigned >= Params().NewSporkStart();
-        if (!spork.CheckSignature(fRequireNew)) {
+        if (!spork.CheckSignature()) {
             LOCK(cs_main);
             LogPrintf("%s : Invalid Signature\n", __func__);
             Misbehaving(pfrom->GetId(), 100);
@@ -212,8 +211,7 @@ bool CSporkManager::SetPrivKey(std::string strPrivKey)
 
     spork.Sign(strPrivKey);
 
-    const bool fRequireNew = GetTime() >= Params().NewSporkStart();
-    if (spork.CheckSignature(fRequireNew)) {
+    if (spork.CheckSignature()) {
         LOCK(cs);
         // Test signing successful, proceed
         LogPrintf("%s : Successfully initialized as spork signer\n", __func__);
@@ -253,24 +251,18 @@ bool CSporkMessage::Sign(std::string strSignKey)
     return true;
 }
 
-bool CSporkMessage::CheckSignature(bool fRequireNew)
+bool CSporkMessage::CheckSignature()
 {
     //note: need to investigate why this is failing
     std::string strMessage = std::to_string(nSporkID) + std::to_string(nValue) + std::to_string(nTimeSigned);
-    CPubKey pubkeynew(ParseHex(Params().SporkPubKey()));
-    std::string errorMessage = "";
+    CPubKey pubkey(ParseHex(Params().SporkKey()));
+    std::string strError = "";
 
-    bool fValidWithNewKey = obfuScationSigner.VerifyMessage(pubkeynew, vchSig, strMessage, errorMessage);
-
-    if (fRequireNew && !fValidWithNewKey)
+    if(!obfuScationSigner.VerifyMessage(pubkey, vchSig, strMessage, strError)) {
+        LogPrintf("CSporkMessage::CheckSignature -- VerifyMessage() failed, error: %s\n", strError);
         return false;
-
-    // See if window is open that allows for old spork key to sign messages
-    if (!fValidWithNewKey && GetAdjustedTime() < Params().RejectOldSporkKey()) {
-        CPubKey pubkeyold(ParseHex(Params().SporkPubKeyOld()));
-        return obfuScationSigner.VerifyMessage(pubkeyold, vchSig, strMessage, errorMessage);
     }
-    return fValidWithNewKey;
+    return true;
 }
 
 void CSporkMessage::Relay()

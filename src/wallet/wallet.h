@@ -321,6 +321,29 @@ public:
     bool fCombineDust;
     CAmount nAutoCombineThreshold;
 
+    CWallet();
+
+    CWallet(std::string strWalletFileIn);
+
+    ~CWallet();
+
+    void SetNull();
+
+    int getZeromintPercentage();
+
+    void setZWallet(CzPHRWallet* zwallet);
+
+    CzPHRWallet* getZWallet();
+
+
+    bool isZeromintEnabled();
+
+    void setZPhrAutoBackups(bool fEnabled);
+
+    bool isMultiSendEnabled();
+
+    void setMultiSendDisabled();
+
     std::map<uint256, CWalletTx> mapWallet;
     std::list<CAccountingEntry> laccentries;
 

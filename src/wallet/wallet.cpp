@@ -1028,7 +1028,7 @@ bool CWallet::AddToWalletIfInvolvingMe(const CTransaction& tx, const CBlock* pbl
     {
         AssertLockHeld(cs_wallet);
 
-        if (pblock && !tx.HasZerocoinSpendInputs() && !tx.IsCoinBase()) {
+        if (pblock && !tx.IsCoinBase()) {
             for (const CTxIn& txin : tx.vin) {
                 std::pair<TxSpends::const_iterator, TxSpends::const_iterator> range = mapTxSpends.equal_range(txin.prevout);
                 while (range.first != range.second) {
@@ -1699,7 +1699,7 @@ int CWallet::ScanForWalletTransactions(CBlockIndex* pindexStart, bool fUpdate, b
             //If this is a zapwallettx, need to readd zphr
             if (fCheckZPHR && pindex->nHeight >= Params().Zerocoin_StartHeight()) {
                 std::list<CZerocoinMint> listMints;
-                BlockToZerocoinMintList(block, listMints, true);
+                BlockToZerocoinMintList(block, listMints);
                 CWalletDB walletdb(strWalletFile);
                 for (auto& m : listMints) {
                     if (IsMyMint(m.GetValue())) {
@@ -5159,13 +5159,12 @@ CWallet::CWallet()
 
 CWallet::CWallet(std::string strWalletFileIn)
 {
-SetNull();
-
-strWalletFile = strWalletFileIn;
-fFileBacked = true;
+    SetNull();
+    strWalletFile = strWalletFileIn;
+    fFileBacked = true;
 }
 
-~CWallet::CWallet()
+CWallet::~CWallet()
 {
     delete pwalletdbEncryption;
 }
@@ -5215,7 +5214,10 @@ void CWallet::setZWallet(CzPHRWallet* zwallet)
     zphrTracker = std::unique_ptr<CzPHRTracker>(new CzPHRTracker(strWalletFile));
 }
 
-CWallet::CzPHRWallet* getZWallet() { return zwalletMain; }
+CzPHRWallet* CWallet::getZWallet()
+{
+    return zwalletMain;
+}
 
 
 bool CWallet::isZeromintEnabled()
@@ -5256,6 +5258,13 @@ bool CWallet::LoadMinVersion(int nVersion)
 isminetype CWallet::IsMine(const CTxOut& txout) const
 {
     return ::IsMine(*this, txout.scriptPubKey);
+}
+
+CAmount CWallet::GetCredit(const CTxOut& txout, const isminefilter& filter) const
+{
+    if (!MoneyRange(txout.nValue))
+        throw std::runtime_error("CWallet::GetCredit() : value out of range");
+    return ((IsMine(txout) & filter) ? txout.nValue : 0);
 }
 
 CAmount CWallet::GetChange(const CTxOut& txout) const
