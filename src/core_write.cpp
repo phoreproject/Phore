@@ -18,7 +18,6 @@
 
 
 
-
 std::string FormatScript(const CScript& script)
 {
     std::string ret;

@@ -6,7 +6,7 @@
 
 export LC_ALL=C.UTF-8
 
-cd "build/pivx-$HOST" || (echo "could not enter distdir build/pivx-$HOST"; exit 1)
+cd "build/phore-$HOST" || (echo "could not enter distdir build/phore-$HOST"; exit 1)
 
 if [ "$RUN_UNIT_TESTS" = "true" ]; then
   BEGIN_FOLD unit-tests

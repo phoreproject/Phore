@@ -15,7 +15,6 @@
 
 
 
-
 typedef std::vector<unsigned char> valtype;
 
 unsigned nMaxDatacarrierBytes = MAX_OP_RETURN_RELAY;

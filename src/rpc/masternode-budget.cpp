@@ -50,7 +50,7 @@ void budgetToJSON(CBudgetProposal* pbudgetProposal, UniValue& bObj)
 }
 
 void checkBudgetInputs(const UniValue& params, std::string &strProposalName, std::string &strURL,
-                       int &nPaymentCount, int &nBlockStart, CBitcoinAddress &address, CAmount &nAmount)
+                       int &nPaymentCount, int &nBlockStart, CAmount &nAmount)
 {
     int nBlockMin = 0;
     CBlockIndex* pindexPrev = chainActive.Tip();
@@ -86,8 +86,7 @@ void checkBudgetInputs(const UniValue& params, std::string &strProposalName, std
     if (nBlockEnd < pindexPrev->nHeight)
         throw std::runtime_error("Invalid ending block, starting block + (payment_cycle*payments) must be more than current height.");
 
-    address = params[4].get_str();
-    if (!address.IsValid())
+    if (!IsValidDestinationString(params[4].get_str()))
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Invalid Phore address");
 
     nAmount = AmountFromValue(params[5]);
@@ -112,8 +111,8 @@ UniValue preparebudget(const UniValue& params, bool fHelp)
             "\"xxxx\"       (string) proposal fee hash (if successful) or error message (if failed)\n"
 
             "\nExamples:\n" +
-            HelpExampleCli("preparebudget", "\"test-proposal\" \"https://forum.phore.org/t/test-proposal\\" 2 820800 \"D9oc6C3dttUbv8zd7zGNq1qKBGf4ZQ1XEE\" 500") +
-            HelpExampleRpc("preparebudget", "\"test-proposal\" \"https://forum.phore.org/t/test-proposal\\" 2 820800 \"D9oc6C3dttUbv8zd7zGNq1qKBGf4ZQ1XEE\" 500"));
+            HelpExampleCli("preparebudget", "\"test-proposal\" \"https://forum.phore.org/t/test-proposal\" 2 820800 \"D9oc6C3dttUbv8zd7zGNq1qKBGf4ZQ1XEE\" 500") +
+            HelpExampleRpc("preparebudget", "\"test-proposal\" \"https://forum.phore.org/t/test-proposal\" 2 820800 \"D9oc6C3dttUbv8zd7zGNq1qKBGf4ZQ1XEE\" 500"));
 
     LOCK2(cs_main, pwalletMain->cs_wallet);
 
@@ -123,13 +122,13 @@ UniValue preparebudget(const UniValue& params, bool fHelp)
     std::string strURL;
     int nPaymentCount;
     int nBlockStart;
-    CBitcoinAddress address;
+    CTxDestination address = DecodeDestination(params[4].get_str());
     CAmount nAmount;
 
-    checkBudgetInputs(params, strProposalName, strURL, nPaymentCount, nBlockStart, address, nAmount);
+    checkBudgetInputs(params, strProposalName, strURL, nPaymentCount, nBlockStart, nAmount);
 
     // Parse Phore address
-    CScript scriptPubKey = GetScriptForDestination(address.Get());
+    CScript scriptPubKey = GetScriptForDestination(address);
 
     // create transaction 15 minutes into the future, to allow for confirmation time
     CBudgetProposalBroadcast budgetProposalBroadcast(strProposalName, strURL, nPaymentCount, scriptPubKey, nAmount, nBlockStart, 0);
@@ -184,13 +183,13 @@ UniValue submitbudget(const UniValue& params, bool fHelp)
     std::string strURL;
     int nPaymentCount;
     int nBlockStart;
-    CBitcoinAddress address;
+    CTxDestination address = DecodeDestination(params[4].get_str());
     CAmount nAmount;
 
-    checkBudgetInputs(params, strProposalName, strURL, nPaymentCount, nBlockStart, address, nAmount);
+    checkBudgetInputs(params, strProposalName, strURL, nPaymentCount, nBlockStart, nAmount);
 
     // Parse Phore address
-    CScript scriptPubKey = GetScriptForDestination(address.Get());
+    CScript scriptPubKey = GetScriptForDestination(address);
 
     uint256 hash = ParseHashV(params[6], "parameter 1");
 

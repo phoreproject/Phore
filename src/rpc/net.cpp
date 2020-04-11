@@ -18,7 +18,6 @@
 #include "version.h"
 
 
-
 #include <univalue.h>
 
 UniValue getconnectioncount(const UniValue& params, bool fHelp)

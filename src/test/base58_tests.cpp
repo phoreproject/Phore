@@ -13,7 +13,6 @@
 #include "utilstrencodings.h"
 #include "test/test_phore.h"
 
-
 #include <boost/test/unit_test.hpp>
 
 #include <univalue.h>

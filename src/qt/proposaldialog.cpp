@@ -286,7 +286,7 @@ void ProposalDialog::on_acceptButton_clicked()
     {
         prepareProposal();
     }
-	else if (mode == SubmitProposal) 
+    else if (mode == SubmitProposal)
     {
         submitProposal();
     }

@@ -127,7 +127,7 @@ uint256 ParseHashUV(const UniValue& v, const std::string& strName)
     std::string strHex;
     if (v.isStr())
         strHex = v.getValStr();
-    return ParseHashStr(strHex, strName); // Note: ParseHashStr("") throws a runtime_error
+    return ParseHashStr(strHex, strName); // Note: ParseHashStr("") throws a std::runtime_error
 }
 
 uint256 ParseHashStr(const std::string& strHex, const std::string& strName)
