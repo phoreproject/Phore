@@ -315,10 +315,10 @@ enum {
     // witness data.
     NODE_WITNESS = (1 << 3),
 
-	// NODE_BLOOM_WITHOUT_MN means the node has the same features as NODE_BLOOM with the only difference
-	// that the node doens't want to receive master nodes messages. (the 1<<3 was not picked as constant because on bitcoin 0.14 is witness and we want that update here )
+    // NODE_BLOOM_WITHOUT_MN means the node has the same features as NODE_BLOOM with the only difference
+    // that the node doens't want to receive master nodes messages. (the 1<<3 was not picked as constant because on bitcoin 0.14 is witness and we want that update here )
 
-	 NODE_BLOOM_WITHOUT_MN = (1 << 4),
+     NODE_BLOOM_WITHOUT_MN = (1 << 4),
 
     // Bits 24-31 are reserved for temporary experiments. Just pick a bit that
     // isn't getting used, or one not being used much, and notify the

@@ -47,33 +47,33 @@ public:
     explicit ConfigureMasternodePage(Mode mode, QWidget* parent);
     ~ConfigureMasternodePage();
 
-	void counter(int counter);
-	void MNAliasCache(QString MnAliasCache);
+    void counter(int counter);
+    void MNAliasCache(QString MnAliasCache);
     void loadAlias(QString strAlias);
     void loadIP(QString strIP);
     void loadPrivKey(QString strPrivKey);
     void loadTxHash(QString strTxHash);
     void loadOutputIndex(QString strOutputIndex);
-	void updateAlias(std::string Alias, std::string IP, std::string PrivKey, std::string TxHash, std::string OutputIndex, std::string mnAlias);
-	int getCounters()
-	{
-		return counters;
-	}
-	
-	int setCounters(int counter)
-	{
-		counters = counter;
-	}
-	
-	QString getMnAliasCache()
-	{
-		return mnAliasCache;
-	}
-	
-	void setMnAliasCache(QString mnAliasCaches)
-	{
-		mnAliasCache = mnAliasCaches;
-	}
+    void updateAlias(std::string Alias, std::string IP, std::string PrivKey, std::string TxHash, std::string OutputIndex, std::string mnAlias);
+    int getCounters()
+    {
+        return counters;
+    }
+
+    int setCounters(int counter)
+    {
+        counters = counter;
+    }
+
+    QString getMnAliasCache()
+    {
+        return mnAliasCache;
+    }
+
+    void setMnAliasCache(QString mnAliasCaches)
+    {
+        mnAliasCache = mnAliasCaches;
+    }
 
     QString getAddress() const;
     void setAddress(const QString& address);
@@ -85,8 +85,8 @@ public slots:
 
 private:
     void saveCurrentRow();
-	int counters;
-	QString mnAliasCache;
+    int counters;
+    QString mnAliasCache;
     Ui::ConfigureMasternodePage* ui;
     QDataWidgetMapper* mapper;
     Mode mode;

@@ -94,7 +94,7 @@ public:
     CBigNum(short n)            { bn = BN_new(); if (n >= 0) setulong(n); else setint64(n); }
     CBigNum(int n)              { bn = BN_new(); if (n >= 0) setulong(n); else setint64(n); }
     CBigNum(long n)             { bn = BN_new(); if (n >= 0) setulong(n); else setint64(n); }
-#ifdef __APPLE__	
+#ifdef __APPLE__
     CBigNum(int64_t n)            { bn = BN_new(); setint64(n); }
 #endif
     CBigNum(unsigned char n)    { bn = BN_new(); setulong(n); }
@@ -423,7 +423,7 @@ public:
         CAutoBN_CTX pctx;
         CBigNum bnBase = nBase;
         CBigNum bn0 = 0;
-	CBigNum locBn = *this;
+    CBigNum locBn = *this;
         std::string str;
         BN_set_negative(locBn.bn, false);
         CBigNum dv;
@@ -573,7 +573,7 @@ public:
    /**
     * Miller-Rabin primality test on this element
     * @param checks: optional, the number of Miller-Rabin tests to run
-    * 			 	default causes error rate of 2^-80.
+    *                  default causes error rate of 2^-80.
     * @return true if prime
     */
     bool isPrime(const int checks=BN_prime_checks) const {
@@ -606,7 +606,7 @@ public:
     CBigNum& operator-=(const CBigNum& b)
     {
         if (!BN_sub(bn, bn, b.bn))
-	    throw bignum_error("CBigNum::operator-= : BN_sub failed");
+        throw bignum_error("CBigNum::operator-= : BN_sub failed");
         return *this;
     }
 
@@ -620,17 +620,17 @@ public:
 
     CBigNum& operator/=(const CBigNum& b)
     {
-	CAutoBN_CTX pctx;
+    CAutoBN_CTX pctx;
         if (!BN_div(bn, NULL, bn, b.bn, pctx))
-	    throw bignum_error("CBigNum::operator/= : BN_div failed");
+        throw bignum_error("CBigNum::operator/= : BN_div failed");
         return *this;
     }
 
     CBigNum& operator%=(const CBigNum& b)
     {
-	CAutoBN_CTX pctx;
+    CAutoBN_CTX pctx;
         if (!BN_mod(bn, b.bn, bn, pctx))
-	    throw bignum_error("CBigNum::operator%= : BN_mod failed");
+        throw bignum_error("CBigNum::operator%= : BN_mod failed");
         return *this;
     }
 

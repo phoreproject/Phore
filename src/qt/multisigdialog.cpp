@@ -274,7 +274,7 @@ bool MultisigDialog::addMultisig(int m, std::vector<std::string> keys){
                                        QString::fromStdString(EncodeDestination(innerID)) +
                                        " has been added to the wallet.\nSend the redeem below for other owners to import:\n" +
                                        QString::fromStdString(redeem.ToString()));
-    }catch(const runtime_error& e) {
+    }catch(const std::runtime_error& e) {
         ui->addMultisigStatus->setStyleSheet("QLabel { color: red; }");
         ui->addMultisigStatus->setText(tr(e.what()));
         return false;
@@ -377,7 +377,7 @@ void MultisigDialog::on_createButton_clicked()
             ui->transactionHex->setText(QString::fromStdString(EncodeHexTx(multisigTx, PROTOCOL_VERSION)));
 
         }
-    }catch(const runtime_error& e){
+    }catch(const std::runtime_error& e){
         ui->createButtonStatus->setStyleSheet("QTextEdit{ color: red }");
         ui->createButtonStatus->setText(tr(e.what()));
     }
@@ -497,7 +497,7 @@ bool MultisigDialog::createMultisigTransaction(std::vector<CTxIn> vUserIn, std::
             in.scriptSig.clear();
         }
         multisigTx = tx;
-    }catch(const runtime_error& e){
+    }catch(const std::runtime_error& e){
         errorRet = e.what();
         return false;
     }
@@ -556,7 +556,7 @@ void MultisigDialog::on_signButton_clicked()
         ui->signButtonStatus->setStyleSheet("QTextEdit{ color: black }");
         ui->signButtonStatus->setText(buildMultisigTxStatusString(fComplete, tx));
 
-    }catch(const runtime_error& e){
+    }catch(const std::runtime_error& e){
         ui->signButtonStatus->setStyleSheet("QTextEdit{ color: red }");
         ui->signButtonStatus->setText(tr(e.what()));
     }
@@ -713,7 +713,7 @@ bool MultisigDialog::signMultisigTx(CMutableTransaction& tx, std::string& errorO
 
         ui->signButtonStatus->setText(buildMultisigTxStatusString(fComplete, tx));
 
-    }catch(const runtime_error& e){
+    }catch(const std::runtime_error& e){
         errorOut = std::string(e.what());
         fComplete = false;
     }
@@ -746,7 +746,7 @@ bool MultisigDialog::isFullyVerified(CMutableTransaction& tx){
 
             nIn++;
         }
-    }catch(const runtime_error& e){
+    }catch(const std::runtime_error& e){
         return false;
     }
 
@@ -787,7 +787,7 @@ void MultisigDialog::commitMultisigTx()
         //disable commit if successfully committed
         ui->commitButton->setEnabled(false);
         ui->signButtonStatus->setText(strprintf("Transaction has been successfully published with transaction ID:\n %s", tx.GetHash().GetHex()).c_str());
-    }catch(const runtime_error& e){
+    }catch(const std::runtime_error& e){
         ui->signButtonStatus->setText(e.what());
     }
 }
@@ -858,7 +858,7 @@ bool MultisigDialog::createRedeemScript(int m, std::vector<std::string> vKeys, C
         redeemRet << redeemRet.EncodeOP_N(pubkeys.size());
         redeemRet << OP_CHECKMULTISIG;
         return true;
-    }catch(const runtime_error& e){
+    }catch(const std::runtime_error& e){
         errorRet = std::string(e.what());
         return false;
     }

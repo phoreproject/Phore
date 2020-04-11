@@ -1161,7 +1161,7 @@ void CMasternodeMan::UpdateMasternodeList(CMasternodeBroadcast mnb)
         CMasternode mn(mnb);
         Add(mn);
     } else {
-    	pmn->UpdateFromNewBroadcast(mnb);
+        pmn->UpdateFromNewBroadcast(mnb);
     }
 }
 

@@ -133,7 +133,7 @@ WalletView::WalletView(QWidget* parent) : QStackedWidget(parent),
         masternodeListPage = new MasternodeList();
         addWidget(masternodeListPage);
     }
-	    
+
     QVBoxLayout* vbox_2 = new QVBoxLayout();
     proposalList = new ProposalList(this);
     vbox_2->addWidget(proposalList);

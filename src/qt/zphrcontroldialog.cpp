@@ -68,7 +68,7 @@ void ZPhrControlDialog::updateList()
 
     //populate rows with mint info
     int nBestHeight = chainActive.Height();
-    std::map<CoinDenomination, int> mapMaturityHeight = GetMintMaturityHeight();
+    std::map<libzerocoin::CoinDenomination, int> mapMaturityHeight = GetMintMaturityHeight();
     for(const CMintMeta& mint : setMints) {
         // assign this mint to the correct denomination in the tree view
         libzerocoin::CoinDenomination denom = mint.denom;

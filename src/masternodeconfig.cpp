@@ -106,13 +106,13 @@ bool CMasternodeConfig::CMasternodeEntry::castOutputIndex(int &n)
 
 void CMasternodeConfig::clear()
 {
-	entries.clear();
+    entries.clear();
 }
 
 void CMasternodeConfig::deleteAlias(int count)
 {
-	count = count - 1;
-	entries.erase(entries.begin()+count);
+    count = count - 1;
+    entries.erase(entries.begin()+count);
 }
 
 void CMasternodeConfig::writeToMasternodeConf()
@@ -127,9 +127,9 @@ void CMasternodeConfig::writeToMasternodeConf()
                             "# Format: alias IP:port masternodeprivkey collateral_output_txid collateral_output_index\n"
                             "# Example: mn1 127.0.0.2:11771 93HaYBVUCYjEMeeH1Y4sBGLALQZE1Yc1K64xiqgX37tGBDQL8Xg 2bcd3c84c84f87eaa86e4e56834c92927a07f9e18718810b92e0d0324456a67c 0\n";
     fwrite(strHeader.c_str(), std::strlen(strHeader.c_str()), 1, configFile);
-	
+
     std::string masternodeAliasBase = "";
-	
+
    for (CMasternodeConfig::CMasternodeEntry mne : masternodeConfig.getEntries()) {
         // Orders configs in proper strings
         std::string masternodeAliasLine  = mne.getAlias() + " " + mne.getIp() + " " + mne.getPrivKey() + " " + mne.getTxHash() + " " + mne.getOutputIndex() + "\n";

@@ -82,7 +82,7 @@ void budgetToST(CBudgetProposal* pbudgetProposal, UniValue& bObj)
     bObj.push_back(pbudgetProposal->GetNays());
     bObj.push_back(pbudgetProposal->GetAbstains());
     bObj.push_back(ValueFromAmount(pbudgetProposal->GetAmount() * pbudgetProposal->GetTotalPaymentCount()));
-	bObj.push_back(pbudgetProposal->GetAmount());
+    bObj.push_back(pbudgetProposal->GetAmount());
     bObj.push_back(pbudgetProposal->IsEstablished());
 
     std::string strError = "";
@@ -128,8 +128,8 @@ void ProposalTableModel::refreshProposals()
         //std::vector<UniValue> arr2 = arr1.at( 0 ).getValues();
         //dataObj = arr2.at( 1 );
 
-		UniValue bObj(UniValue::VOBJ);
-		budgetToST(pbudgetProposal, bObj);		
+        UniValue bObj(UniValue::VOBJ);
+        budgetToST(pbudgetProposal, bObj);
 
         int votesNeeded = 0;
         int voteGap = 0;

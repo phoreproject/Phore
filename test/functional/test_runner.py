@@ -215,14 +215,6 @@ def run_tests(test_list, src_dir, build_dir, exeext, tmpdir, jobs=1, enable_cove
     else:
         coverage = None
 
-    if len(test_list) > 1 and jobs > 1:
-        # Populate cache
-        try:
-            subprocess.check_output([tests_dir + 'create_cache.py'] + flags + ["--tmpdir=%s/cache" % tmpdir])
-        except subprocess.CalledProcessError as e:
-            sys.stdout.buffer.write(e.output)
-            raise
-
     #Run Tests
     job_queue = TestHandler(jobs, tests_dir, tmpdir, test_list, flags)
     time0 = time.time()
