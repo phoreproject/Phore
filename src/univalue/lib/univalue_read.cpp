@@ -42,7 +42,7 @@ static const char *hatoui(const char *first, const char *last,
     return first;
 }
 
-enum jtokentype getJsonToken(string& tokenVal, unsigned int& consumed,
+enum jtokentype getJsonToken(std::string& tokenVal, unsigned int& consumed,
                             const char *raw, const char *end)
 {
     tokenVal.clear();
@@ -255,7 +255,7 @@ bool UniValue::read(const char *raw, size_t size)
     clear();
 
     uint32_t expectMask = 0;
-    vector<UniValue*> stack;
+    std::vector<UniValue*> stack;
 
     string tokenVal;
     unsigned int consumed;

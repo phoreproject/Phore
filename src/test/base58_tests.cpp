@@ -11,15 +11,16 @@
 #include "uint256.h"
 #include "util.h"
 #include "utilstrencodings.h"
+#include "test/test_phore.h"
 
-#include <boost/foreach.hpp>
+
 #include <boost/test/unit_test.hpp>
 
 #include <univalue.h>
 
 extern UniValue read_json(const std::string& jsondata);
 
-BOOST_AUTO_TEST_SUITE(base58_tests)
+BOOST_FIXTURE_TEST_SUITE(base58_tests, BasicTestingSetup)
 
 // Goal: test low-level base58 encoding functionality
 BOOST_AUTO_TEST_CASE(base58_EncodeBase58)
@@ -36,7 +37,7 @@ BOOST_AUTO_TEST_CASE(base58_EncodeBase58)
         std::vector<unsigned char> sourcedata = ParseHex(test[0].get_str());
         std::string base58string = test[1].get_str();
         BOOST_CHECK_MESSAGE(
-                    EncodeBase58(begin_ptr(sourcedata), end_ptr(sourcedata)) == base58string,
+                    EncodeBase58(sourcedata.data(), sourcedata.data() + sourcedata.size()) == base58string,
                     strTest);
     }
 }

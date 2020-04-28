@@ -31,9 +31,7 @@ SendCoinsEntry::SendCoinsEntry(QWidget* parent) : QStackedWidget(parent),
     ui->addAsLabel->setAttribute(Qt::WA_MacShowFocusRect, 0);
     ui->payAmount->setAttribute(Qt::WA_MacShowFocusRect, 0);
 #endif
-#if QT_VERSION >= 0x040700
     ui->addAsLabel->setPlaceholderText(tr("Enter a label for this address to add it to your address book"));
-#endif
 
     // normal phore address field
     GUIUtil::setupAddressWidget(ui->payTo, this);

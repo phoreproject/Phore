@@ -14,7 +14,6 @@
 #include "guiutil.h"
 #include "init.h"
 #include "obfuscation.h"
-#include "obfuscationconfig.h"
 #include "optionsmodel.h"
 #include "transactionfilterproxy.h"
 #include "transactionrecord.h"
@@ -211,13 +210,20 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
         nLockedBalance = pwalletMain->GetLockedCoins();
         nWatchOnlyLockedBalance = pwalletMain->GetLockedWatchOnlyBalance();
     }
+
     // PHR Balance
     CAmount nTotalBalance = balance + unconfirmedBalance;
     CAmount phrAvailableBalance = balance - immatureBalance - nLockedBalance;
-    CAmount nTotalWatchBalance = watchOnlyBalance + watchUnconfBalance + watchImmatureBalance;    
     CAmount nUnlockedBalance = nTotalBalance - nLockedBalance;
+
+    // PHR Watch-Only Balance
+    CAmount nTotalWatchBalance = watchOnlyBalance + watchUnconfBalance;
+    CAmount nAvailableWatchBalance = watchOnlyBalance - watchImmatureBalance - nWatchOnlyLockedBalance;
+
     // zPHR Balance
+
     CAmount matureZerocoinBalance = zerocoinBalance - unconfirmedZerocoinBalance - immatureZerocoinBalance;
+
     // Percentages
     QString szPercentage = "";
     QString sPercentage = "";
@@ -234,17 +240,17 @@ void OverviewPage::setBalance(const CAmount& balance, const CAmount& unconfirmed
     ui->labelTotal->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, nTotalBalance, false, BitcoinUnits::separatorAlways));
 
     // Watchonly labels
-    ui->labelWatchAvailable->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, watchOnlyBalance, false, BitcoinUnits::separatorAlways));
-    ui->labelWatchPending->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, watchUnconfBalance, false, BitcoinUnits::separatorAlways));
-    ui->labelWatchImmature->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, watchImmatureBalance, false, BitcoinUnits::separatorAlways));
-    ui->labelWatchLocked->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, nWatchOnlyLockedBalance, false, BitcoinUnits::separatorAlways));
-    ui->labelWatchTotal->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, nTotalWatchBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelWatchAvailable->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nAvailableWatchBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelWatchPending->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, watchUnconfBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelWatchImmature->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, watchImmatureBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelWatchLocked->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nWatchOnlyLockedBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelWatchTotal->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, nTotalWatchBalance, false, BitcoinUnits::separatorAlways));
 
     // zPHR labels
-    ui->labelzBalance->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, zerocoinBalance, false, BitcoinUnits::separatorAlways));
-    ui->labelzBalanceUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, unconfirmedZerocoinBalance, false, BitcoinUnits::separatorAlways));
-    ui->labelzBalanceMature->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, matureZerocoinBalance, false, BitcoinUnits::separatorAlways));
-    ui->labelzBalanceImmature->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, immatureZerocoinBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelzBalance->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, zerocoinBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelzBalanceUnconfirmed->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, unconfirmedZerocoinBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelzBalanceMature->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, matureZerocoinBalance, false, BitcoinUnits::separatorAlways));
+    ui->labelzBalanceImmature->setText(BitcoinUnits::floorHtmlWithUnit(nDisplayUnit, immatureZerocoinBalance, false, BitcoinUnits::separatorAlways));
 
     // Combined labels
     ui->labelBalancez->setText(BitcoinUnits::floorHtmlWithUnitComma(nDisplayUnit, availableTotalBalance, false, BitcoinUnits::separatorAlways));
@@ -370,6 +376,7 @@ void OverviewPage::setWalletModel(WalletModel* model)
 
         connect(model->getOptionsModel(), SIGNAL(displayUnitChanged(int)), this, SLOT(updateDisplayUnit()));
         connect(model->getOptionsModel(), SIGNAL(hideZeroBalancesChanged(bool)), this, SLOT(updateDisplayUnit()));
+        connect(model->getOptionsModel(), SIGNAL(hideOrphansChanged(bool)), this, SLOT(hideOrphans(bool)));
 
         updateWatchOnlyLabels(model->haveWatchOnly());
         connect(model, SIGNAL(notifyWatchonlyChanged(bool)), this, SLOT(updateWatchOnlyLabels(bool)));
@@ -377,6 +384,10 @@ void OverviewPage::setWalletModel(WalletModel* model)
 
     // update the display unit, to not use the default ("PHR")
     updateDisplayUnit();
+
+    // Hide orphans
+    QSettings settings;
+    hideOrphans(settings.value("fHideOrphans", false).toBool());
 }
 
 void OverviewPage::updateDisplayUnit()
@@ -404,4 +415,10 @@ void OverviewPage::showOutOfSyncWarning(bool fShow)
 {
     ui->labelWalletStatus->setVisible(fShow);
     ui->labelTransactionsStatus->setVisible(fShow);
+}
+
+void OverviewPage::hideOrphans(bool fHide)
+{
+    if (filter)
+        filter->setHideOrphans(fHide);
 }

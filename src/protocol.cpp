@@ -214,7 +214,6 @@ void CAddress::Init()
 {
     nServices = NODE_NETWORK;
     nTime = 100000000;
-    nLastTry = 0;
 }
 
 CInv::CInv()
@@ -255,7 +254,7 @@ bool CInv::IsKnownType() const
 }
 
 bool CInv::IsMasterNodeType() const{
- 	return (type >= 6);
+     return (type >= 6);
 }
 
 const char* CInv::GetCommand() const

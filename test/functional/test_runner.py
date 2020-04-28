@@ -117,7 +117,7 @@ def main():
     logging.basicConfig(format='%(message)s', level=logging_level)
 
     # Create base test directory
-    tmpdir = "%s/pivx_test_runner_%s" % (args.tmpdirprefix, datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))
+    tmpdir = "%s/PHORE_test_runner_%s" % (args.tmpdirprefix, datetime.datetime.now().strftime("%Y%m%d_%H%M%S"))
     os.makedirs(tmpdir)
 
     logging.debug("Temporary test directory at %s" % tmpdir)
@@ -214,14 +214,6 @@ def run_tests(test_list, src_dir, build_dir, exeext, tmpdir, jobs=1, enable_cove
         logging.debug("Initializing coverage directory at %s" % coverage.dir)
     else:
         coverage = None
-
-    if len(test_list) > 1 and jobs > 1:
-        # Populate cache
-        try:
-            subprocess.check_output([tests_dir + 'create_cache.py'] + flags + ["--tmpdir=%s/cache" % tmpdir])
-        except subprocess.CalledProcessError as e:
-            sys.stdout.buffer.write(e.output)
-            raise
 
     #Run Tests
     job_queue = TestHandler(jobs, tests_dir, tmpdir, test_list, flags)

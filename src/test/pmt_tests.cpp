@@ -7,12 +7,13 @@
 #include "streams.h"
 #include "uint256.h"
 #include "version.h"
+#include "random.h"
+#include "test/test_phore.h"
 
 #include <vector>
 
 #include <boost/test/unit_test.hpp>
 
-using namespace std;
 
 class CPartialMerkleTreeTester : public CPartialMerkleTree
 {
@@ -26,7 +27,7 @@ public:
     }
 };
 
-BOOST_AUTO_TEST_SUITE(pmt_tests)
+BOOST_FIXTURE_TEST_SUITE(pmt_tests, BasicTestingSetup)
 
 BOOST_AUTO_TEST_CASE(pmt_test1)
 {

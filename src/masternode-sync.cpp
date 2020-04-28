@@ -92,7 +92,7 @@ void CMasternodeSync::AddedMasternodeList(uint256 hash)
         }
     } else {
         lastMasternodeList = GetTime();
-        mapSeenSyncMNB.insert(make_pair(hash, 1));
+        mapSeenSyncMNB.insert(std::make_pair(hash, 1));
     }
 }
 
@@ -105,7 +105,7 @@ void CMasternodeSync::AddedMasternodeWinner(uint256 hash)
         }
     } else {
         lastMasternodeWinner = GetTime();
-        mapSeenSyncMNW.insert(make_pair(hash, 1));
+        mapSeenSyncMNW.insert(std::make_pair(hash, 1));
     }
 }
 
@@ -119,7 +119,7 @@ void CMasternodeSync::AddedBudgetItem(uint256 hash)
         }
     } else {
         lastBudgetItem = GetTime();
-        mapSeenSyncBudget.insert(make_pair(hash, 1));
+        mapSeenSyncBudget.insert(std::make_pair(hash, 1));
     }
 }
 
@@ -222,7 +222,7 @@ void CMasternodeSync::ClearFulfilledRequest()
     TRY_LOCK(cs_vNodes, lockRecv);
     if (!lockRecv) return;
 
-    BOOST_FOREACH (CNode* pnode, vNodes) {
+    for (CNode* pnode : vNodes) {
         pnode->ClearFulfilledRequest(NetMsgType::GETSPORK);
         pnode->ClearFulfilledRequest("mnsync");
         pnode->ClearFulfilledRequest("mnwsync");
@@ -264,7 +264,7 @@ void CMasternodeSync::Process()
     TRY_LOCK(cs_vNodes, lockRecv);
     if (!lockRecv) return;
 
-    BOOST_FOREACH (CNode* pnode, vNodes) {
+    for (CNode* pnode : vNodes) {
         if (Params().NetworkID() == CBaseChainParams::REGTEST) {
             if (RequestedMasternodeAttempt <= 2) {
                 pnode->PushMessage(NetMsgType::GETSPORKS); //get current network sporks

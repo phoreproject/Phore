@@ -14,8 +14,8 @@
 
 #include "chainparams.h"
 #include "main.h"
-#include "rpcclient.h"
-#include "rpcserver.h"
+#include "rpc/client.h"
+#include "rpc/server.h"
 #include "util.h"
 #ifdef ENABLE_WALLET
 #include "wallet/wallet.h"
@@ -38,10 +38,6 @@
 #include <QTime>
 #include <QTimer>
 #include <QStringList>
-
-#if QT_VERSION < 0x050000
-#include <QUrl>
-#endif
 
 // TODO: add a scrollback limit, as there is currently none
 // TODO: make it possible to filter out categories (esp debug messages when implemented)
@@ -258,7 +254,7 @@ void RPCExecutor::request(const QString& command)
     }
 }
 
-RPCConsole::RPCConsole(QWidget* parent) : QDialog(parent),
+RPCConsole::RPCConsole(QWidget* parent) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                           ui(new Ui::RPCConsole),
                                           clientModel(0),
                                           historyPtr(0),
@@ -323,7 +319,9 @@ RPCConsole::RPCConsole(QWidget* parent) : QDialog(parent),
 #endif
     // Register RPC timer interface
     rpcTimerInterface = new QtRPCTimerInterface();
-    RPCRegisterTimerInterface(rpcTimerInterface);
+    // avoid accidentally overwriting an existing, non QTThread
+    // based timer interface
+    RPCSetTimerInterfaceIfUnset(rpcTimerInterface);
 
     startExecutor();
     setTrafficGraphRange(INITIAL_TRAFFIC_GRAPH_MINS);
@@ -337,7 +335,7 @@ RPCConsole::~RPCConsole()
 {
     GUIUtil::saveWindowGeometry("nRPCConsoleWindow", this);
     emit stopExecutor();
-    RPCUnregisterTimerInterface(rpcTimerInterface);
+    RPCUnsetTimerInterface(rpcTimerInterface);
     delete rpcTimerInterface;
     delete ui;
 }
@@ -493,6 +491,7 @@ void RPCConsole::setClientModel(ClientModel* model)
         ui->clientVersion->setText(model->formatFullVersion());
         ui->clientName->setText(model->clientName());
         ui->buildDate->setText(model->formatBuildDate());
+        ui->dataDir->setText(model->dataDir());
         ui->startupTime->setText(model->formatClientStartupTime());
         ui->networkName->setText(QString::fromStdString(Params().NetworkIDString()));
 
@@ -678,8 +677,10 @@ void RPCConsole::setNumConnections(int count)
 void RPCConsole::setNumBlocks(int count)
 {
     ui->numberOfBlocks->setText(QString::number(count));
-    if (clientModel)
+    if (clientModel) {
         ui->lastBlockTime->setText(clientModel->getLastBlockDate().toString());
+        ui->lastBlockHash->setText(clientModel->getLastBlockHash());
+    }
 }
 
 void RPCConsole::setMasternodeCount(const QString& strMasternodes)

@@ -10,15 +10,15 @@
 #include "sync.h"
 #include "utilstrencodings.h"
 #include "utilmoneystr.h"
+#include "test/test_phore.h"
 
 #include <stdint.h>
 #include <vector>
 
 #include <boost/test/unit_test.hpp>
 
-using namespace std;
 
-BOOST_AUTO_TEST_SUITE(util_tests)
+BOOST_FIXTURE_TEST_SUITE(util_tests, BasicTestingSetup)
 
 BOOST_AUTO_TEST_CASE(util_criticalsection)
 {

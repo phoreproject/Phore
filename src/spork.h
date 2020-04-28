@@ -15,10 +15,6 @@
 
 #include "obfuscation.h"
 #include "protocol.h"
-#include <boost/lexical_cast.hpp>
-
-using namespace std;
-using namespace boost;
 
 /*
     Don't ever reuse these IDs for other sporks

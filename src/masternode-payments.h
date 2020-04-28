@@ -10,7 +10,6 @@
 #include "main.h"
 #include "masternode.h"
 
-using namespace std;
 
 extern CCriticalSection cs_vecPayments;
 extern CCriticalSection cs_mapMasternodeBlocks;
@@ -107,7 +106,7 @@ public:
     {
         LOCK(cs_vecPayments);
 
-        BOOST_FOREACH (CMasternodePayee& payee, vecPayments) {
+        for (CMasternodePayee& payee : vecPayments) {
             if (payee.scriptPubKey == payeeIn) {
                 payee.nVotes += nIncrement;
                 return;
@@ -123,7 +122,7 @@ public:
         LOCK(cs_vecPayments);
 
         int nVotes = -1;
-        BOOST_FOREACH (CMasternodePayee& p, vecPayments) {
+        for (CMasternodePayee& p : vecPayments) {
             if (p.nVotes > nVotes) {
                 payee = p.scriptPubKey;
                 nVotes = p.nVotes;
@@ -137,7 +136,7 @@ public:
     {
         LOCK(cs_vecPayments);
 
-        BOOST_FOREACH (CMasternodePayee& p, vecPayments) {
+        for (CMasternodePayee& p : vecPayments) {
             if (p.nVotes >= nVotesReq && p.scriptPubKey == payee) return true;
         }
 

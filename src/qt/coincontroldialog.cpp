@@ -33,12 +33,11 @@
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 
-using namespace std;
 QList<CAmount> CoinControlDialog::payAmounts;
 int CoinControlDialog::nSplitBlockDummy;
 CCoinControl* CoinControlDialog::coinControl = new CCoinControl();
 
-CoinControlDialog::CoinControlDialog(QWidget* parent, bool fMultisigEnabled) : QDialog(parent),
+CoinControlDialog::CoinControlDialog(QWidget* parent, bool fMultisigEnabled) : QDialog(parent, Qt::WindowSystemMenuHint | Qt::WindowTitleHint | Qt::WindowCloseButtonHint),
                                                         ui(new Ui::CoinControlDialog),
                                                         model(0)
 {
@@ -110,12 +109,8 @@ CoinControlDialog::CoinControlDialog(QWidget* parent, bool fMultisigEnabled) : Q
     // click on checkbox
     connect(ui->treeWidget, SIGNAL(itemChanged(QTreeWidgetItem*, int)), this, SLOT(viewItemChanged(QTreeWidgetItem*, int)));
 
-// click on header
-#if QT_VERSION < 0x050000
-    ui->treeWidget->header()->setClickable(true);
-#else
+    // click on header
     ui->treeWidget->header()->setSectionsClickable(true);
-#endif
     connect(ui->treeWidget->header(), SIGNAL(sectionClicked(int)), this, SLOT(headerSectionClicked(int)));
 
     // ok button
@@ -445,16 +440,14 @@ void CoinControlDialog::viewItemChanged(QTreeWidgetItem* item, int column)
             updateDialogLabels();
         }
     }
-// todo: this is a temporary qt5 fix: when clicking a parent node in tree mode, the parent node
-//       including all childs are partially selected. But the parent node should be fully selected
-//       as well as the childs. Childs should never be partially selected in the first place.
-//       Please remove this ugly fix, once the bug is solved upstream.
-#if QT_VERSION >= 0x050000
-    else if (column == COLUMN_CHECKBOX && item->childCount() > 0) {
+
+    // TODO: Remove this temporary qt5 fix after Qt5.3 and Qt5.4 are no longer used.
+    //       Fixed in Qt5.5 and above: https://bugreports.qt.io/browse/QTBUG-43473
+    else if (column == COLUMN_CHECKBOX && item->childCount() > 0)
+    {
         if (item->checkState(COLUMN_CHECKBOX) == Qt::PartiallyChecked && item->child(0)->checkState(COLUMN_CHECKBOX) == Qt::PartiallyChecked)
             item->setCheckState(COLUMN_CHECKBOX, Qt::Checked);
     }
-#endif
 }
 
 // return human readable label for priority number
@@ -488,7 +481,7 @@ QString CoinControlDialog::getPriorityLabel(double dPriority, double mempoolEsti
 // shows count of locked unspent outputs
 void CoinControlDialog::updateLabelLocked()
 {
-    vector<COutPoint> vOutpts;
+    std::vector<COutPoint> vOutpts;
     model->listLockedCoins(vOutpts);
     if (vOutpts.size() > 0) {
         ui->labelLocked->setText(tr("(%1 locked)").arg(vOutpts.size()));
@@ -505,8 +498,8 @@ void CoinControlDialog::updateDialogLabels()
         return;
     }
 
-    vector<COutPoint> vCoinControl;
-    vector<COutput> vOutputs;
+    std::vector<COutPoint> vCoinControl;
+    std::vector<COutput> vOutputs;
     coinControl->ListSelected(vCoinControl);
     model->getOutputs(vCoinControl, vOutputs);
 
@@ -546,7 +539,7 @@ void CoinControlDialog::updateLabels(WalletModel* model, QDialog* dialog)
         nPayAmount += amount;
 
         if (amount > 0) {
-            CTxOut txout(amount, (CScript)vector<unsigned char>(24, 0));
+            CTxOut txout(amount, (CScript)std::vector<unsigned char>(24, 0));
             txDummy.vout.push_back(txout);
             if (txout.IsDust(::minRelayTxFee))
                 fDust = true;
@@ -572,7 +565,7 @@ void CoinControlDialog::updateLabels(WalletModel* model, QDialog* dialog)
     coinControl->ListSelected(vCoinControl);
     model->getOutputs(vCoinControl, vOutputs);
 
-    BOOST_FOREACH (const COutput& out, vOutputs) {
+    for (const COutput& out : vOutputs) {
         // unselect already spent, very unlikely scenario, this could happen
         // when selected are spent elsewhere, like rpc or another computer
         uint256 txhash = out.tx->GetHash();
@@ -617,7 +610,7 @@ void CoinControlDialog::updateLabels(WalletModel* model, QDialog* dialog)
     // calculation
     if (nQuantity > 0) {
         // Bytes
-        nBytes = nBytesInputs + ((CoinControlDialog::payAmounts.size() > 0 ? CoinControlDialog::payAmounts.size() + max(1, CoinControlDialog::nSplitBlockDummy) : 2) * 34) + 10; // always assume +1 output for change here
+        nBytes = nBytesInputs + ((CoinControlDialog::payAmounts.size() > 0 ? CoinControlDialog::payAmounts.size() + std::max(1, CoinControlDialog::nSplitBlockDummy) : 2) * 34) + 10; // always assume +1 output for change here
         if (fWitness)
         {
             // there is some fudging in these numbers related to the actual virtual transaction size calculation that will keep this estimate from being exact.
@@ -636,7 +629,7 @@ void CoinControlDialog::updateLabels(WalletModel* model, QDialog* dialog)
         nPayFee = CWallet::GetMinimumFee(nBytes, nTxConfirmTarget, mempool);
 
         // IX Fee
-        if (coinControl->useSwiftTX) nPayFee = max(nPayFee, CENT);
+        if (coinControl->useSwiftTX) nPayFee = std::max(nPayFee, CENT);
         // Allow free?
         double dPriorityNeeded = mempoolEstimatePriority;
         if (dPriorityNeeded <= 0)
@@ -652,7 +645,7 @@ void CoinControlDialog::updateLabels(WalletModel* model, QDialog* dialog)
 
             // Never create dust outputs; if we would, just add the dust to the fee.
             if (nChange > 0 && nChange < CENT) {
-                CTxOut txout(nChange, (CScript)vector<unsigned char>(24, 0));
+                CTxOut txout(nChange, (CScript)std::vector<unsigned char>(24, 0));
                 if (txout.IsDust(::minRelayTxFee)) {
                     nPayFee += nChange;
                     nChange = 0;
@@ -764,10 +757,10 @@ void CoinControlDialog::updateView()
     int nDisplayUnit = model->getOptionsModel()->getDisplayUnit();
     double mempoolEstimatePriority = mempool.estimatePriority(nTxConfirmTarget);
 
-    map<QString, vector<COutput>> mapCoins;
+    std::map<QString, std::vector<COutput>> mapCoins;
     model->listCoins(mapCoins);
 
-    BOOST_FOREACH (PAIRTYPE(QString, vector<COutput>) coins, mapCoins) {
+    for (PAIRTYPE(QString, std::vector<COutput>) coins : mapCoins) {
         QTreeWidgetItem* itemWalletAddress = new QTreeWidgetItem();
         itemWalletAddress->setCheckState(COLUMN_CHECKBOX, Qt::Unchecked);
         QString sWalletAddress = coins.first;

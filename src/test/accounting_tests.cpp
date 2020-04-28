@@ -5,14 +5,16 @@
 #include "wallet/wallet.h"
 #include "wallet/walletdb.h"
 
+#include "test/test_phore.h"
+
 #include <stdint.h>
 
-#include <boost/foreach.hpp>
+
 #include <boost/test/unit_test.hpp>
 
 extern CWallet* pwalletMain;
 
-BOOST_AUTO_TEST_SUITE(accounting_tests)
+BOOST_FIXTURE_TEST_SUITE(accounting_tests, TestingSetup)
 
 static void
 GetResults(CWalletDB& walletdb, std::map<CAmount, CAccountingEntry>& results)
@@ -22,7 +24,7 @@ GetResults(CWalletDB& walletdb, std::map<CAmount, CAccountingEntry>& results)
     results.clear();
     BOOST_CHECK(walletdb.ReorderTransactions(pwalletMain) == DB_LOAD_OK);
     walletdb.ListAccountCreditDebit("", aes);
-    BOOST_FOREACH(CAccountingEntry& ae, aes)
+    for (CAccountingEntry& ae : aes)
     {
         results[ae.nOrderPos] = ae;
     }

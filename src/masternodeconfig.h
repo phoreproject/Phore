@@ -97,9 +97,9 @@ public:
 
     void clear();
     bool read(std::string& strErr);
-	void writeToMasternodeConf();
+    void writeToMasternodeConf();
     void add(std::string alias, std::string ip, std::string privKey, std::string txHash, std::string outputIndex);
-	void deleteAlias(int count);
+    void deleteAlias(int count);
 
     std::vector<CMasternodeEntry>& getEntries()
     {
@@ -109,7 +109,7 @@ public:
     int getCount()
     {
         int c = -1;
-        BOOST_FOREACH (CMasternodeEntry e, entries) {
+        for (CMasternodeEntry e : entries) {
             if (e.getAlias() != "") c++;
         }
         return c;

@@ -14,7 +14,8 @@
 #include "script/sign.h"
 #include "util.h"
 #include "utilstrencodings.h"
-#include "rpcserver.h"
+#include "rpc/server.h"
+#include "test_phore.h"
 
 #if defined(HAVE_CONSENSUS_LIB)
 #include "script/bitcoinconsensus.h"
@@ -31,21 +32,19 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/path.hpp>
-#include <boost/foreach.hpp>
+
 #include <boost/test/unit_test.hpp>
 
 #include <univalue.h>
 
-using namespace std;
-using namespace boost::algorithm;
 
 // Uncomment if you want to output updated JSON tests.
 // #define UPDATE_JSON_TESTS
 
 static const unsigned int flags = SCRIPT_VERIFY_P2SH | SCRIPT_VERIFY_STRICTENC;
 
-unsigned int ParseScriptFlags(string strFlags);
-string FormatScriptFlags(unsigned int flags);
+unsigned int ParseScriptFlags(std::string strFlags);
+std::string FormatScriptFlags(unsigned int flags);
 
 UniValue
 read_json(const std::string& jsondata)
@@ -60,7 +59,7 @@ read_json(const std::string& jsondata)
     return v.get_array();
 }
 
-BOOST_AUTO_TEST_SUITE(script_tests)
+BOOST_FIXTURE_TEST_SUITE(script_tests, TestingSetup)
 
 CMutableTransaction BuildCreditingTransaction(const CScript& scriptPubKey, int nValue = 0)
 {
@@ -809,7 +808,7 @@ BOOST_AUTO_TEST_CASE(script_build)
     std::string strGood;
     std::string strBad;
 
-    BOOST_FOREACH(TestBuilder& test, good) {
+    for (TestBuilder& test : good) {
         test.Test(true);
         std::string str = JSONPrettyPrint(test.GetJSON());
 #ifndef UPDATE_JSON_TESTS
@@ -819,7 +818,7 @@ BOOST_AUTO_TEST_CASE(script_build)
 #endif
         strGood += str + ",\n";
     }
-    BOOST_FOREACH(TestBuilder& test, bad) {
+    for (TestBuilder& test : bad) {
         test.Test(false);
         std::string str = JSONPrettyPrint(test.GetJSON());
 #ifndef UPDATE_JSON_TESTS
@@ -851,7 +850,7 @@ BOOST_AUTO_TEST_CASE(script_valid)
 
     for (unsigned int idx = 0; idx < tests.size(); idx++) {
         UniValue test = tests[idx];
-        string strTest = test.write();
+    std::string strTest = test.write();
         CScriptWitness witness;
         CAmount nValue = 0;
         unsigned int pos = 0;
@@ -870,9 +869,9 @@ BOOST_AUTO_TEST_CASE(script_valid)
             }
             continue;
         }
-        string scriptSigString = test[pos++].get_str();
+    std::string scriptSigString = test[pos++].get_str();
         CScript scriptSig = ParseScript(scriptSigString);
-        string scriptPubKeyString = test[pos++].get_str();
+    std::string scriptPubKeyString = test[pos++].get_str();
         CScript scriptPubKey = ParseScript(scriptPubKeyString);
         unsigned int scriptflags = ParseScriptFlags(test[pos++].get_str());
 
@@ -887,7 +886,7 @@ BOOST_AUTO_TEST_CASE(script_invalid)
 
     for (unsigned int idx = 0; idx < tests.size(); idx++) {
         UniValue test = tests[idx];
-        string strTest = test.write();
+    std::string strTest = test.write();
         CScriptWitness witness;
         CAmount nValue = 0;
         unsigned int pos = 0;
@@ -906,9 +905,9 @@ BOOST_AUTO_TEST_CASE(script_invalid)
             }
             continue;
         }
-        string scriptSigString = test[pos++].get_str();
+    std::string scriptSigString = test[pos++].get_str();
         CScript scriptSig = ParseScript(scriptSigString);
-        string scriptPubKeyString = test[pos++].get_str();
+    std::string scriptPubKeyString = test[pos++].get_str();
         CScript scriptPubKey = ParseScript(scriptPubKeyString);
         unsigned int scriptflags = ParseScriptFlags(test[pos++].get_str());
 
@@ -926,21 +925,21 @@ BOOST_AUTO_TEST_CASE(script_PushData)
     static const unsigned char pushdata4[] = { OP_PUSHDATA4, 1, 0, 0, 0, 0x5a };
 
     ScriptError err;
-    vector<vector<unsigned char> > directStack;
+    std::vector<std::vector<unsigned char> > directStack;
     BOOST_CHECK(EvalScript(directStack, CScript(&direct[0], &direct[sizeof(direct)]), SCRIPT_VERIFY_P2SH, BaseSignatureChecker(), SIGVERSION_BASE, &err));
     BOOST_CHECK_MESSAGE(err == SCRIPT_ERR_OK, ScriptErrorString(err));
 
-    vector<vector<unsigned char> > pushdata1Stack;
+    std::vector<std::vector<unsigned char> > pushdata1Stack;
     BOOST_CHECK(EvalScript(pushdata1Stack, CScript(&pushdata1[0], &pushdata1[sizeof(pushdata1)]), SCRIPT_VERIFY_P2SH, BaseSignatureChecker(), SIGVERSION_BASE, &err));
     BOOST_CHECK(pushdata1Stack == directStack);
     BOOST_CHECK_MESSAGE(err == SCRIPT_ERR_OK, ScriptErrorString(err));
 
-    vector<vector<unsigned char> > pushdata2Stack;
+    std::vector<std::vector<unsigned char> > pushdata2Stack;
     BOOST_CHECK(EvalScript(pushdata2Stack, CScript(&pushdata2[0], &pushdata2[sizeof(pushdata2)]), SCRIPT_VERIFY_P2SH, BaseSignatureChecker(), SIGVERSION_BASE, &err));
     BOOST_CHECK(pushdata2Stack == directStack);
     BOOST_CHECK_MESSAGE(err == SCRIPT_ERR_OK, ScriptErrorString(err));
 
-    vector<vector<unsigned char> > pushdata4Stack;
+    std::vector<std::vector<unsigned char> > pushdata4Stack;
     BOOST_CHECK(EvalScript(pushdata4Stack, CScript(&pushdata4[0], &pushdata4[sizeof(pushdata4)]), SCRIPT_VERIFY_P2SH, BaseSignatureChecker(), SIGVERSION_BASE, &err));
     BOOST_CHECK(pushdata4Stack == directStack);
     BOOST_CHECK_MESSAGE(err == SCRIPT_ERR_OK, ScriptErrorString(err));
@@ -961,9 +960,9 @@ sign_multisig(CScript scriptPubKey, std::vector<CKey> keys, CTransaction transac
     // and vice-versa)
     //
     result << OP_0;
-    BOOST_FOREACH(const CKey &key, keys)
+    for (const CKey &key : keys)
     {
-        vector<unsigned char> vchSig;
+        std::vector<unsigned char> vchSig;
         BOOST_CHECK(key.Sign(hash, vchSig));
         vchSig.push_back((unsigned char)SIGHASH_ALL);
         result << vchSig;
@@ -1075,15 +1074,15 @@ BOOST_AUTO_TEST_CASE(script_CHECKMULTISIG23)
     CScript badsig6 = sign_multisig(scriptPubKey23, keys, txTo23);
     BOOST_CHECK(!VerifyScript(badsig6, scriptPubKey23, NULL, flags, MutableTransactionSignatureChecker(&txTo23, 0, txFrom23.vout[0].nValue), &err));
     BOOST_CHECK_MESSAGE(err == SCRIPT_ERR_INVALID_STACK_OPERATION, ScriptErrorString(err));
-}    
+}
 
 BOOST_AUTO_TEST_CASE(script_combineSigs)
 {
     // Test the CombineSignatures function
     CAmount amount = 0;
     CBasicKeyStore keystore;
-    vector<CKey> keys;
-    vector<CPubKey> pubkeys;
+    std::vector<CKey> keys;
+    std::vector<CPubKey> pubkeys;
     for (int i = 0; i < 3; i++)
     {
         CKey key;
@@ -1144,15 +1143,15 @@ BOOST_AUTO_TEST_CASE(script_combineSigs)
     BOOST_CHECK(combined.scriptSig == scriptSig);
 
     // A couple of partially-signed versions:
-    vector<unsigned char> sig1;
+    std::vector<unsigned char> sig1;
     uint256 hash1 = SignatureHash(scriptPubKey, txTo, 0, SIGHASH_ALL, 0, SIGVERSION_BASE);
     BOOST_CHECK(keys[0].Sign(hash1, sig1));
     sig1.push_back(SIGHASH_ALL);
-    vector<unsigned char> sig2;
+    std::vector<unsigned char> sig2;
     uint256 hash2 = SignatureHash(scriptPubKey, txTo, 0, SIGHASH_NONE, 0, SIGVERSION_BASE);
     BOOST_CHECK(keys[1].Sign(hash2, sig2));
     sig2.push_back(SIGHASH_NONE);
-    vector<unsigned char> sig3;
+    std::vector<unsigned char> sig3;
     uint256 hash3 = SignatureHash(scriptPubKey, txTo, 0, SIGHASH_SINGLE, 0, SIGVERSION_BASE);
     BOOST_CHECK(keys[2].Sign(hash3, sig3));
     sig3.push_back(SIGHASH_SINGLE);
