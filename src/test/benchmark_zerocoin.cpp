@@ -184,12 +184,12 @@ Testb_GenerateGroupParams()
 
     for (count = 0; count < 1; count++) {
 
-		try {
-			group = deriveIntegerGroupParams(calculateSeed(gGetTestModulus(), "test", ZEROCOIN_DEFAULT_SECURITYLEVEL, "TEST GROUP"), pLen, qLen);
-		} catch (const std::runtime_error& e) {
-			cout << "Caught exception " << e.what() << endl;
-			return false;
-		}
+        try {
+            group = deriveIntegerGroupParams(calculateSeed(gGetTestModulus(), "test", ZEROCOIN_DEFAULT_SECURITYLEVEL, "TEST GROUP"), pLen, qLen);
+        } catch (const std::runtime_error& e) {
+            cout << "Caught exception " << e.what() << endl;
+            return false;
+        }
 
         // Now perform some simple tests on the resulting parameters
         if ((uint32_t)group.groupOrder.bitSize() < qLen || (uint32_t)group.modulus.bitSize() < pLen) {
@@ -219,11 +219,11 @@ Testb_ParamGen()
         ZerocoinParams testParams(gGetTestModulus(),ZEROCOIN_DEFAULT_SECURITYLEVEL);
         timer.stop();
 
-		cout << "\tPARAMGEN ELAPSED TIME: " << timer.duration() << " ms\t" << timer.duration()*0.001 << " s" << endl;
-	} catch (const std::runtime_error& e) {
-		cout << e.what() << endl;
-		result = false;
-	}
+        cout << "\tPARAMGEN ELAPSED TIME: " << timer.duration() << " ms\t" << timer.duration()*0.001 << " s" << endl;
+    } catch (const std::runtime_error& e) {
+        cout << e.what() << endl;
+        result = false;
+    }
 
     return result;
 }
