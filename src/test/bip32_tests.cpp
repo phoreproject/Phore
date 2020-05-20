@@ -8,6 +8,7 @@
 #include "key.h"
 #include "uint256.h"
 #include "util.h"
+#include "test/test_phore.h"
 
 #include <string>
 #include <vector>
@@ -82,7 +83,7 @@ void RunTest(const TestVector &test) {
     CExtPubKey pubkey;
     key.SetMaster(&seed[0], seed.size());
     pubkey = key.Neuter();
-    BOOST_FOREACH(const TestDerivation &derive, test.vDerive) {
+    for (const TestDerivation &derive : test.vDerive) {
         unsigned char data[74];
         key.Encode(data);
         pubkey.Encode(data);
@@ -122,7 +123,7 @@ void RunTest(const TestVector &test) {
     }
 }
 
-BOOST_AUTO_TEST_SUITE(bip32_tests)
+BOOST_FIXTURE_TEST_SUITE(bip32_tests, BasicTestingSetup)
 
 BOOST_AUTO_TEST_CASE(bip32_test1) {
     RunTest(test1);

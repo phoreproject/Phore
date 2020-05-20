@@ -145,6 +145,10 @@ public:
      */
     void updateStatus(const CWalletTx& wtx);
 
+    /** Return transaction status
+ */
+    std::string statusToString();
+
     /** Return whether a status update is needed.
      */
     bool statusUpdateNeeded();

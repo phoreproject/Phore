@@ -5,14 +5,16 @@
 #include "wallet/wallet.h"
 #include "wallet/walletdb.h"
 
+#include "test/test_phore.h"
+
 #include <stdint.h>
 
-#include <boost/foreach.hpp>
+
 #include <boost/test/unit_test.hpp>
 
 extern CWallet* pwalletMain;
 
-BOOST_AUTO_TEST_SUITE(accounting_tests)
+BOOST_FIXTURE_TEST_SUITE(accounting_tests, TestingSetup)
 
 static void
 GetResults(CWalletDB& walletdb, std::map<CAmount, CAccountingEntry>& results)
@@ -22,7 +24,7 @@ GetResults(CWalletDB& walletdb, std::map<CAmount, CAccountingEntry>& results)
     results.clear();
     BOOST_CHECK(walletdb.ReorderTransactions(pwalletMain) == DB_LOAD_OK);
     walletdb.ListAccountCreditDebit("", aes);
-    BOOST_FOREACH(CAccountingEntry& ae, aes)
+    for (CAccountingEntry& ae : aes)
     {
         results[ae.nOrderPos] = ae;
     }
@@ -46,7 +48,7 @@ BOOST_AUTO_TEST_CASE(acc_orderupgrade)
     pwalletMain->AddAccountingEntry(ae, walletdb);
 
     wtx.mapValue["comment"] = "z";
-    pwalletMain->AddToWallet(wtx);
+    pwalletMain->AddToWallet(wtx, false, &walletdb);
     vpwtx.push_back(&pwalletMain->mapWallet[wtx.GetHash()]);
     vpwtx[0]->nTimeReceived = (unsigned int)1333333335;
     vpwtx[0]->nOrderPos = -1;
@@ -88,7 +90,7 @@ BOOST_AUTO_TEST_CASE(acc_orderupgrade)
         --tx.nLockTime;  // Just to change the hash :)
         *static_cast<CTransaction*>(&wtx) = CTransaction(tx);
     }
-    pwalletMain->AddToWallet(wtx);
+    pwalletMain->AddToWallet(wtx, false, &walletdb);
     vpwtx.push_back(&pwalletMain->mapWallet[wtx.GetHash()]);
     vpwtx[1]->nTimeReceived = (unsigned int)1333333336;
 
@@ -98,7 +100,7 @@ BOOST_AUTO_TEST_CASE(acc_orderupgrade)
         --tx.nLockTime;  // Just to change the hash :)
         *static_cast<CTransaction*>(&wtx) = CTransaction(tx);
     }
-    pwalletMain->AddToWallet(wtx);
+    pwalletMain->AddToWallet(wtx, false, &walletdb);
     vpwtx.push_back(&pwalletMain->mapWallet[wtx.GetHash()]);
     vpwtx[2]->nTimeReceived = (unsigned int)1333333329;
     vpwtx[2]->nOrderPos = -1;

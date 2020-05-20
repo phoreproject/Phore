@@ -14,6 +14,7 @@
 #include <base58.h>
 #include <bitcoingui.h>
 #include <boost/tokenizer.hpp>
+#include "chainparams.h"
 #include <guiutil.h>
 #include <main.h>
 #include <masternode-budget.h>
@@ -84,7 +85,7 @@ ProposalDialog::ProposalDialog(Mode mode, QWidget* parent) : QDialog(parent), ui
     // Load next superblock number.
     CBlockIndex* pindexPrev = chainActive.Tip();
     if (!pindexPrev) return;
-    int nNext = pindexPrev->nHeight - pindexPrev->nHeight % GetBudgetPaymentCycleBlocks() + GetBudgetPaymentCycleBlocks();
+    int nNext = pindexPrev->nHeight - pindexPrev->nHeight % Params().GetBudgetCycleBlocks() + Params().GetBudgetCycleBlocks();
     ui->blockEdit->setText(QString::number(nNext));
 
     // Start periodic updates to handle submit block depth validation.
@@ -204,7 +205,7 @@ void ProposalDialog::submitProposal()
         return;
     }
 
-    budget.mapSeenMasternodeBudgetProposals.insert(make_pair(budgetProposalBroadcast.GetHash(), budgetProposalBroadcast));
+    budget.mapSeenMasternodeBudgetProposals.insert(std::make_pair(budgetProposalBroadcast.GetHash(), budgetProposalBroadcast));
     budgetProposalBroadcast.Relay();
     
     this->accept();
@@ -228,17 +229,17 @@ bool ProposalDialog::validateProposal()
     // Start must be in the next budget cycle
     int nBlockMin = 0;
     CBlockIndex* pindexPrev = chainActive.Tip();
-    if (pindexPrev != NULL) nBlockMin = pindexPrev->nHeight - pindexPrev->nHeight % GetBudgetPaymentCycleBlocks() + GetBudgetPaymentCycleBlocks();
+    if (pindexPrev != NULL) nBlockMin = pindexPrev->nHeight - pindexPrev->nHeight % Params().GetBudgetCycleBlocks() + Params().GetBudgetCycleBlocks();
 
     int nBlockStart = ui->blockEdit->text().toInt();
     if (nBlockStart < nBlockMin) strError = "Invalid block start, must be more than current height.";
-    if (nBlockStart % GetBudgetPaymentCycleBlocks() != 0)
+    if (nBlockStart % Params().GetBudgetCycleBlocks() != 0)
     {
-        int nNext = pindexPrev->nHeight - pindexPrev->nHeight % GetBudgetPaymentCycleBlocks() + GetBudgetPaymentCycleBlocks();
+        int nNext = pindexPrev->nHeight - pindexPrev->nHeight % Params().GetBudgetCycleBlocks() + Params().GetBudgetCycleBlocks();
         strError = strprintf("Invalid block start - must be a budget cycle block. Next valid block: %d", nNext);
     }
 
-    int nBlockEnd = nBlockStart + (GetBudgetPaymentCycleBlocks() * nPaymentCount); // End must be AFTER current cycle
+    int nBlockEnd = nBlockStart + (Params().GetBudgetCycleBlocks() * nPaymentCount); // End must be AFTER current cycle
     if (nBlockEnd < pindexPrev->nHeight) strError = "Invalid ending block, starting block + (payment_cycle*payments) must be more than current height.";
 
     std::string address = ui->addressEdit->text().toStdString();
@@ -285,7 +286,7 @@ void ProposalDialog::on_acceptButton_clicked()
     {
         prepareProposal();
     }
-	else if (mode == SubmitProposal) 
+    else if (mode == SubmitProposal)
     {
         submitProposal();
     }

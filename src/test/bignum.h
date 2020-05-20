@@ -138,7 +138,7 @@ public:
         std::vector<unsigned char> vch(nSize);
         BN_bn2mpi(this, &vch[0]);
         vch.erase(vch.begin(), vch.begin() + 4);
-        reverse(vch.begin(), vch.end());
+        std::reverse(vch.begin(), vch.end());
         return vch;
     }
 

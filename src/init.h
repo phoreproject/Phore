@@ -24,10 +24,16 @@ extern CzPHRWallet* zwalletMain;
 void StartShutdown();
 bool ShutdownRequested();
 /** Interrupt threads */
-void Interrupt(boost::thread_group& threadGroup);
+void Interrupt();
 void Shutdown();
 void PrepareShutdown();
-bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, const std::vector<std::string>& words);
+bool AppInit2(const std::vector<std::string>& words);
+
+/** Initialize PIVX core: Basic context setup.
+ *  @note This can be done before daemonization. Do not call Shutdown() if this function fails.
+ *  @pre Parameters should be parsed and config file should be read.
+ */
+bool AppInitBasicSetup();
 
 /** The help message mode determines what help message to show */
 enum HelpMessageMode {
