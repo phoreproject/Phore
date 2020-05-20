@@ -1457,7 +1457,7 @@ bool AppInit2(const std::vector<std::string>& words)
 
                 if (fReindex)
                     pblocktree->WriteReindexing(true);
-                
+
                 // End loop if shutdown was requested
                 if (ShutdownRequested()) break;
 
