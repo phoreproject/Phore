@@ -126,7 +126,7 @@ UniValue preparebudget(const UniValue& params, bool fHelp)
     CTxDestination address;
     CAmount nAmount;
 
-    checkBudgetInputs(params, strProposalName, strURL, nPaymentCount, nBlockStart, nAmount);
+    checkBudgetInputs(params, strProposalName, strURL, nPaymentCount, nBlockStart, address, nAmount);
 
     // Parse Phore address
     CScript scriptPubKey = GetScriptForDestination(address);
@@ -187,7 +187,7 @@ UniValue submitbudget(const UniValue& params, bool fHelp)
     CTxDestination address;
     CAmount nAmount;
 
-    checkBudgetInputs(params, strProposalName, strURL, nPaymentCount, nBlockStart, nAmount);
+    checkBudgetInputs(params, strProposalName, strURL, nPaymentCount, nBlockStart, address, nAmount);
 
     // Parse Phore address
     CScript scriptPubKey = GetScriptForDestination(address);
