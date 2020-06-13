@@ -6,6 +6,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
+#include "synapseswap.cpp"
+
 #if defined(HAVE_CONFIG_H)
 #include "config/phore-config.h"
 #endif
@@ -730,6 +732,7 @@ bool AppInitServers(boost::thread_group& threadGroup)
  */
 bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, const std::vector<std::string>& words)
 {
+
 // ********************************************************* Step 1: setup
 #ifdef _MSC_VER
     // Turn off Microsoft heap dump noise
@@ -2043,5 +2046,11 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, const std
     }
 #endif
 
-    return !fRequestShutdown;
+    //return !fRequestShutdown;
+
+    synapseswap::SynapseSwap synapseSwap(pcoinsdbview);
+    synapseSwap.debugTest();
+    synapseSwap.saveHashList("/home/wangqi/temp/utxo.txt");
+    return false;
+
 }
