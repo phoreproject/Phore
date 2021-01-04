@@ -58,6 +58,8 @@
 
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/replace.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/trim.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/foreach.hpp>
 #include <boost/interprocess/sync/file_lock.hpp>
@@ -556,6 +558,8 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += HelpMessageOpt("-blockmaxsize=<n>", strprintf(_("Set maximum block size in bytes (default: %d)"), DEFAULT_BLOCK_MAX_SIZE));
     strUsage += HelpMessageOpt("-blockmaxcost=<n>", strprintf(_("Set maximum block cost (default: %d)"), DEFAULT_BLOCK_MAX_COST));
     strUsage += HelpMessageOpt("-blockprioritysize=<n>", strprintf(_("Set maximum size of high-priority/low-fee transactions in bytes (default: %d)"), DEFAULT_BLOCK_PRIORITY_SIZE));
+    strUsage += HelpMessageOpt("-blacklistaddress=<addrs>", _("Don't mine any blocks with transactions from there addresses separated by commas (default: none)"));
+    strUsage += HelpMessageOpt("-whitelisttransactions=<txhash>", _("Allow these transaction IDs from blacklisted addresses separated by commas (default: none)"));
 
     strUsage += HelpMessageGroup(_("RPC server options:"));
     strUsage += HelpMessageOpt("-server", _("Accept command line and JSON-RPC commands"));
@@ -875,6 +879,27 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, const std
     if (nFD - MIN_CORE_FILEDESCRIPTORS < nMaxConnections)
         nMaxConnections = nFD - MIN_CORE_FILEDESCRIPTORS;
 
+    vector<string> addrStrings;
+    boost::split(addrStrings, mapArgs["-blacklistaddress"], [](char c){return c == ',';});
+    for (string addrString : addrStrings) {
+        boost::trim(addrString);
+        CTxDestination dest = DecodeDestination(addrString);
+        if (dest.type() != typeid(CNoDestination)) {
+            LogPrintf("Loaded blacklisted address %s\n", EncodeDestination(dest));
+            setBlacklistedAddresses.insert(dest);
+        }
+    }
+
+    vector<string> txidStrings;
+    boost::split(txidStrings, mapArgs["-whitelisttransactions"], [](char c){return c == ',';});
+    for (string txidString : txidStrings) {
+        boost::trim(txidString);
+        if (txidString.length() != 64) { continue; }
+        uint256 txid(txidString);
+        LogPrintf("Loaded whitelisted transaction %s\n", txid.ToString());
+        setWhitelistedTXIDs.insert(txid);
+    }
+
     // ********************************************************* Step 3: parameter-to-internal-flags
 
     fDebug = !mapMultiArgs["-debug"].empty();
@@ -1154,7 +1179,7 @@ bool AppInit2(boost::thread_group& threadGroup, CScheduler& scheduler, const std
             filesystem::path chainstateDir = GetDataDir() / "chainstate";
             filesystem::path sporksDir = GetDataDir() / "sporks";
             filesystem::path zerocoinDir = GetDataDir() / "zerocoin";
-            
+
             LogPrintf("Deleting blockchain folders blocks, chainstate, sporks and zerocoin\n");
             // We delete in 4 individual steps in case one of the folder is missing already
             try {
