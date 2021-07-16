@@ -553,17 +553,35 @@ void CBudgetManager::FillBlockPayee(CMutableTransaction& txNew, CAmount nFees, b
 
     // ------- Grab The Highest Count
 
+    CFinalizedBudget* pfoundFinalizedBudget = nullptr;
     std::map<uint256, CFinalizedBudget>::iterator it = mapFinalizedBudgets.begin();
     while (it != mapFinalizedBudgets.end()) {
         CFinalizedBudget* pfinalizedBudget = &((*it).second);
         if (pfinalizedBudget->GetVoteCount() > nHighestCount &&
             pindexPrev->nHeight + 1 >= pfinalizedBudget->GetBlockStart() &&
-            pindexPrev->nHeight + 1 <= pfinalizedBudget->GetBlockEnd() &&
-            pfinalizedBudget->GetPayeeAndAmount(pindexPrev->nHeight + 1, payee, nAmount)) {
+            pindexPrev->nHeight + 1 <= pfinalizedBudget->GetBlockEnd()) {
             nHighestCount = pfinalizedBudget->GetVoteCount();
+            pfoundFinalizedBudget = pfinalizedBudget;
         }
 
         ++it;
+    }
+    if(pfoundFinalizedBudget == nullptr) {
+        return;
+    }
+    if(! pfoundFinalizedBudget->GetPayeeAndAmount(pindexPrev->nHeight + 1, payee, nAmount)) {
+        return;
+    }
+    const int nFivePercent = mnodeman.CountEnabled(ActiveProtocol()) / 20;
+    // If budget doesn't have 5% of the network votes, then we should pay a masternode instead
+    if(nHighestCount < nFivePercent) {
+        return;
+    }
+    int nCountThreshold = nHighestCount - mnodeman.CountEnabled(ActiveProtocol()) / 10;
+    // reduce the threshold if there are less than 10 enabled masternodes
+    if (nCountThreshold == nHighestCount) nCountThreshold--;
+    if(pfoundFinalizedBudget->GetVoteCount() <= nCountThreshold) {
+        return;
     }
 
     CAmount blockValue = GetBlockValue(pindexPrev->nHeight);
